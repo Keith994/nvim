@@ -17,6 +17,7 @@
 
 local create_command = vim.api.nvim_create_user_command
 
+create_command("Json", function() vim.bo.filetype = "json" end, { desc = "json filetype" })
 create_command(
   "Ld",
   function() require("resession").load(vim.fn.getcwd(), { dir = "dirsession" }) end,

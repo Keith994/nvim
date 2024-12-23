@@ -27,6 +27,8 @@ return {
   { import = "astrocommunity.pack.html-css" },
   { import = "astrocommunity.pack.fish" },
   { import = "astrocommunity.pack.sql" },
+  { import = "astrocommunity.pack.bash" },
+  -- { import = "astrocommunity.icon.mini-icons" },
   -- { import = "astrocommunity.pack.full-dadbod" },
   -- {
   --   "kristijanhusak/vim-dadbod-ui",
