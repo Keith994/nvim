@@ -5,9 +5,13 @@ end
 
 local function get_icon_provider()
   local _, mini_icons = pcall(require, "mini.icons")
-  if _G.MiniIcons then return function(kind) return mini_icons.get("lsp", kind or "") end end
+  if _G.MiniIcons then
+    return function(kind) return mini_icons.get("lsp", kind or "") end
+  end
   local lspkind_avail, lspkind = pcall(require, "lspkind")
-  if lspkind_avail then return function(kind) return lspkind.symbolic(kind, { mode = "symbol" }) end end
+  if lspkind_avail then
+    return function(kind) return lspkind.symbolic(kind, { mode = "symbol" }) end
+  end
 end
 ---@type function|false|nil
 local icon_provider = false
@@ -15,17 +19,19 @@ local icon_provider = false
 local function get_icon(ctx)
   ctx.kind_hl_group = "BlinkCmpKind" .. ctx.kind
   if ctx.item.source_name == "LSP" then
-    -- TODO: uncomment after nvim-highlight-colors PR merged: https://github.com/brenoprata10/nvim-highlight-colors/pull/135
-    -- local highlight_colors_avail, highlight_colors = pcall(require, "nvim-highlight-colors")
-    -- local color_item = highlight_colors_avail and highlight_colors.format(ctx.item.documentation, { kind = ctx.kind })
+    local item_doc, color_item = ctx.item.documentation, nil
+    if item_doc then
+      local highlight_colors_avail, highlight_colors = pcall(require, "nvim-highlight-colors")
+      color_item = highlight_colors_avail and highlight_colors.format(item_doc, { kind = ctx.kind })
+    end
     if icon_provider == false then icon_provider = get_icon_provider() end
     if icon_provider then
       local icon = icon_provider(ctx.kind)
       if icon then ctx.kind_icon = icon end
     end
-    -- if color_item and color_item.abbr and color_item.abbr_hl_group then
-    --   ctx.kind_icon, ctx.kind_hl_group = color_item.abbr, color_item.abbr_hl_group
-    -- end
+    if color_item and color_item.abbr and color_item.abbr_hl_group then
+      ctx.kind_icon, ctx.kind_hl_group = color_item.abbr, color_item.abbr_hl_group
+    end
   end
   return ctx
 end
@@ -40,6 +46,10 @@ return {
     -- remember to enable your providers here
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },
+      min_keyword_length = function(ctx)
+        if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then return 2 end
+        return 0
+      end,
       cmdline = {},
     },
     keymap = {
@@ -98,7 +108,7 @@ return {
       },
       documentation = {
         auto_show = true,
-        auto_show_delay_ms = 100,
+        auto_show_delay_ms = 200,
         window = {
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
@@ -115,6 +125,14 @@ return {
   },
   specs = {
     {
+      "AstroNvim/astrolsp",
+      optional = true,
+      opts = function(_, opts)
+        opts.capabilities =
+          require("astrocore").extend_tbl(opts.capabilities, require("blink.cmp").get_lsp_capabilities())
+      end,
+    },
+    {
       "folke/lazydev.nvim",
       optional = true,
       specs = {
@@ -129,10 +147,6 @@ return {
                   providers = {
                     lazydev = { name = "LazyDev", module = "lazydev.integrations.blink", score_offset = 100 },
                   },
-                  min_keyword_length = function(ctx)
-                    if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then return 2 end
-                    return 0
-                  end,
                 },
               })
             end
