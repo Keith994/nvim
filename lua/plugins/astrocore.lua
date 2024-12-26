@@ -11,11 +11,11 @@ return {
     -- Configure core features of AstroNvim
     features = {
       large_buf = { size = 1024 * 500, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = false, -- enable autopairs at start
-      cmp = true, -- enable completion at start
-      diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
-      highlighturl = true, -- highlight URLs at start
-      notifications = false, -- enable notifications at start
+      autopairs = false,                                -- enable autopairs at start
+      cmp = true,                                       -- enable completion at start
+      diagnostics_mode = 3,                             -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      highlighturl = true,                              -- highlight URLs at start
+      notifications = false,                            -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -24,12 +24,12 @@ return {
     },
     -- vim options can be configured here
     options = {
-      opt = { -- vim.opt.<key>
+      opt = {                  -- vim.opt.<key>
         relativenumber = true, -- sets vim.opt.relativenumber
-        number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
-        signcolumn = "yes", -- sets vim.opt.signcolumn to auto
-        wrap = false, -- sets vim.opt.wrap
+        number = true,         -- sets vim.opt.number
+        spell = false,         -- sets vim.opt.spell
+        signcolumn = "yes",    -- sets vim.opt.signcolumn to auto
+        wrap = false,          -- sets vim.opt.wrap
         guifont = "LigaSFMonoNerdFont-Regular",
         showcmd = false,
         cmdheight = 1,
@@ -50,8 +50,6 @@ return {
       -- first key is the mode
       n = {
         -- second key is the lefthand side of the map
-        ["<Leader>c"] = "",
-        ["<Leader>C"] = "",
         ["<Leader>w"] = { "󱂬 Windows", desc = nil },
         ["<Leader>x"] = { " Trouble", desc = nil },
         ["<LocalLeader>w"] = { "<cmd>w<cr>", desc = "Save" },
@@ -68,11 +66,22 @@ return {
         },
         ["<Leader><Enter>"] = { "<cmd>nohlsearch<cr>", desc = "No Highlight" },
         ["<C-w>"] = { " <cmd>wq<cr>", desc = "Write and Quit Window" },
-        ["<C-q>"] = {
+        ["C-q"] = {
           function()
             local tabnum = vim.api.nvim_tabpage_get_number(0)
             if tabnum == 1 then
               vim.cmd "qa!"
+            else
+              vim.cmd "tabclose"
+            end
+          end,
+          desc = "quit",
+        },
+        ["<Leader>q"] = {
+          function()
+            local tabnum = vim.api.nvim_tabpage_get_number(0)
+            if tabnum == 1 then
+              vim.cmd "q"
             else
               vim.cmd "tabclose"
             end
@@ -93,10 +102,10 @@ return {
         },
         ["<Leader>ws"] = { "<C-w>s", desc = "window split" },
         ["<Leader>wv"] = { "<C-w>v", desc = "window vsplit" },
-        ["<Leader>w="] = { "<C-w>=", desc = "window balance" }, -- mappings seen under group name "Buffer"
-        ["<Leader>wh"] = { function() require("smart-splits").move_cursor_left() end, desc = "Move to left split" }, -- ["<Leader>bD"] = {
-        ["<Leader>wj"] = { function() require("smart-splits").move_cursor_down() end, desc = "Move to below split" }, --   function()
-        ["<Leader>wk"] = { function() require("smart-splits").move_cursor_up() end, desc = "Move to above split" }, --     require("astroui.status.heirline").buffer_picker(
+        ["<Leader>w="] = { "<C-w>=", desc = "window balance" },                                                        -- mappings seen under group name "Buffer"
+        ["<Leader>wh"] = { function() require("smart-splits").move_cursor_left() end, desc = "Move to left split" },   -- ["<Leader>bD"] = {
+        ["<Leader>wj"] = { function() require("smart-splits").move_cursor_down() end, desc = "Move to below split" },  --   function()
+        ["<Leader>wk"] = { function() require("smart-splits").move_cursor_up() end, desc = "Move to above split" },    --     require("astroui.status.heirline").buffer_picker(
         ["<Leader>wl"] = { function() require("smart-splits").move_cursor_right() end, desc = "Move to right split" }, --       function(bufnr) require("astrocore.buffer").close(bufnr) end
         ["<LocalLeader>c"] = {
           function() require("astrocore.buffer").close(0) end,
@@ -149,7 +158,7 @@ return {
       t = {
         ["<C-q>"] = { "<C-\\><C-n>:q<cr>", desc = "Close terminal" },
         -- setting a mapping to false will disable it
-        -- ["<esc>"] = false,
+        ["<esc>"] = { "<C-\\><C-n>", desc = "Return normal" },
       },
       i = {
         ["<c-a>"] = { "<ESC>^i" },

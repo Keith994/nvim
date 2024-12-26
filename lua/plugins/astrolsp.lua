@@ -105,7 +105,7 @@ return {
           function() vim.lsp.codelens.run() end,
           desc = "LSP CodeLens run",
         },
-        ["<localleader>f"] = { function() vim.lsp.buf.format() end, desc = "Format code" },
+        ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
         ["gR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
         ["g<S-D>"] = { "<Cmd>Trouble lsp_type_definitions toggle<CR>", desc = "Type Defnition" },
         ["gr"] = { "<cmd>Trouble lsp_references<CR>", desc = "References of current symbol" },

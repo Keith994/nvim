@@ -18,6 +18,7 @@
 local create_command = vim.api.nvim_create_user_command
 
 create_command("Json", function() vim.bo.filetype = "json" end, { desc = "json filetype" })
+create_command("SqlType", function() vim.bo.filetype = "sql" end, { desc = "sql filetype" })
 create_command(
   "Ld",
   function() require("resession").load(vim.fn.getcwd(), { dir = "dirsession" }) end,
@@ -49,10 +50,10 @@ create_command(
   { desc = "DapUI Console Toggle" }
 )
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "json",
-  callback = function(ev) vim.bo[ev.buf].formatprg = "jq" end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "json",
+--   callback = function(ev) vim.bo[ev.buf].formatprg = "jq" end,
+-- })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "http",
