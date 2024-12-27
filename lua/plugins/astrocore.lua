@@ -158,7 +158,7 @@ return {
       t = {
         ["<C-q>"] = { "<C-\\><C-n>:q<cr>", desc = "Close terminal" },
         -- setting a mapping to false will disable it
-        ["<esc>"] = { "<C-\\><C-n>", desc = "Return normal" },
+        -- ["<esc>"] = { "<C-\\><C-n>", desc = "Return normal" },
       },
       i = {
         ["<c-a>"] = { "<ESC>^i" },
@@ -169,6 +169,7 @@ return {
         ["<c-k>"] = { "<up>" },
         ["<A-j>"] = { "<esc><cmd>m .+1<cr>==gi", desc = "Move down" },
         ["<A-k>"] = { "<esc><cmd>m .-2<cr>==gi", desc = "Move up" },
+        ["<S-Tab>"] = { "<C-d>", desc = "backward" }
       },
       x = {
         ["n"] = { "'Nn'[v:searchforward]", expr = true, desc = "Next search result" },
