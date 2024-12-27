@@ -73,7 +73,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "java,go",
+  pattern = "java,go,rust",
   callback = function(ev)
     local utils = require "astrocore"
     utils.set_mappings({

@@ -163,6 +163,10 @@ return {
       i = {
         ["<c-a>"] = { "<ESC>^i" },
         ["<c-e>"] = { "<End>" },
+        ["<c-l>"] = { "<right>" },
+        ["<c-h>"] = { "<left>" },
+        ["<c-j>"] = { "<down>" },
+        ["<c-k>"] = { "<up>" },
         ["<A-j>"] = { "<esc><cmd>m .+1<cr>==gi", desc = "Move down" },
         ["<A-k>"] = { "<esc><cmd>m .-2<cr>==gi", desc = "Move up" },
       },
