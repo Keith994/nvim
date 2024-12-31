@@ -10,6 +10,7 @@ return {
   -- { import = "astrocommunity.recipes.astrolsp-auto-signature-help" },
   { import = "astrocommunity.colorscheme.tokyonight-nvim" },
   { import = "astrocommunity.colorscheme.catppuccin" },
+  { import = "astrocommunity.colorscheme.rose-pine" },
   { import = "astrocommunity.color.nvim-highlight-colors" },
   { import = "astrocommunity.recipes.telescope-lsp-mappings" },
   { import = "astrocommunity.pack.lua" },
