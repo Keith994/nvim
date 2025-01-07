@@ -21,7 +21,7 @@ return {
         file_icon = { padding = { left = 0 } },
         filename = { fallback = "Empty" },
         filetype = false,
-        hl = {fg = "fg", bg="bg"},
+        hl = { fg = "fg", bg = "bg" },
         surround = {
           separator = "left",
           condition = false,
@@ -86,50 +86,37 @@ return {
         },
       },
     }
-    opts.winbar = {
-      -- create custom winbar
-      -- store the current buffer number
+
+    opts.winbar = { -- winbar
       init = function(self) self.bufnr = vim.api.nvim_get_current_buf() end,
-      fallthrough = false, -- pick the correct winbar based on condition
-      -- inactive winbar
+      fallthrough = false,
       {
         condition = function() return not status.condition.is_active() end,
-        -- show the path to the file relative to the working directory
         status.component.separated_path { path_func = status.provider.filename { modify = ":.:h" } },
-        -- add the file name and icon
         status.component.file_info {
           file_icon = { hl = status.hl.file_icon "winbar", padding = { left = 0 } },
-          file_modified = false,
+          filename = {},
+          filetype = false,
           file_read_only = false,
           hl = status.hl.get_attributes("winbarnc", true),
           surround = false,
           update = "BufEnter",
         },
       },
-      -- active winbar
       {
-        -- show the path to the file relative to the working directory
-        status.component.separated_path { path_func = status.provider.filename { modify = ":.:h" } },
-        -- add the file name and icon
-        status.component.file_info { -- add file_info to breadcrumbs
-          file_icon = { hl = status.hl.filetype_color, padding = { left = 0 } },
-          file_modified = false,
+        status.component.separated_path(),
+        status.component.file_info {
+          file_icon = { hl = status.hl.file_icon "winbar", padding = { left = 0 } },
+          filename = {},
+          filetype = false,
           file_read_only = false,
           hl = status.hl.get_attributes("winbar", true),
           surround = false,
           update = "BufEnter",
         },
-        -- show the breadcrumbs
-        status.component.breadcrumbs {
-          icon = { hl = true },
-          hl = status.hl.get_attributes("winbar", true),
-          prefix = true,
-          padding = { left = 0 },
-        },
-      },
+        status.component.breadcrumbs { icon = { hl = true }, hl = status.hl.get_attributes("winbar", true) },
+      }
     }
-
-    -- return the final options table
     return opts
   end,
 }
