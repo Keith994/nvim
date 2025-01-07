@@ -11,6 +11,7 @@ return {
   { import = "astrocommunity.colorscheme.nightfox-nvim" },
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.colorscheme.rose-pine" },
+  { import = "astrocommunity.colorscheme.nordic-nvim" },
   { import = "astrocommunity.color.nvim-highlight-colors" },
   { import = "astrocommunity.recipes.telescope-lsp-mappings" },
   { import = "astrocommunity.pack.lua" },
