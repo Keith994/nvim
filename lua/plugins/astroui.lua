@@ -48,6 +48,7 @@ return {
         git_diff = { bold = false },
       },
       icon_highlights = {
+        breadcrumbs = true,
         file_icon = {
           statusline = true,
         },

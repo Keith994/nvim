@@ -70,8 +70,8 @@ return {
       ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
       ["<Up>"] = { "select_prev", "fallback" },
       ["<Down>"] = { "select_next", "fallback" },
-      ["<C-N>"] = { "select_next", "show" },
-      ["<C-P>"] = { "select_prev", "show" },
+      ["<C-N>"] = { "select_next", "fallback" },
+      ["<C-P>"] = { "select_prev", "fallback" },
       ["<C-J>"] = { "select_next", "fallback" },
       ["<C-K>"] = { "select_prev", "fallback" },
       ["<C-U>"] = { "scroll_documentation_up", "fallback" },
@@ -129,6 +129,7 @@ return {
       },
     },
     signature = {
+      enabled = true,
       window = {
         border = "rounded",
         winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
@@ -139,7 +140,15 @@ return {
     {
       "AstroNvim/astrolsp",
       optional = true,
-      opts = function(_, opts) opts.capabilities = require("blink.cmp").get_lsp_capabilities(opts.capabilities) end,
+      opts = function(_, opts)
+        opts.capabilities = require("blink.cmp").get_lsp_capabilities(opts.capabilities)
+        -- disable AstroLSP signature help if `blink.cmp` is providing it
+        local blink_opts = require("astrocore").plugin_opts "blink.cmp"
+        if vim.tbl_get(blink_opts, "signature", "enabled") == true then
+          if not opts.features then opts.features = {} end
+          opts.features.signature_help = false
+        end
+      end,
     },
     {
       "folke/lazydev.nvim",

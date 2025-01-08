@@ -114,7 +114,7 @@ return {
           surround = false,
           update = "BufEnter",
         },
-        status.component.breadcrumbs { icon = { hl = true }, hl = status.hl.get_attributes("winbar", true) },
+        status.component.breadcrumbs(),
       }
     }
     return opts
