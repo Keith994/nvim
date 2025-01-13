@@ -3,7 +3,7 @@ return {
   specs = {
     {
       "kristijanhusak/vim-dadbod-ui",
-      dependencies = { "tpope/vim-dadbod" },
+      dependencies = { "tpope/vim-dadbod", { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true }, },
       cmd = {
         "DBUI",
         "DBUIToggle",
@@ -29,6 +29,18 @@ return {
             },
           },
         },
+        { -- optional saghen/blink.cmp completion source
+          'saghen/blink.cmp',
+          opts = {
+            sources = {
+              -- add vim-dadbod-completion to your completion providers
+              default = { "lsp", "path", "snippets", "buffer", "dadbod" },
+              providers = {
+                dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+              },
+            },
+          },
+        }
       },
     },
     -- { -- optional saghen/blink.cmp completion source

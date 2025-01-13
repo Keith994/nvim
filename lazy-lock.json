@@ -111,6 +111,7 @@
   "ultimate-autopair.nvim": { "branch": "v0.6", "commit": "9e3209190c22953566ae4e6436ad2b4ff4dabb95" },
   "venv-selector.nvim": { "branch": "regexp", "commit": "e82594274bf7b54387f9a2abe65f74909ac66e97" },
   "vim-dadbod": { "branch": "master", "commit": "f740950d0703099e0f172016f10e0e39f50fd0ba" },
+  "vim-dadbod-completion": { "branch": "master", "commit": "95cbcf21ea7a5c8c025f387280c2e261b8cb3a89" },
   "vim-dadbod-ui": { "branch": "master", "commit": "65454e2011c029922c2c972d63f8bf04282de033" },
   "vim-illuminate": { "branch": "master", "commit": "5eeb7951fc630682c322e88a9bbdae5c224ff0aa" },
   "vim-repeat": { "branch": "master", "commit": "65846025c15494983dafe5e3b46c8f88ab2e9635" },

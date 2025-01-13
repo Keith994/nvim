@@ -65,10 +65,6 @@ return {
     config = function() require("hop").setup {} end,
   },
   {
-    "nanotee/sqls.nvim",
-    ft = "sql",
-  },
-  {
     "onsails/lspkind.nvim",
     opts = {
       mode = "symbol",

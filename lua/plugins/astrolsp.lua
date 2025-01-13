@@ -48,7 +48,7 @@ return {
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
-      ["rust-analyzer"] = {
+      -- ["rust-analyzer"] = {
 
         -- on_attach = function(_, _)
         --   vim.defer_fn(function()
@@ -57,10 +57,10 @@ return {
         --     core.set_mappings(astronvim.user_opts("lsp.mappings", maps))
         --   end, 5000)
         -- end,
-      },
-      sqlls = {
-        on_attach = function(client, bufnr) require("sqls").on_attach(client, bufnr) end,
-      },
+      -- },
+      -- sqls = {
+      --   on_attach = function(client, bufnr) require("sqls").on_attach(client, bufnr) end,
+      -- },
     },
     -- customize how language servers are attached
     handlers = {
