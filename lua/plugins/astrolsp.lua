@@ -120,7 +120,7 @@ return {
         -- C-f10
         ["<F34>"] = { function() require("dap").run_to_cursor() end, desc = "run_to_cursor" },
         ["<F9>"] = { function() require("dap").toggle_breakpoint() end, desc = "toggle_breakpoint" },
-        ["<F12>"] = { function() require("dapui").toggle() end, desc = "open dapui" },
+        ["<F12>"] = { function() require("dap-view").toggle() end, desc = "open dap view" },
         -- S-F9
         ["<F21>"] = {
           function()

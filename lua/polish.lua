@@ -25,30 +25,6 @@ create_command(
   { desc = "load current dir session" }
 )
 create_command("DI", function() vim.cmd "DBUI" end, { desc = "DBUI" })
-create_command("DapUIOpen", function()
-  local dapui = require "dapui"
-  dapui.open { layout = 1 }
-  dapui.open { layout = 3 }
-end, { desc = "DapUI Open" })
-create_command("DapUIClose", function() require("dapui").close() end, { desc = "DapUI Close" })
-create_command(
-  "DapConsole",
-  function()
-    require("dapui").toggle {
-      layout = 4,
-    }
-  end,
-  { desc = "DapUI Console Toggle" }
-)
-create_command(
-  "DapConsoleBtm",
-  function()
-    require("dapui").toggle {
-      layout = 3,
-    }
-  end,
-  { desc = "DapUI Console Toggle" }
-)
 
 -- vim.api.nvim_create_autocmd("FileType", {
 --   pattern = "json",
