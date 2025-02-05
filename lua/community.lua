@@ -55,6 +55,7 @@ return {
   { import = "astrocommunity.editing-support.bigfile-nvim" },
   { import = "astrocommunity.editing-support.suda-vim" },
   { import = "astrocommunity.editing-support.mini-splitjoin" },
+  -- { import = "astrocommunity.editing-support.copilotchat-nvim" },
   -- { import = "astrocommunity.editing-support.nvim-ts-rainbow2" },
   { import = "astrocommunity.test.neotest" },
   { import = "astrocommunity.test.nvim-coverage" },
