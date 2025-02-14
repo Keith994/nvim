@@ -82,7 +82,8 @@ return {
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "copilot", "emoji", },
+        default = { "lsp", "path", "snippets", "buffer", "copilot", },
+        -- default = { "lsp", "path", "snippets", "buffer", "copilot", "emoji", },
         providers = {
           copilot = {
             name = "copilot",
@@ -94,12 +95,12 @@ return {
               max_attempts = 3,
             },
           },
-          emoji = {
-            module = "blink-emoji",
-            name = "Emoji",
-            score_offset = 15,      -- Tune by preference
-            opts = { insert = true }, -- Insert emoji (default) or complete its name
-          }
+          -- emoji = {
+          --   module = "blink-emoji",
+          --   name = "Emoji",
+          --   score_offset = 15,      -- Tune by preference
+          --   opts = { insert = true }, -- Insert emoji (default) or complete its name
+          -- }
         },
       },
       appearance = {
@@ -172,7 +173,8 @@ return {
         },
       },
     },
-    dependencies = { "fang2hou/blink-copilot", "moyiz/blink-emoji.nvim", },
+    -- dependencies = { "fang2hou/blink-copilot", "moyiz/blink-emoji.nvim", },
+    dependencies = { "fang2hou/blink-copilot", },
     specs = {
       {
         "L3MON4D3/LuaSnip",

@@ -2,7 +2,7 @@ local prefix = "<Leader>A"
 return {
   "yetone/avante.nvim",
   build = vim.fn.has "win32" == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-    or "make",
+      or "make",
   event = "User AstroFile", -- load on file open because Avante manages it's own bindings
   cmd = {
     "AvanteAsk",
@@ -21,6 +21,18 @@ return {
     { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
+    provider = "copilot",
+    vendors = {
+      deepseek = {
+        __inherited_from = 'openai',
+        api_key_name = "DEEPSEEK_API_KEY",
+        endpoint = "https://api.deepseek.com",
+        model = "deepseek-chat",
+        timeout = 10000,
+        temperature = 0.5,
+        max_tokens = 4096,
+      },
+    },
     mappings = {
       ask = prefix .. "<CR>",
       edit = prefix .. "e",
