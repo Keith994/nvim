@@ -21,7 +21,7 @@ return {
     { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
-    provider = "copilot",
+    provider = "copliot",
     vendors = {
       deepseek = {
         __inherited_from = 'openai',
@@ -31,6 +31,13 @@ return {
         timeout = 10000,
         temperature = 0.5,
         max_tokens = 4096,
+      },
+      qwen = {
+        -- model = "qwen2.5-coder-32b-instruct",
+        __inherited_from = "openai",
+        api_key_name = "DASHSCOPE_API_KEY",
+        endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        model = "qwen2.5-coder-32b-instruct",
       },
     },
     mappings = {
@@ -56,7 +63,7 @@ return {
   },
   specs = { -- configure optional plugins
     { "AstroNvim/astroui", opts = { icons = { Avante = "" } } },
-    { -- if copilot.lua is available, default to copilot provider
+    {       -- if copilot.lua is available, default to copilot provider
       "zbirenbaum/copilot.lua",
       optional = true,
       specs = {

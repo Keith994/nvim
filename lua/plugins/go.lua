@@ -26,7 +26,7 @@ return {
               },
               codelenses = {
                 gc_details = true, -- Show a code lens toggling the display of gc's choices.
-                generate = true, -- show the `go generate` lens.
+                generate = true,   -- show the `go generate` lens.
                 regenerate_cgo = true,
                 test = true,
                 tidy = true,
@@ -63,7 +63,7 @@ return {
     opts = function(_, opts)
       if opts.ensure_installed ~= "all" then
         opts.ensure_installed =
-          require("astrocore").list_insert_unique(opts.ensure_installed, { "go", "gomod", "gosum", "gowork" })
+            require("astrocore").list_insert_unique(opts.ensure_installed, { "go", "gomod", "gosum", "gowork" })
       end
     end,
   },
@@ -73,7 +73,7 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
-        require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl" })
+          require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl" })
     end,
   },
   {
@@ -117,16 +117,6 @@ return {
         "ray-x/guihua.lua",
         -- commit = "3b3126a"
       },
-      {
-        "edolphin-ydf/goimpl.nvim",
-        dependencies = {
-          { "nvim-lua/plenary.nvim" },
-          { "nvim-lua/popup.nvim" },
-          { "nvim-telescope/telescope.nvim" },
-          { "nvim-treesitter/nvim-treesitter" },
-        },
-        config = function() require("telescope").load_extension "goimpl" end,
-      },
     },
     opts = function()
       local opts = {
@@ -138,7 +128,7 @@ return {
         dap_debug_gui = false,
         dap_debug_vt = true,
         dap_debug_keymap = false, -- true: use keymap for debugger defined in go/dap.lua
-        run_in_floaterm = true, -- set to true to run in float window.
+        run_in_floaterm = true,   -- set to true to run in float window.
         icons = false,
         sign_priority = 500,
         lsp_inlay_hints = {
@@ -146,11 +136,6 @@ return {
         },
       }
 
-      create_command(
-        "GoImpl",
-        function() require("telescope").extensions.goimpl.goimpl {} end,
-        { desc = "Telescope go impl" }
-      )
       return opts
     end,
   },

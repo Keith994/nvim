@@ -13,7 +13,6 @@ return {
   { import = "astrocommunity.colorscheme.rose-pine" },
   { import = "astrocommunity.colorscheme.nordic-nvim" },
   { import = "astrocommunity.color.nvim-highlight-colors" },
-  { import = "astrocommunity.recipes.telescope-lsp-mappings" },
   { import = "astrocommunity.pack.lua" },
   { import = "astrocommunity.pack.astro" },
   { import = "astrocommunity.pack.nix" },
@@ -69,7 +68,6 @@ return {
   -- { import = "astrocommunity.completion.blink-cmp" }, -- 免费的AI编程助手，会收集信息
   { import = "astrocommunity.git.neogit" },
   { import = "astrocommunity.git.blame-nvim" },
-  { import = "astrocommunity.debugging.telescope-dap-nvim" },
   -- { import = "astrocommunity.game.leetcode" },
   -- { import = "astrocommunity.debugging.persistent-breakpoints-nvim" },
 }
