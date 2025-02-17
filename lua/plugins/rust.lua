@@ -137,7 +137,11 @@ table.insert(pack, {
       end,
     }
     local final_server = require("astrocore").extend_tbl(astrolsp_opts, server)
-    return { server = final_server, dap = { adapter = adapter }, tools = { enable_clippy = false } }
+    return {
+      server = final_server,
+      dap = { adapter = adapter, load_rust_types = true },
+      tools = { enable_clippy = false }
+    }
   end,
   config = function(_, opts) vim.g.rustaceanvim = require("astrocore").extend_tbl(opts, vim.g.rustaceanvim) end,
 })
