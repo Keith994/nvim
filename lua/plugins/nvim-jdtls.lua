@@ -71,7 +71,7 @@ return {
 
       return utils.extend_tbl({
         cmd = {
-          "/usr/lib/jvm/java-17-openjdk/bin/java",
+          "/usr/lib/jvm/java-21-openjdk/bin/java",
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
           "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
