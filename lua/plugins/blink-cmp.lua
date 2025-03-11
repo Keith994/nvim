@@ -9,19 +9,18 @@ local icon_provider, hl_provider
 local function get_kind_icon(CTX)
   -- Evaluate icon provider
   if not icon_provider then
-    local base = function(ctx) ctx.kind_icon_highlight = "BlinkCmpKind" .. ctx.kind end
     local _, mini_icons = pcall(require, "mini.icons")
     if _G.MiniIcons then
       icon_provider = function(ctx)
-        base(ctx)
+        local is_specific_color = ctx.kind_hl and ctx.kind_hl:match "^HexColor" ~= nil
         if ctx.item.source_name == "LSP" then
           local icon, hl = mini_icons.get("lsp", ctx.kind or "")
           if icon then
             ctx.kind_icon = icon
-            ctx.kind_icon_highlight = hl
+            if not is_specific_color then ctx.kind_hl = hl end
           end
         elseif ctx.item.source_name == "Path" then
-          ctx.kind_icon, ctx.kind_icon_highlight =
+          ctx.kind_icon, ctx.kind_hl =
               mini_icons.get(ctx.kind == "Folder" and "directory" or "file", ctx.label)
         end
       end
@@ -30,7 +29,6 @@ local function get_kind_icon(CTX)
       local lspkind_avail, lspkind = pcall(require, "lspkind")
       if lspkind_avail then
         icon_provider = function(ctx)
-          base(ctx)
           if ctx.item.source_name == "LSP" then
             local icon = lspkind.symbolic(ctx.kind, { mode = "symbol" })
             if icon then ctx.kind_icon = icon end
@@ -38,7 +36,7 @@ local function get_kind_icon(CTX)
         end
       end
     end
-    if not icon_provider then icon_provider = function(ctx) base(ctx) end end
+    if not icon_provider then icon_provider = function() end end
   end
   -- Evaluate highlight provider
   if not hl_provider then
@@ -53,24 +51,19 @@ local function get_kind_icon(CTX)
             local color_item = highlight_colors_avail and highlight_colors.format(doc, { kind = kinds[kinds.Color] })
             if color_item and color_item.abbr_hl_group then
               if color_item.abbr then ctx.kind_icon = color_item.abbr end
-              ctx.kind_icon_highlight = color_item.abbr_hl_group
+              ctx.kind_hl = color_item.abbr_hl_group
             end
           end
         end
       end
     end
-    if not hl_provider then
-      hl_provider = function(ctx)
-        local tailwind_hl = require("blink.cmp.completion.windows.render.tailwind").get_hl(ctx)
-        if tailwind_hl then ctx.kind_icon_highlight = tailwind_hl end
-      end
-    end
+    if not hl_provider then hl_provider = function() end end
   end
   -- Call resolved providers
   icon_provider(CTX)
   hl_provider(CTX)
   -- Return text and highlight information
-  return { text = CTX.kind_icon .. CTX.icon_gap, highlight = CTX.kind_icon_highlight }
+  return { text = CTX.kind_icon .. CTX.icon_gap, highlight = CTX.kind_hl }
 end
 
 return {
@@ -82,13 +75,36 @@ return {
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "copilot", },
+        default = { "llm", "lsp", "path", "snippets", "buffer", },  --"llm"
         -- default = { "lsp", "path", "snippets", "buffer", "copilot", "emoji", },
         providers = {
+          avante = {
+            module = 'blink-cmp-avante',
+            name = 'Avante',
+            timeout_ms = 10000,
+            score_offset = 100, -- show at a higher priority than lsp
+            async = true,
+            opts = {
+              -- options for blink-cmp-avante
+              max_completions = 5,
+              max_attempts = 3,
+            }
+          },
           copilot = {
             name = "copilot",
             module = "blink-copilot",
             score_offset = 90, -- show at a higher priority than lsp
+            async = true,
+            opts = {
+              max_completions = 5,
+              max_attempts = 3,
+            },
+          },
+          llm = {
+            name = "llm",
+            module = "llm.common.completion.frontends.blink",
+            timeout_ms = 10000,
+            score_offset = 100, -- show at a higher priority than lsp
             async = true,
             opts = {
               max_completions = 5,
@@ -106,6 +122,8 @@ return {
       appearance = {
         kind_icons = {
           Copilot = "",
+          llm = " ",
+          Avante = " ",
         },
       },
       keymap = {
@@ -174,7 +192,7 @@ return {
       },
     },
     -- dependencies = { "fang2hou/blink-copilot", "moyiz/blink-emoji.nvim", },
-    dependencies = { "fang2hou/blink-copilot", },
+    dependencies = { 'Kaiser-Yang/blink-cmp-avante', 'Kurama622/llm.nvim' },
     specs = {
       {
         "L3MON4D3/LuaSnip",
@@ -216,6 +234,12 @@ return {
             end,
           },
         },
+      },
+      {
+        "catppuccin",
+        optional = true,
+        ---@type CatppuccinOptions
+        opts = { integrations = { blink_cmp = true } },
       },
       -- disable built in completion plugins
       { "hrsh7th/nvim-cmp", enabled = false },
