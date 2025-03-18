@@ -141,7 +141,7 @@ return {
         -- model = "Qwen/Qwen2.5-7B-Instruct",
 
         -- [[ qianwen ]]
-        url = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
         model = "qwen2.5-coder-32b-instruct",
         api_type = "openai",
         max_tokens = 8000,
@@ -449,16 +449,17 @@ You must:
               -- url = "http://localhost:11434/v1/completions",
               -- model = "qwen2.5-coder:1.5b",
               -- api_type = "ollama",
-
+              --
               -------------------------------------------------
-              ---                 deepseek
-              -------------------------------------------------
+              -- -deepseek
+              -----------------------------------------------
               url = "https://api.deepseek.com/chat/completions",
-              model = "deepseek-coder",
+              model = "deepseek-chat",
               api_type = "deepseek",
               fetch_key = function()
                 return vim.env.DEEPSEEK_API_KEY
               end,
+              ---------------- end deepseek -----------------
 
               -------------------------------------------------
               ---                 codeium
@@ -468,17 +469,17 @@ You must:
               -------------------------------------------------
               ---                 qianwen
               -------------------------------------------------
-              -- url = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+              -- url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
               -- model = "qwen2.5-coder-32b-instruct",
-              -- api_type = "openai",
+              -- api_type = "ollama",
               -- -- [optional: fetch_key]
               -- fetch_key = function()
               --   return vim.env.DASHSCOPE_API_KEY
               -- end,
 
-              n_completions = 1,
+              n_completions = 3,
               context_window = 512,
-              max_tokens = 512,
+              max_tokens = 256,
               filetypes = { sh = false },
               default_filetype_enabled = true,
               auto_trigger = true,

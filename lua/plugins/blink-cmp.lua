@@ -75,14 +75,14 @@ return {
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "llm", "lsp", "path", "snippets", "buffer", },  --"llm"
+        default = { "lsp", "path", "snippets", "buffer", },  --"llm"
         -- default = { "lsp", "path", "snippets", "buffer", "copilot", "emoji", },
         providers = {
           avante = {
             module = 'blink-cmp-avante',
             name = 'Avante',
             timeout_ms = 10000,
-            score_offset = 100, -- show at a higher priority than lsp
+            score_offset = 90, -- show at a higher priority than lsp
             async = true,
             opts = {
               -- options for blink-cmp-avante
@@ -103,7 +103,7 @@ return {
           llm = {
             name = "llm",
             module = "llm.common.completion.frontends.blink",
-            timeout_ms = 10000,
+            timeout_ms = 3000,
             score_offset = 100, -- show at a higher priority than lsp
             async = true,
             opts = {
@@ -124,6 +124,8 @@ return {
           Copilot = "",
           llm = " ",
           Avante = " ",
+          AvanteCmd = '',
+          AvanteMention = '! ',
         },
       },
       keymap = {
