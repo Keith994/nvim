@@ -21,7 +21,7 @@ M.run_command = function()
       require("dap").continue()
     end
   elseif file_type == "rs" then
-    vim.cmd "RustLsp debug"
+    vim.cmd "RustLsp run"
   else
     print "Quick Run: "
     local output_list = vim.fn.split(vim.fn.system(cmd .. file_name), "\n")

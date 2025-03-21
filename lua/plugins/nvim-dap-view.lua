@@ -1,6 +1,7 @@
 return {
   "igorlfs/nvim-dap-view",
   lazy = true,
+  enabled = false,
   opts = {},
   specs = {
     {
@@ -23,6 +24,6 @@ return {
         dap.listeners.before.event_exited.dapview_config = function() end
       end,
     },
-    { "rcarriga/nvim-dap-ui", enabled = false },
+    -- { "rcarriga/nvim-dap-ui", enabled = false },
   },
 }
