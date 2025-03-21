@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(ev)
     local utils = require "astrocore"
     -- maps.n["<leader>r"]
-    local prefix = "<Leader>r"
+    local prefix = "<Leader>R"
     utils.set_mappings({
       n = {
         [prefix] = { desc = require("astroui").get_icon("RestNvim", 1, true) .. "RestNvim" },
@@ -54,9 +54,6 @@ vim.api.nvim_create_autocmd("FileType", {
     local utils = require "astrocore"
     utils.set_mappings({
       n = {
-        ["<leader>rr"] = nil,
-        ["<leader>rl"] = nil,
-        ["<leader>re"] = nil,
         ["<Leader>r"] = { '<cmd>lua require"quickrun".run_command()<cr>', desc = "QuickRun" },
       },
     }, { buffer = ev.buf })

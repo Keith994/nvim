@@ -1,4 +1,3 @@
-local prefix = "<Leader>r"
 return {
   "rest-nvim/rest.nvim",
   ft = "http",
@@ -18,20 +17,6 @@ return {
       "AstroNvim/astroui",
       ---@type AstroUIOpts
       opts = { icons = { RestNvim = "󰳘" } },
-    },
-    {
-      "nvim-telescope/telescope.nvim",
-      optional = true,
-      specs = {
-        {
-          "AstroNvim/astrocore",
-          opts = function(_, opts)
-            local maps = opts.mappings
-            maps.n[prefix .. "e"] = { "<cmd>Telescope rest select_env<cr>", desc = "Select environment variables file" }
-          end,
-        },
-      },
-      opts = function() require("telescope").load_extension "rest" end,
     },
   },
   opts = {},

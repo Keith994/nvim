@@ -33,7 +33,8 @@ return {
           function() require("snacks").picker.files { dirs = { vim.fn.stdpath "config" }, desc = "Config Files" } end,
           desc = "Find AstroNvim config files",
         }
-        maps.n["<Leader>fb"] = { function() require("snacks").picker.buffers() end, desc = "Find buffers" }
+        maps.n["<Leader>fb"] = { function() require("snacks").picker.buffers()
+        end, desc = "Find buffers" }
         maps.n["<Leader>fc"] = { function() require("snacks").picker.grep_word() end, desc = "Find word under cursor" }
         maps.n["<Leader>fC"] = { function() require("snacks").picker.commands() end, desc = "Find commands" }
         maps.n["<Leader>ff"] = {
