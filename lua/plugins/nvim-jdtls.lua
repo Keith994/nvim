@@ -28,7 +28,7 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
-        require("astrocore").list_insert_unique(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test" })
+          require("astrocore").list_insert_unique(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test" })
     end,
   },
   {
@@ -58,7 +58,7 @@ return {
       -- local root_markers = { ".git", ".project" }
       -- local root_dir = require("jdtls.setup").find_root(root_markers)
       local root_dir =
-        vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
+          vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
       local workspace_dir = vim.fn.stdpath "data" .. "/site/java/workspace-root/" .. project_name
@@ -75,11 +75,14 @@ return {
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
           "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
-          "-Dlog.protocol=true",
-          "-Dlog.level=ALL",
+          "-Dlog.protocol=false",
+          "-Dlog.level=Error",
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
-          "-Xms1g",
-          "--add-modules=ALL-SYSTEM",
+          "-Xms2g", -- 初始堆内存提升
+          "-Xmx4g", -- 最大堆内存提升
+          "-XX:+UseG1GC", -- 启用 G1 GC
+          "-XX:MaxGCPauseMillis=200",
+          "--add-modules=ALL-MODULE-PATH",
           "--add-opens",
           "java.base/java.util=ALL-UNNAMED",
           "--add-opens",

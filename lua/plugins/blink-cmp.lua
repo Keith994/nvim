@@ -75,59 +75,17 @@ return {
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", },  --"llm"
-        -- default = { "lsp", "path", "snippets", "buffer", "copilot", "emoji", },
-        providers = {
-          avante = {
-            module = 'blink-cmp-avante',
-            name = 'Avante',
-            timeout_ms = 10000,
-            score_offset = 90, -- show at a higher priority than lsp
-            async = true,
-            opts = {
-              -- options for blink-cmp-avante
-              max_completions = 5,
-              max_attempts = 3,
-            }
-          },
-          copilot = {
-            name = "copilot",
-            module = "blink-copilot",
-            score_offset = 90, -- show at a higher priority than lsp
-            async = true,
-            opts = {
-              max_completions = 5,
-              max_attempts = 3,
-            },
-          },
-          llm = {
-            name = "llm",
-            module = "llm.common.completion.frontends.blink",
-            timeout_ms = 3000,
-            score_offset = 100, -- show at a higher priority than lsp
-            async = true,
-            opts = {
-              max_completions = 5,
-              max_attempts = 3,
-            },
-          },
-          -- emoji = {
-          --   module = "blink-emoji",
-          --   name = "Emoji",
-          --   score_offset = 15,      -- Tune by preference
-          --   opts = { insert = true }, -- Insert emoji (default) or complete its name
-          -- }
-        },
+        default = { "lsp", "path", "snippets", "buffer"},
       },
-      appearance = {
-        kind_icons = {
-          Copilot = "",
-          llm = " ",
-          Avante = " ",
-          AvanteCmd = '',
-          AvanteMention = '! ',
-        },
-      },
+      -- appearance = {
+      --   kind_icons = {
+      --     Copilot = "",
+      --     llm = " ",
+      --     Avante = " ",
+      --     AvanteCmd = '',
+      --     AvanteMention = '! ',
+      --   },
+      -- },
       keymap = {
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Up>"] = { "select_prev", "fallback" },
@@ -194,7 +152,6 @@ return {
       },
     },
     -- dependencies = { "fang2hou/blink-copilot", "moyiz/blink-emoji.nvim", },
-    dependencies = { 'Kaiser-Yang/blink-cmp-avante', 'Kurama622/llm.nvim' },
     specs = {
       {
         "L3MON4D3/LuaSnip",
