@@ -30,6 +30,7 @@ return {
         ignore_filetypes = { -- disable format on save for specified filetypes
           -- "python",
           "go",
+          "java",
         },
       },
       disabled = { -- disable formatting capabilities for the listed language servers
