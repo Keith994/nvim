@@ -11,11 +11,11 @@ return {
     -- Configure core features of AstroNvim
     features = {
       large_buf = { size = 1024 * 500 * 10, lines = 50000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = false,                                -- enable autopairs at start
-      cmp = true,                                       -- enable completion at start
-      diagnostics_mode = 3,                             -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
-      highlighturl = true,                              -- highlight URLs at start
-      notifications = false,                            -- enable notifications at start
+      autopairs = false,                                     -- enable autopairs at start
+      cmp = true,                                            -- enable completion at start
+      diagnostics_mode = 3,                                  -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      highlighturl = true,                                   -- highlight URLs at start
+      notifications = false,                                 -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -29,7 +29,7 @@ return {
         number = true,         -- sets vim.opt.number
         spell = false,         -- sets vim.opt.spell
         signcolumn = "yes",    -- sets vim.opt.signcolumn to auto
-        wrap = true,          -- sets vim.opt.wrap
+        wrap = true,           -- sets vim.opt.wrap
         guifont = "LigaSFMonoNerdFont-Regular",
         showcmd = false,
         cmdheight = 1,
@@ -81,7 +81,7 @@ return {
           function()
             local tabnum = vim.api.nvim_tabpage_get_number(0)
             if tabnum == 1 then
-              vim.cmd "q"
+              vim.cmd "confirm q"
             else
               vim.cmd "tabclose"
             end
