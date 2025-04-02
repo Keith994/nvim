@@ -54,15 +54,15 @@ return {
     opts = function(_, opts)
       local utils = require "astrocore"
       -- use this function notation to build some variables
-      -- local root_markers = { "pom.xml", ".git", "mvnw", "gradlew",  "build.gradle", ".project" }
-      local root_markers = { "pom.xml", "gradlew" }
+      local root_markers = { ".git", "pom.xml",  "mvnw", "gradlew",  "build.gradle", ".project" }
+      -- local root_markers = { "pom.xml", "gradlew" }
       local root_dir = require("jdtls.setup").find_root(root_markers)
       -- local root_dir =
       --     vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
       local workspace_dir = vim.fn.stdpath "data" .. "/site/java/workspace-root/" .. project_name
-      vim.fn.mkdir(workspace_dir, "p")
+      -- vim.fn.mkdir(workspace_dir, "p")
 
       -- validate operating system
       if not (vim.fn.has "mac" == 1 or vim.fn.has "unix" == 1 or vim.fn.has "win32" == 1) then
@@ -75,18 +75,23 @@ return {
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
           "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
-          "-Dlog.protocol=false",
-          "-Dlog.level=Error",
+          "-Dlog:disable",
+          "-Dlombok.disableConfig=true",
+          "-Dsun.zip.disableMemoryMapping=true",
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
           "-Xms2g", -- 初始堆内存提升
-          "-Xmx4g", -- 最大堆内存提升
+          "-Xmx6g", -- 最大堆内存提升
           "-XX:+UseG1GC", -- 启用 G1 GC
-          "-XX:MaxGCPauseMillis=200",
-          "--add-modules=ALL-MODULE-PATH",
+          "-XX:GCTimeRatio=4", -- 启用 G1 GC
+          "-XX:AdaptiveSizePolicyWeight=90",
+          "-XX:+UseStringDeduplication",
+          "-XX:MetaspaceSize=300M",
+          "--add-modules=ALL-SYSTEM",
           "--add-opens",
           "java.base/java.util=ALL-UNNAMED",
           "--add-opens",
           "java.base/java.lang=ALL-UNNAMED",
+          "-noverify",
           "-jar",
           vim.fn.expand "$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher.jar",
           "-configuration",
@@ -97,6 +102,9 @@ return {
         root_dir = root_dir,
         settings = {
           java = {
+            autobuild = {
+              enabled = false,
+            },
             eclipse = { downloadSources = true },
             configuration = {
               updateBuildConfiguration = "interactive",
@@ -116,11 +124,14 @@ return {
                 },
               },
             },
+            diagnostic = {
+              refreshAfterSave = true,
+            },
             maven = { downloadSources = true },
-            implementationsCodeLens = { enabled = true },
+            implementationsCodeLens = { enabled = false },
             referencesCodeLens = { enabled = false },
             inlayHints = { parameterNames = { enabled = false } },
-            signatureHelp = { enabled = true },
+            signatureHelp = { enabled = false },
             completion = {
               favoriteStaticMembers = {
                 "org.hamcrest.MatcherAssert.assertThat",
@@ -145,6 +156,9 @@ return {
             vim.fn.expand "$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar",
             -- unpack remaining bundles
             (table.unpack or unpack)(vim.split(vim.fn.glob "$MASON/share/java-test/*.jar", "\n", {})),
+          },
+          extendedClientCapabilities = {
+            classFileContentsSupport = true,
           },
         },
         handlers = {
