@@ -111,7 +111,7 @@ return {
               validateAllOpenBuffersOnChanges = false,
             },
             format = {
-              enabled = false,
+              enabled = true,
             },
             progressReports = {
               enabled = false,

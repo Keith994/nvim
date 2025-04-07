@@ -48,21 +48,6 @@ return {
     },
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
-    config = {
-      -- ["rust-analyzer"] = {
-
-        -- on_attach = function(_, _)
-        --   vim.defer_fn(function()
-        --     local maps = { n = {} }
-        --     maps.n["<F5>"] = { "<cmd>RustDebuggables<cr>", desc = "start rust debug" }
-        --     core.set_mappings(astronvim.user_opts("lsp.mappings", maps))
-        --   end, 5000)
-        -- end,
-      -- },
-      -- sqls = {
-      --   on_attach = function(client, bufnr) require("sqls").on_attach(client, bufnr) end,
-      -- },
-    },
     -- customize how language servers are attached
     handlers = {
       -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
@@ -136,6 +121,12 @@ return {
           function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
           desc = "Next buffer",
         },
+        ["<Leader>lG"] = {
+          function() require("snacks.picker").lsp_workspace_symbols() end,
+          desc = "Search workspace symbols",
+        },
+        ["<Leader>lS"] = nil,
+        ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
 
         -- a `cond` key can provided as the string of a server capability to be required to attach, or a function with `client` and `bufnr` parameters from the `on_attach` that returns a boolean
         -- gD = {

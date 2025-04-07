@@ -1,5 +1,6 @@
 return {
-  -- "stevearc/aerial.nvim",
+  "stevearc/aerial.nvim",
+  enabled = false,
   -- event = "User AstroFile",
   -- opts = function(_, opts)
   --   -- local utils = require "astrocore"

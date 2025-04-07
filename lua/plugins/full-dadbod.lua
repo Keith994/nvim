@@ -29,33 +29,27 @@ return {
             },
           },
         },
-        { -- optional saghen/blink.cmp completion source
-          'saghen/blink.cmp',
-          opts = {
-            sources = {
-              -- add vim-dadbod-completion to your completion providers
-              default = { "lsp", "path", "snippets", "buffer", "dadbod" },
-              providers = {
-                dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+        {
+          "kristijanhusak/vim-dadbod-completion",
+          lazy = true,
+          specs = {
+            {
+              "saghen/blink.cmp",
+              opts = {
+                sources = {
+                  per_filetype = {
+                    sql = { "snippets", "dadbod", "buffer" },
+                  },
+                  -- add vim-dadbod-completion to your completion providers
+                  providers = {
+                    dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+                  },
+                },
               },
             },
           },
-        }
+        },
       },
     },
-    -- { -- optional saghen/blink.cmp completion source
-    --   "saghen/blink.cmp",
-    --   opts = {
-    --     sources = {
-    --       -- add vim-dadbod-completion to your completion providers
-    --       completion = {
-    --         enabled_providers = { "lsp", "path", "snippets", "buffer", "dadbod" },
-    --       },
-    --       providers = {
-    --         dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
-    --       },
-    --     },
-    --   },
-    -- },
   },
 }

@@ -12,7 +12,6 @@ return {
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.colorscheme.rose-pine" },
   { import = "astrocommunity.colorscheme.nordic-nvim" },
-  { import = "astrocommunity.color.nvim-highlight-colors" },
   { import = "astrocommunity.pack.lua" },
   { import = "astrocommunity.pack.astro" },
   { import = "astrocommunity.pack.nix" },
@@ -63,7 +62,7 @@ return {
   { import = "astrocommunity.motion.mini-surround" },
   { import = "astrocommunity.syntax.hlargs-nvim" },
   { import = "astrocommunity.search.nvim-spectre" },
-  { import = "astrocommunity.comment.mini-comment" },
+  -- { import = "astrocommunity.comment.mini-comment" },
   { import = "astrocommunity.programming-language-support.nvim-jqx" },
   -- { import = "astrocommunity.completion.blink-cmp" }, -- 免费的AI编程助手，会收集信息
   { import = "astrocommunity.git.neogit" },

@@ -131,7 +131,6 @@ return {
           function() require("astrocore.buffer").move(-(vim.v.count > 0 and vim.v.count or 1)) end,
           desc = "Move buffer tab left",
         },
-        ["tl"] = { function() require("aerial").toggle() end, desc = "Symbols outline" },
         ["<Leader>ld"] = { "<cmd>TodoTrouble<cr>", desc = "Todo List" },
         ["<Leader>fR"] = { function() require("spectre").open_visual() end, desc = "Find and replace" },
         ["<Leader>dL"] = {

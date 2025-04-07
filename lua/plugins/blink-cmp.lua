@@ -20,8 +20,7 @@ local function get_kind_icon(CTX)
             if not is_specific_color then ctx.kind_hl = hl end
           end
         elseif ctx.item.source_name == "Path" then
-          ctx.kind_icon, ctx.kind_hl =
-              mini_icons.get(ctx.kind == "Folder" and "directory" or "file", ctx.label)
+          ctx.kind_icon, ctx.kind_hl = mini_icons.get(ctx.kind == "Folder" and "directory" or "file", ctx.label)
         end
       end
     end
@@ -40,7 +39,7 @@ local function get_kind_icon(CTX)
   end
   -- Evaluate highlight provider
   if not hl_provider then
-    local highlight_colors_avail, highlight_colors = pcall(require, "nvim-highlight-colors")
+    local highlight_colors_avail, highlight_colors = pcall(require, "nvim-colorizer")
     if highlight_colors_avail then
       local kinds
       hl_provider = function(ctx)
@@ -76,14 +75,11 @@ return {
       -- remember to enable your providers here
       sources = {
         default = function(ctx)
-          if vim.bo.filetype == 'java' then
+          if vim.bo.filetype == "java" then
             return { "lsp", "buffer" }
           else
-            return { "lsp", "path", "snippets", "buffer" }
+            return { "lsp", "buffer", "path", "snippets" }
           end
-        end,
-        min_keyword_length = function()
-          return vim.bo.filetype == 'java' and 2 or 0
         end,
       },
       -- appearance = {
@@ -122,7 +118,6 @@ return {
         },
         ["<Tab>"] = {
           "select_next",
-          "snippet_forward",
           function(cmp)
             if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
           end,
@@ -139,8 +134,11 @@ return {
       },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
+        keyword = {
+          range = "full",
+        },
         menu = {
-          auto_show = function(ctx) return vim.bo.filetype ~= 'java' and ctx.mode ~= "cmdline" end,
+          auto_show = function(ctx) return vim.bo.filetype ~= "java" and ctx.mode ~= "cmdline" end,
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
           draw = {
@@ -159,7 +157,7 @@ return {
             -- Asynchronously use semantic token to determine if brackets should be added
             semantic_token_resolution = {
               enabled = true,
-              blocked_filetypes = { 'java' },
+              blocked_filetypes = { "java" },
               -- How long to wait for semantic tokens to return before assuming no brackets should be added
               timeout_ms = 400,
             },
@@ -169,7 +167,7 @@ return {
         },
         documentation = {
           auto_show = true,
-          auto_show_delay_ms = 200,
+          auto_show_delay_ms = 500,
           window = {
             border = "rounded",
             winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
@@ -184,7 +182,6 @@ return {
         },
       },
     },
-    -- dependencies = { "fang2hou/blink-copilot", "moyiz/blink-emoji.nvim", },
     specs = {
       {
         "L3MON4D3/LuaSnip",
@@ -234,7 +231,6 @@ return {
         opts = { integrations = { blink_cmp = true } },
       },
       -- disable built in completion plugins
-      { "hrsh7th/nvim-cmp", enabled = false },
       { "rcarriga/cmp-dap", enabled = false },
     },
   },
