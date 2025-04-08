@@ -69,28 +69,19 @@ return {
   {
     "Saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
-    version = "0.*",
-    opts_extend = { "sources.default", "sources.cmdline" },
+    version = "^1",
+    opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = function(ctx)
+        default = function(_)
           if vim.bo.filetype == "java" then
-            return { "lsp", "buffer" }
+            return { "lsp", "buffer", "snippets", "path" }
           else
             return { "lsp", "buffer", "path", "snippets" }
           end
         end,
       },
-      -- appearance = {
-      --   kind_icons = {
-      --     Copilot = "",
-      --     llm = " ",
-      --     Avante = " ",
-      --     AvanteCmd = '',
-      --     AvanteMention = '! ',
-      --   },
-      -- },
       keymap = {
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Up>"] = { "select_prev", "fallback" },
@@ -118,6 +109,7 @@ return {
         },
         ["<Tab>"] = {
           "select_next",
+          "snippet_forward",
           function(cmp)
             if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
           end,
@@ -135,10 +127,13 @@ return {
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
         keyword = {
-          range = "full",
+          range = "prefix",
+        },
+        trigger = {
+          prefetch_on_insert = false,
         },
         menu = {
-          auto_show = function(ctx) return vim.bo.filetype ~= "java" and ctx.mode ~= "cmdline" end,
+          auto_show = function(ctx) return ctx.mode ~= "cmdline" end,
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
           draw = {
@@ -167,7 +162,7 @@ return {
         },
         documentation = {
           auto_show = true,
-          auto_show_delay_ms = 500,
+          auto_show_delay_ms = 30,
           window = {
             border = "rounded",
             winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
@@ -175,7 +170,7 @@ return {
         },
       },
       signature = {
-        enabled = true,
+        enabled = false,
         window = {
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",

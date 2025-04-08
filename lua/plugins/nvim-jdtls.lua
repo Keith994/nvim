@@ -73,17 +73,17 @@ return {
         cmd = {
           "/usr/lib/jvm/java-21-openjdk/bin/java",
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-          "-Dosgi.bundles.defaultStartLevel=4",
+          "-Dosgi.bundles.defaultStartLevel=6",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
           "-Dlog:disable",
           "-Djdt.ls.debug=false",
           "-Dlombok.disableConfig=true",
           "-Dsun.zip.disableMemoryMapping=true",
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
-          "-Xms2g",            -- 初始堆内存提升
-          "-Xmx6g",            -- 最大堆内存提升
-          "-XX:+UseParallelGC",      -- 启用 G1 GC
-          "-XX:GCTimeRatio=4", -- 启用 G1 GC
+          "-Xms2g",             -- 初始堆内存提升
+          "-Xmx8g",             -- 最大堆内存提升
+          "-XX:+UseParallelGC", -- 启用 G1 GC
+          "-XX:GCTimeRatio=4",  -- 启用 G1 GC
           "-XX:AdaptiveSizePolicyWeight=90",
           "-XX:+UseStringDeduplication",
           "-XX:MetaspaceSize=512M",
@@ -92,7 +92,6 @@ return {
           "java.base/java.util=ALL-UNNAMED",
           "--add-opens",
           "java.base/java.lang=ALL-UNNAMED",
-          "-noverify",
           "-jar",
           vim.fn.expand "$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher.jar",
           "-configuration",
@@ -145,6 +144,9 @@ return {
             referencesCodeLens = { enabled = false },
             inlayHints = { parameterNames = { enabled = false } },
             signatureHelp = { enabled = false },
+            contentProvider = {
+              preferred = "fernflower",
+            },
             completion = {
               enabled = true,
               favoriteStaticMembers = {
@@ -156,7 +158,14 @@ return {
                 "java.util.Objects.requireNonNullElse",
                 "org.mockito.Mockito.*",
               },
-              guessMethodArguments = false,
+              filteredTypes = {
+                "com.sun.*",
+                "io.micrometer.shaded.*",
+                "java.awt.*",
+                "jdk.*",
+                "sun.*",
+              },
+              guessMethodArguments = true,
               maxResults = 30,
               postfix = false,
               matchCase = "OFF",
