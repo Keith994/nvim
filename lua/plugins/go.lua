@@ -26,7 +26,7 @@ return {
               },
               codelenses = {
                 gc_details = true, -- Show a code lens toggling the display of gc's choices.
-                generate = true,   -- show the `go generate` lens.
+                generate = true, -- show the `go generate` lens.
                 regenerate_cgo = true,
                 test = true,
                 tidy = true,
@@ -63,7 +63,7 @@ return {
     opts = function(_, opts)
       if opts.ensure_installed ~= "all" then
         opts.ensure_installed =
-            require("astrocore").list_insert_unique(opts.ensure_installed, { "go", "gomod", "gosum", "gowork" })
+          require("astrocore").list_insert_unique(opts.ensure_installed, { "go", "gomod", "gosum", "gowork" })
       end
     end,
   },
@@ -73,14 +73,7 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
-          require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl" })
-    end,
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "gopls" })
+        require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl" })
     end,
   },
   {
@@ -128,7 +121,7 @@ return {
         dap_debug_gui = false,
         dap_debug_vt = true,
         dap_debug_keymap = false, -- true: use keymap for debugger defined in go/dap.lua
-        run_in_floaterm = true,   -- set to true to run in float window.
+        run_in_floaterm = true, -- set to true to run in float window.
         icons = false,
         sign_priority = 500,
         lsp_inlay_hints = {
