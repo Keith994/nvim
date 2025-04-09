@@ -4,7 +4,7 @@ return {
   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
   -- event = { "bufreadpre " .. vim.fn.expand "~" .. "/my-vault/**.md" },
   -- lazy = false,
-  -- event = { "BufReadPre  */obsidian-vault/notes/**.md" },
+  event = { "BufReadPre  */obsidian-vault/notes/**.md" },
   dependencies = {
     "nvim-lua/plenary.nvim",
     {

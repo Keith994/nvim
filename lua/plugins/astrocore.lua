@@ -11,7 +11,7 @@ return {
     -- Configure core features of AstroNvim
     features = {
       large_buf = { size = 1024 * 500 * 10, lines = 50000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true,                                     -- enable autopairs at start
+      autopairs = true,                                      -- enable autopairs at start
       cmp = true,                                            -- enable completion at start
       diagnostics_mode = 3,                                  -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
       highlighturl = true,                                   -- highlight URLs at start
@@ -153,6 +153,7 @@ return {
         ["]q"] = { vim.cmd.cnext, desc = "Next quickfix" },
         ["<LocalLeader>t"] = { function() require("dropbar.api").pick() end, desc = "Next quickfix" },
         ["<Leader>gL"] = { "<cmd>BlameToggle<cr>", desc = "View File Blame" },
+        ["<Leader>gg"] = { function() require("snacks.lazygit").open() end, desc = "Open lazygit" },
       },
       t = {
         ["<C-q>"] = { "<C-\\><C-n>:q<cr>", desc = "Close terminal" },
