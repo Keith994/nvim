@@ -3,6 +3,33 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
+    animate = {
+      duration = 20,
+      easing = 'linear',
+      fps = 60,
+    },
+    dim = {
+      scope = {
+        min_size = 5,
+        max_size = 20,
+        siblings = true,
+      },
+      -- animate scopes. Enabled by default for Neovim >= 0.10
+      -- Works on older versions but has to trigger redraws during animation.
+      ---@type snacks.animate.Config|{enabled?: boolean}
+      animate = {
+        enabled = true,
+        easing = "outQuad",
+        duration = {
+          step = 20,   -- ms per step
+          total = 300, -- maximum duration
+        },
+      },
+      -- what buffers to dim
+      filter = function(buf)
+        return vim.g.snacks_dim ~= false
+      end,
+    },
     picker = {
       ui_select = true,
       layout = {
@@ -54,6 +81,8 @@ return {
             -- to close the picker on ESC instead of going to normal mode,
             -- add the following keymap to your config
             ["<Esc>"] = { "close", mode = { "n", "i" } },
+            ["<C-g>"] = { "close", mode = { "n", "i" } },
+            ["<C-l>"] = { "toggle_live", mode = { "n", "i" } },
             -- I'm used to scrolling like this in LazyGit
             -- ["J"] = { "preview_scroll_down", mode = { "i", "n" } },
             -- ["K"] = { "preview_scroll_up", mode = { "i", "n" } },
@@ -69,7 +98,7 @@ return {
         },
       },
     },
-    notifier = { enabled = false },
+    notifier = { enabled = true },
     -- Folke pointed me to the snacks docs
     -- https://github.com/LazyVim/LazyVim/discussions/4251#discussioncomment-11198069
     -- Here's the lazygit snak docs

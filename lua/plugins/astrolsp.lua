@@ -13,9 +13,9 @@ return {
     -- Configuration table of features provided by AstroLSP
     features = {
       large_buf = true,
-      autoformat = false, -- enable or disable auto formatting on start
-      codelens = false, -- enable/disable codelens refresh on start
-      inlay_hints = false, -- enable/disable inlay hints on start
+      autoformat = false,     -- enable or disable auto formatting on start
+      codelens = false,       -- enable/disable codelens refresh on start
+      inlay_hints = false,    -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
       signature_help = true,
     },
@@ -23,7 +23,7 @@ return {
     formatting = {
       -- control auto formatting on save
       format_on_save = {
-        enabled = false, -- enable or disable format on save globally
+        enabled = false,    -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
           -- "go",
         },
@@ -94,8 +94,13 @@ return {
         },
         ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
         ["gR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
-        ["g<S-D>"] = { "<Cmd>Trouble lsp_type_definitions toggle<CR>", desc = "Type Defnition" },
-        ["gr"] = { "<cmd>Trouble lsp_references<CR>", desc = "References of current symbol" },
+        ["<leader>lR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
+        ["g<S-D>"] = { function() require("snacks.picker").lsp_type_definitions() end, desc = "Type Defnition" },
+        ["gd"] = { function() require("snacks.picker").lsp_definitions() end, desc = "lsp defnition" },
+        ["gr"] = { function() require("snacks.picker").lsp_references() end, desc = "References of current symbol" },
+        ["gI"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
+        ["<leader>lr"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
+        ["<llader>lG"] = { function() require("snacks.picker").lsp_workspace_symbols() end, desc = "search workspace symbols" },
         ["<leader>ld"] = { "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Open document diagnostics" },
         ["<leader>lw"] = { "<Cmd>Trouble diagnostics toggle<CR>", desc = "Open workspace diagnostics" },
         ["[d"] = { function() vim.diagnostic.goto_prev {} end, desc = "Previous diagnostic" },

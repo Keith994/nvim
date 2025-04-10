@@ -15,7 +15,7 @@ return {
       cmp = true,                                            -- enable completion at start
       diagnostics_mode = 3,                                  -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
       highlighturl = true,                                   -- highlight URLs at start
-      notifications = false,                                 -- enable notifications at start
+      notifications = true,                                 -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -39,6 +39,8 @@ return {
         softtabstop = 2,
       },
       g = { -- vim.g.<key>
+        snacks_animate = true,
+        snacks_dim = true,
         -- configure global vim variables (vim.g)
         -- NOTE: `mapLeader` and `mapLocalleader` must be set in the AstroNvim opts or before `lazy.setup`
         -- This can be found in the `lua/lazy_setup.lua` file
@@ -65,7 +67,7 @@ return {
           desc = "Current Path",
         },
         ["<Leader><Enter>"] = { "<cmd>nohlsearch<cr>", desc = "No Highlight" },
-        ["<C-w>"] = { " <cmd>wq<cr>", desc = "Write and Quit Window" },
+        ["<C-w>"] = { "<cmd>wq<cr>", desc = "Write and Quit Window" },
         ["C-q"] = {
           function()
             local tabnum = vim.api.nvim_tabpage_get_number(0)
@@ -157,10 +159,12 @@ return {
       },
       t = {
         ["<C-q>"] = { "<C-\\><C-n>:q<cr>", desc = "Close terminal" },
+        ["<c-g>"] = { "<C-\\><C-n>:q<cr>" },
         -- setting a mapping to false will disable it
         -- ["<esc>"] = { "<C-\\><C-n>", desc = "Return normal" },
       },
       i = {
+        ["<c-g>"] = { "<ESC>" },
         ["<c-a>"] = { "<ESC>^i" },
         ["<c-e>"] = { "<End>" },
         ["<c-l>"] = { "<right>" },

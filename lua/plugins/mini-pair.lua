@@ -15,6 +15,7 @@ return {
       markdown = true,
       mappings = {
         ["`"] = false,
+        ['"'] = { action = 'open', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
       },
     },
   },

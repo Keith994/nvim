@@ -88,7 +88,7 @@ return {
             name = "lsp",
             enabled = true,
             module = "blink.cmp.sources.lsp",
-            min_keyword_length = function() if vim.bo.filetype == 'java' then return 2 else return 0 end end,
+            min_keyword_length = function() if vim.bo.filetype == 'java' then return 1 else return 0 end end,
             -- When linking markdown notes, I would get snippets and text in the
             -- suggestions, I want those to show only if there are no LSP
             -- suggestions
@@ -96,7 +96,7 @@ return {
             -- Enabled fallbacks as this seems to be working now
             -- Disabling fallbacks as my snippets wouldn't show up when editing
             -- lua files
-            -- fallbacks = { "snippets", "buffer" },
+            fallbacks = { "buffer" },
             score_offset = 90, -- the higher the number, the higher the priority
           },
           path = {
