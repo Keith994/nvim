@@ -15,7 +15,7 @@ return {
       cmp = true,                                            -- enable completion at start
       diagnostics_mode = 3,                                  -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
       highlighturl = true,                                   -- highlight URLs at start
-      notifications = true,                                 -- enable notifications at start
+      notifications = true,                                  -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -55,6 +55,8 @@ return {
         ["<Leader>w"] = { "󱂬 Windows", desc = nil },
         ["<Leader>x"] = { " Trouble", desc = nil },
         ["<LocalLeader>w"] = { "<cmd>w<cr>", desc = "Save" },
+        ["<C-w>"] = { "<cmd>wq<cr>", desc = "Write and Quit Window" },
+        ["<C-s>"] = { function() require("resession").save() end, desc = "Force Write And Save Session", },
         [";"] = { ":" },
         ["H"] = { "^" },
         ["L"] = { "$" },
@@ -67,41 +69,7 @@ return {
           desc = "Current Path",
         },
         ["<Leader><Enter>"] = { "<cmd>nohlsearch<cr>", desc = "No Highlight" },
-        ["<C-w>"] = { "<cmd>wq<cr>", desc = "Write and Quit Window" },
-        ["C-q"] = {
-          function()
-            local tabnum = vim.api.nvim_tabpage_get_number(0)
-            if tabnum == 1 then
-              vim.cmd "qa!"
-            else
-              vim.cmd "tabclose"
-            end
-          end,
-          desc = "quit",
-        },
-        ["<Leader>q"] = {
-          function()
-            local tabnum = vim.api.nvim_tabpage_get_number(0)
-            if tabnum == 1 then
-              vim.cmd "confirm q"
-            else
-              vim.cmd "tabclose"
-            end
-          end,
-          desc = "Force quit",
-        },
-        ["<C-s>"] = {
-          function() require("resession").save() end,
-          desc = "Force Write And Save Session",
-        },
         ["<Leader>uA"] = { "<cmd>Alpha<cr>", desc = "DashBoard" },
-        ["<Leader>vv"] = {
-          function()
-            vim.cmd "chdir ~/.config/nvim/lua/"
-            require("resession").load(vim.fn.getcwd(), { dir = "dirsession" })
-          end,
-          desc = "Load Nvim Config Session",
-        },
         ["<Leader>ws"] = { "<C-w>s", desc = "window split" },
         ["<Leader>wv"] = { "<C-w>v", desc = "window vsplit" },
         ["<Leader>w="] = { "<C-w>=", desc = "window balance" },                                                        -- mappings seen under group name "Buffer"
@@ -109,30 +77,8 @@ return {
         ["<Leader>wj"] = { function() require("smart-splits").move_cursor_down() end, desc = "Move to below split" },  --   function()
         ["<Leader>wk"] = { function() require("smart-splits").move_cursor_up() end, desc = "Move to above split" },    --     require("astroui.status.heirline").buffer_picker(
         ["<Leader>wl"] = { function() require("smart-splits").move_cursor_right() end, desc = "Move to right split" }, --       function(bufnr) require("astrocore.buffer").close(bufnr) end
-        ["<LocalLeader>c"] = {
-          function() require("astrocore.buffer").close(0) end,
-          desc = "Close buffer",
-        },
-        ["<LocalLeader>C"] = {
-          function() require("astrocore.buffer").close(0, true) end,
-          desc = "Force close buffer",
-        },
-        ["K"] = {
-          function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
-          desc = "Next buffer",
-        },
-        ["J"] = {
-          function() require("astrocore.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end,
-          desc = "Previous buffer",
-        },
-        [">b"] = {
-          function() require("astrocore.buffer").move(vim.v.count > 0 and vim.v.count or 1) end,
-          desc = "Move buffer tab right",
-        },
-        ["<b"] = {
-          function() require("astrocore.buffer").move(-(vim.v.count > 0 and vim.v.count or 1)) end,
-          desc = "Move buffer tab left",
-        },
+        ["<Leader>gL"] = { "<cmd>BlameToggle<cr>", desc = "View File Blame" },
+        ["<Leader>gg"] = { function() require("snacks.lazygit").open() end, desc = "Open lazygit" },
         ["<Leader>ld"] = { "<cmd>TodoTrouble<cr>", desc = "Todo List" },
         ["<Leader>fR"] = { function() require("spectre").open_visual() end, desc = "Find and replace" },
         ["<Leader>dL"] = {
@@ -142,20 +88,18 @@ return {
           end,
           desc = "list breakpoints",
         },
-        ["<Leader>gT"] = { "<cmd>GitConflictChooseTheirs<cr>", desc = "Choose Theirs" },
-        ["<Leader>gO"] = { "<cmd>GitConflictChooseOurs<cr>", desc = "Choose Ours" },
-        ["<Leader>gB"] = { "<cmd>GitConflictChooseBoth<cr>", desc = "Choose Both" },
+        ["<LocalLeader>c"] = { function() require("astrocore.buffer").close(0) end, desc = "Close buffer", },
+        ["<LocalLeader>C"] = { function() require("astrocore.buffer").close(0, true) end, desc = "Force close buffer", },
+        ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
+        ["J"] = { function() require("astrocore.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end, desc = "Previous buffer", },
+        [">b"] = { function() require("astrocore.buffer").move(vim.v.count > 0 and vim.v.count or 1) end, desc = "Move buffer tab right", },
+        ["<b"] = { function() require("astrocore.buffer").move(-(vim.v.count > 0 and vim.v.count or 1)) end, desc = "Move buffer tab left", },
         ["<A-j>"] = { "<cmd>m .+1<cr>==", desc = "Move down" },
         ["<A-k>"] = { "<cmd>m .-2<cr>==", desc = "Move up" },
         ["n"] = { "'Nn'[v:searchforward]", expr = true, desc = "Next search result" },
         ["N"] = { "'nN'[v:searchforward]", expr = true, desc = "Prev search result" },
-        ["<Leader>xl"] = { "<cmd>lopen<cr>", desc = "Location List" },
-        ["<Leader>xq"] = { "<cmd>copen<cr>", desc = "Location List" },
         ["[q"] = { vim.cmd.cprev, desc = "Previous quickfix" },
         ["]q"] = { vim.cmd.cnext, desc = "Next quickfix" },
-        ["<LocalLeader>t"] = { function() require("dropbar.api").pick() end, desc = "Next quickfix" },
-        ["<Leader>gL"] = { "<cmd>BlameToggle<cr>", desc = "View File Blame" },
-        ["<Leader>gg"] = { function() require("snacks.lazygit").open() end, desc = "Open lazygit" },
       },
       t = {
         ["<C-q>"] = { "<C-\\><C-n>:q<cr>", desc = "Close terminal" },
@@ -169,8 +113,8 @@ return {
         ["<c-e>"] = { "<End>" },
         ["<c-l>"] = { "<right>" },
         ["<c-h>"] = { "<left>" },
-        ["<c-j>"] = { "<down>" },
-        ["<c-k>"] = { "<up>" },
+        ["<c-n>"] = { "<down>" },
+        ["<c-p>"] = { "<up>" },
         ["<A-j>"] = { "<esc><cmd>m .+1<cr>==gi", desc = "Move down" },
         ["<A-k>"] = { "<esc><cmd>m .-2<cr>==gi", desc = "Move up" },
         ["<S-Tab>"] = { "<C-d>", desc = "backward" }

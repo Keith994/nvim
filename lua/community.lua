@@ -60,7 +60,7 @@ return {
   { import = "astrocommunity.motion.leap-nvim" },
   { import = "astrocommunity.motion.mini-bracketed" },
   { import = "astrocommunity.motion.mini-surround" },
-  { import = "astrocommunity.syntax.hlargs-nvim" },
+  -- { import = "astrocommunity.syntax.hlargs-nvim" },
   { import = "astrocommunity.search.nvim-spectre" },
   -- { import = "astrocommunity.comment.mini-comment" },
   { import = "astrocommunity.programming-language-support.nvim-jqx" },

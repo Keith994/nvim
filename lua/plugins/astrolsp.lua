@@ -57,55 +57,33 @@ return {
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
       -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
     },
-    -- Configure buffer local auto commands to add when attaching a language server
-    autocmds = {
-      -- first key is the `augroup` to add the auto commands to (:h augroup)
-      lsp_document_highlight = {
-        -- Optional condition to create/delete auto command group
-        -- can either be a string of a client capability or a function of `fun(client, bufnr): boolean`
-        -- condition will be resolved for each client on each execution and if it ever fails for all clients,
-        -- the auto commands will be deleted for that buffer
-        cond = "textDocument/documentHighlight",
-        -- cond = function(client, bufnr) return client.name == "lua_ls" end,
-        -- list of auto commands to set
-        {
-          -- events to trigger
-          event = { "CursorHold", "CursorHoldI" },
-          -- the rest of the autocmd options (:h nvim_create_autocmd)
-          desc = "Document Highlighting",
-          callback = function() vim.lsp.buf.document_highlight() end,
-        },
-        {
-          event = { "CursorMoved", "CursorMovedI", "BufLeave" },
-          desc = "Document Highlighting Clear",
-          callback = function() vim.lsp.buf.clear_references() end,
-        },
-      },
-    },
     -- mappings to be set up on attaching of a language server
     mappings = {
       n = {
         ["gy"] = { function() vim.lsp.buf.hover() end, desc = "Hover symbol details" },
-        ["<leader>la"] = { function() vim.lsp.buf.code_action() end, desc = "LSP code action" },
         ["ga"] = { function() vim.lsp.buf.code_action() end, desc = "LSP code action" },
-        ["gA"] = {
-          function() vim.lsp.codelens.run() end,
-          desc = "LSP CodeLens run",
-        },
-        ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
+        ["gA"] = { function() vim.lsp.codelens.run() end, desc = "LSP CodeLens run", },
         ["gR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
-        ["<leader>lR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
-        ["g<S-D>"] = { function() require("snacks.picker").lsp_type_definitions() end, desc = "Type Defnition" },
         ["gd"] = { function() require("snacks.picker").lsp_definitions() end, desc = "lsp defnition" },
+        ["g<S-D>"] = { function() require("snacks.picker").lsp_type_definitions() end, desc = "Type Defnition" },
         ["gr"] = { function() require("snacks.picker").lsp_references() end, desc = "References of current symbol" },
+        ["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" },
         ["gI"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
+        ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
+        ["<leader>la"] = { function() vim.lsp.buf.code_action() end, desc = "LSP code action" },
+        ["<leader>lR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
         ["<leader>lr"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
         ["<llader>lG"] = { function() require("snacks.picker").lsp_workspace_symbols() end, desc = "search workspace symbols" },
         ["<leader>ld"] = { "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Open document diagnostics" },
         ["<leader>lw"] = { "<Cmd>Trouble diagnostics toggle<CR>", desc = "Open workspace diagnostics" },
+        ["<Leader>lG"] = {
+          function() require("snacks.picker").lsp_workspace_symbols() end,
+          desc = "Search workspace symbols",
+        },
+        ["<Leader>lS"] = nil,
+        ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
         ["[d"] = { function() vim.diagnostic.goto_prev {} end, desc = "Previous diagnostic" },
         ["]d"] = { function() vim.diagnostic.goto_next() end, desc = "Next diagnostic" },
-        ["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" },
         -- C-S-F9
         ["<F45>"] = { function() require("dap").clear_breakpoints() end, desc = "run_to_cursor" },
         -- C-f10
@@ -115,35 +93,12 @@ return {
         -- S-F9
         ["<F21>"] = {
           function()
-            vim.ui.input(
-              { prompt = "Breakpoint condition: " },
-              function(input) require("dap").set_breakpoint(input) end
-            )
+            vim.ui.input({ prompt = "Breakpoint condition: " },
+              function(input) require("dap").set_breakpoint(input) end)
           end,
           desc = "condition_breakpoint",
         },
-        ["K"] = {
-          function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
-          desc = "Next buffer",
-        },
-        ["<Leader>lG"] = {
-          function() require("snacks.picker").lsp_workspace_symbols() end,
-          desc = "Search workspace symbols",
-        },
-        ["<Leader>lS"] = nil,
-        ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
-
-        -- a `cond` key can provided as the string of a server capability to be required to attach, or a function with `client` and `bufnr` parameters from the `on_attach` that returns a boolean
-        -- gD = {
-        --   function() vim.lsp.buf.declaration() end,
-        --   desc = "Declaration of current symbol",
-        --   cond = "textDocument/declaration",
-        -- },
-        -- ["<Leader>uY"] = {
-        --   function() require("astrolsp.toggles").buffer_semantic_tokens() end,
-        --   desc = "Toggle LSP semantic highlight (buffer)",
-        --   cond = function(client) return client.server_capabilities.semanticTokensProvider and vim.lsp.semantic_tokens end,
-        -- },
+        ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
       },
       v = {
         ["<LocalLeader>f"] = { function() vim.lsp.buf.format() end, desc = "Format code" },
