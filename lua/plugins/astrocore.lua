@@ -37,8 +37,10 @@ return {
         shiftwidth = 2,
         tabstop = 2,
         softtabstop = 2,
+        timeoutlen = vim.g.vscode and 1000 or 300,
+        winminwidth = 5, -- Minimum window width
       },
-      g = { -- vim.g.<key>
+      g = {              -- vim.g.<key>
         snacks_animate = true,
         snacks_dim = true,
         -- configure global vim variables (vim.g)
@@ -90,6 +92,10 @@ return {
         },
         ["<LocalLeader>c"] = { function() require("astrocore.buffer").close(0) end, desc = "Close buffer", },
         ["<LocalLeader>C"] = { function() require("astrocore.buffer").close(0, true) end, desc = "Force close buffer", },
+        ["<Leader>bb"] = { function() require("snacks").picker.buffers() end, desc = "Find buffers", },
+        ["<Leader>fa"] = { function() require("snacks").picker.autocmds() end, desc = "Find autocmd", },
+        ["<Leader>fb"] = { function() require("snacks").picker.grep_buffers() end, desc = "Grep Open Buffers", },
+        ["<Leader>fi"] = { function() require("snacks").picker.icons() end, desc = "Find icons", },
         ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
         ["J"] = { function() require("astrocore.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end, desc = "Previous buffer", },
         [">b"] = { function() require("astrocore.buffer").move(vim.v.count > 0 and vim.v.count or 1) end, desc = "Move buffer tab right", },

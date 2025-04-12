@@ -1,5 +1,12 @@
 return {
   "rcarriga/nvim-dap-ui",
+  dependencies = {
+    -- virtual text for the debugger
+    {
+      "theHamsta/nvim-dap-virtual-text",
+      opts = {},
+    },
+  },
   specs = {
     {
       "AstroNvim/astrocore",
@@ -106,8 +113,8 @@ return {
   config = function(_, opts)
     local dap, dapui = require "dap", require "dapui"
 
-    dap.listeners.after.event_initialized.dapui_config = function() 
-      dapui.open { layout = 3 } 
+    dap.listeners.after.event_initialized.dapui_config = function()
+      dapui.open { layout = 3 }
     end
     dap.listeners.before.event_terminated.dapui_config = function()
       print "Dap终止"

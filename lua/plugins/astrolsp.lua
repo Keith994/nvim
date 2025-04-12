@@ -4,6 +4,15 @@
 --       as this provides autocomplete and documentation while editing
 if vim.g.vscode then return {} end
 
+-- diagnostic
+local diagnostic_goto = function(next, severity)
+  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+  severity = severity and vim.diagnostic.severity[severity] or nil
+  return function()
+    go({ severity = severity })
+  end
+end
+
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
@@ -70,6 +79,7 @@ return {
         ["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" },
         ["gI"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
         ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
+        ["<leader>lc"] = { function() require('snacks.picker').lsp_config() end, desc = "LSP configurations" },
         ["<leader>la"] = { function() vim.lsp.buf.code_action() end, desc = "LSP code action" },
         ["<leader>lR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
         ["<leader>lr"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
@@ -82,22 +92,22 @@ return {
         },
         ["<Leader>lS"] = nil,
         ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
-        ["[d"] = { function() vim.diagnostic.goto_prev {} end, desc = "Previous diagnostic" },
-        ["]d"] = { function() vim.diagnostic.goto_next() end, desc = "Next diagnostic" },
+
+        ["]d"] = { function() diagnostic_goto(true) end, desc = "Next Diagnostic" },
+        ["[d"] = { function() diagnostic_goto(false) end, desc = "Prev Diagnostic" },
+        ["]e"] = { function() diagnostic_goto(true, "ERROR") end, desc = "Next Error" },
+        ["[e"] = { function() diagnostic_goto(false, "ERROR") end, desc = "Prev Error" },
+        ["]w"] = { function() diagnostic_goto(true, "WARN") end, desc = "Next Warning" },
+        ["[w"] = { function() diagnostic_goto(false, "WARN") end, desc = "Prev Warning" },
+
         -- C-S-F9
-        ["<F45>"] = { function() require("dap").clear_breakpoints() end, desc = "run_to_cursor" },
+        ["<F45>"] = { function() require("dap").clear_breakpoints() end, desc = "clear breakpoints" },
         -- C-f10
         ["<F34>"] = { function() require("dap").run_to_cursor() end, desc = "run_to_cursor" },
         ["<F9>"] = { function() require("dap").toggle_breakpoint() end, desc = "toggle_breakpoint" },
         ["<F12>"] = { function() require("dap-view").toggle() end, desc = "open dap view" },
         -- S-F9
-        ["<F21>"] = {
-          function()
-            vim.ui.input({ prompt = "Breakpoint condition: " },
-              function(input) require("dap").set_breakpoint(input) end)
-          end,
-          desc = "condition_breakpoint",
-        },
+        ["<F21>"] = { function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "condition_breakpoint", },
         ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
       },
       v = {
