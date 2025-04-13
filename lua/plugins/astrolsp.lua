@@ -19,6 +19,11 @@ return {
   -- version = "1.0.4",
   ---@type AstroLSPOpts
   opts = {
+    autocmds = {
+      lsp_codelens_refresh = false,
+      lsp_auto_signature_help = false,
+      lsp_auto_format = false,
+    },
     -- Configuration table of features provided by AstroLSP
     features = {
       large_buf = true,
@@ -34,7 +39,7 @@ return {
       format_on_save = {
         enabled = false,    -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
-          -- "go",
+          "python",
         },
         ignore_filetypes = { -- disable format on save for specified filetypes
           -- "python",

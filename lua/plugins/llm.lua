@@ -36,21 +36,22 @@ return {
         opts = {
           mappings = {
             n = {
+              ["<Leader>a"] = { desc = " LLM AI" },
               ["<Leader>ac"] = { "<CMD>LLMSessionToggle<CR>", desc = "Toggle LLM.nvim session" },
               ["<Leader>au"] = { "<CMD>LLMAppHandler UserInfo<CR>", desc = "Toggle LLM.nvim UserInfo" },
-              ["<Leader>at"] = { "<CMD>LLMAppHandler Translate<CR>", desc = "Toggle LLM.nvim Translate" },
-              --   { "<leader>ac", mode = "n", "<cmd>LLMSessionToggle<cr>" },
-              --   { "<leader>tc", mode = "x", "<cmd>LLMAppHandler TestCode<cr>" },
+              ["<Leader>as"] = { "<CMD>LLMAppHandler Translate<CR>", desc = "Toggle LLM.nvim Translate" },
             },
             v = {
+              ["<Leader>a"] = { desc = " LLM AI" },
               ["<Leader>ae"] = { "<CMD>LLMAppHandler CodeExplain<CR>", desc = "Toggle LLM.nvim CodeExplain" },
               ["<Leader>ad"] = { "<CMD>LLMAppHandler DocString<CR>", desc = "Toggle LLM.nvim DocString" },
             },
             x = {
+              ["<Leader>a"] = { desc = " LLM AI" },
               ["<Leader>ag"] = { "<CMD>LLMAppHandler CommitMsg<CR>", desc = "Toggle LLM.nvim CommitMsg" },
               ["<Leader>ao"] = { "<CMD>LLMAppHandler OptimCompare<CR>", desc = "Toggle LLM.nvim OptimCompare" },
-              ["<Leader>ts"] = { "<CMD>LLMAppHandler WordTranslate<CR>", desc = "Toggle LLM.nvim WordTranslate" },
-              ["<Leader>tc"] = { "<CMD>LLMAppHandler TestCode<CR>", desc = "Toggle LLM.nvim TestCode" },
+              ["<Leader>as"] = { "<CMD>LLMAppHandler WordTranslate<CR>", desc = "Toggle LLM.nvim WordTranslate" },
+              ["<Leader>ac"] = { "<CMD>LLMAppHandler TestCode<CR>", desc = "Toggle LLM.nvim TestCode" },
             }
           },
         },
@@ -58,25 +59,8 @@ return {
     },
     config = function()
       local tools = require("llm.common.tools")
-      -- vim.api.nvim_set_hl(0, "Query", { fg = "#6aa84f", bg = "NONE" })
       require("llm").setup({
         -- enable_trace = true,
-        -- -- [[ cloudflare ]]     params: api_type =  "workers-ai" | "openai" | "zhipu" | "ollama"
-        -- -- model = "@cf/qwen/qwen1.5-14b-chat-awq",
-        -- model = "@cf/google/gemma-7b-it-lora",
-        -- api_type = "workers-ai",
-        -- fetch_key = function()
-        --   return vim.env.WORKERS_AI_KEY
-        -- end,
-
-        -- [[ openrouter]]
-        -- url = "https://openrouter.ai/api/v1/chat/completions",
-        -- model = "google/gemini-2.0-flash-exp:free",
-        -- max_tokens = 8000,
-        -- api_type = "openai",
-        -- fetch_key = function()
-        --   return vim.env.OPENROUTER_KEY
-        -- end,
 
         -- [[ GLM ]]
         -- url = "https://open.bigmodel.cn/api/paas/v4/chat/completions",
@@ -121,15 +105,6 @@ return {
         --   return vim.env.GITHUB_TOKEN
         -- end,
 
-        -- [[deepseek]]
-        -- url = "https://api.deepseek.com/chat/completions",
-        -- model = "deepseek-coder",
-        -- api_type = "openai",
-        -- max_tokens = 8000,
-        -- fetch_key = function()
-        --   return vim.env.DEEPSEEK_API_KEY
-        -- end,
-
         -- [[ siliconflow ]]
         -- url = "https://api.siliconflow.cn/v1/chat/completions",
         -- -- model = "THUDM/glm-4-9b-chat",
@@ -167,7 +142,7 @@ return {
 
         prefix = {
           -- 
-          user = { text = "😃 ", hl = "Title" },
+          user = { text = " ", hl = "Title" },
           assistant = { text = "  ", hl = "Added" },
         },
 
@@ -443,14 +418,6 @@ You must:
             handler = tools.completion_handler,
             opts = {
               -------------------------------------------------
-              ---                  ollama
-              -------------------------------------------------
-              -- -- url = "http://localhost:11434/api/generate",
-              -- url = "http://localhost:11434/v1/completions",
-              -- model = "qwen2.5-coder:1.5b",
-              -- api_type = "ollama",
-              --
-              -------------------------------------------------
               -- -deepseek
               -----------------------------------------------
               url = "https://api.deepseek.com/chat/completions",
@@ -466,16 +433,6 @@ You must:
               -------------------------------------------------
               -- style = "virtual_text",
               --
-              -------------------------------------------------
-              ---                 qianwen
-              -------------------------------------------------
-              -- url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-              -- model = "qwen2.5-coder-32b-instruct",
-              -- api_type = "ollama",
-              -- -- [optional: fetch_key]
-              -- fetch_key = function()
-              --   return vim.env.DASHSCOPE_API_KEY
-              -- end,
 
               n_completions = 3,
               context_window = 512,
@@ -484,8 +441,6 @@ You must:
               default_filetype_enabled = true,
               auto_trigger = true,
               style = "blink.cmp",
-              -- style = "nvim-cmp",
-              -- style = "virtual_text",
               keymap = {
                 virtual_text = {
                   accept = {

@@ -8,6 +8,10 @@ return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
+    autocmds = {
+      astrolsp_createfiles_events = false,
+      create_dir = false,
+    },
     -- Configure core features of AstroNvim
     features = {
       large_buf = { size = 1024 * 500 * 10, lines = 50000 }, -- set global limits for large files for disabling features like treesitter

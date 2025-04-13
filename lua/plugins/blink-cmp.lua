@@ -71,24 +71,17 @@ return {
   {
     "Saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
-    version = "^1",
     opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = function(_)
-          if vim.bo.filetype == "java" then
-            return { "lsp", "buffer", "snippets", "path" }
-          else
-            return { "lsp", "buffer", "path", "snippets" }
-          end
-        end,
+        default = { "lsp", "path", "snippets", "buffer" },
         providers = {
           lsp = {
             name = "lsp",
             enabled = true,
             module = "blink.cmp.sources.lsp",
-            min_keyword_length = function() if vim.bo.filetype == 'java' then return 1 else return 0 end end,
+            min_keyword_length = function() if vim.bo.filetype == 'java' then return 0 else return 0 end end,
             -- When linking markdown notes, I would get snippets and text in the
             -- suggestions, I want those to show only if there are no LSP
             -- suggestions
@@ -120,7 +113,7 @@ return {
           buffer = {
             name = "Buffer",
             enabled = true,
-            max_items = 3,
+            max_items = 5,
             module = "blink.cmp.sources.buffer",
             min_keyword_length = 2,
             score_offset = 15, -- the higher the number, the higher the priority
@@ -216,6 +209,7 @@ return {
           "fallback",
         },
       },
+      fuzzy = { implementation = "prefer_rust" },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
         keyword = {
@@ -223,20 +217,6 @@ return {
         },
         trigger = {
           prefetch_on_insert = false,
-        },
-        menu = {
-          auto_show = function(ctx) return ctx.mode ~= "cmdline" end,
-          border = "rounded",
-          winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-          draw = {
-            treesitter = { "lsp" },
-            components = {
-              kind_icon = {
-                text = function(ctx) return get_kind_icon(ctx).text end,
-                highlight = function(ctx) return get_kind_icon(ctx).highlight end,
-              },
-            },
-          },
         },
         accept = {
           auto_brackets = {
@@ -252,17 +232,8 @@ return {
           dot_repeat = false,
           create_undo_point = false,
         },
-        documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 30,
-          window = {
-            border = "rounded",
-            winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-          },
-        },
       },
       signature = {
-        enabled = false,
         window = {
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
@@ -274,20 +245,6 @@ return {
         "L3MON4D3/LuaSnip",
         optional = true,
         specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
-      },
-      {
-        "AstroNvim/astrolsp",
-        optional = true,
-        opts = function(_, opts)
-          opts.capabilities = require("blink.cmp").get_lsp_capabilities(opts.capabilities)
-
-          -- disable AstroLSP signature help if `blink.cmp` is providing it
-          local blink_opts = require("astrocore").plugin_opts "blink.cmp"
-          if vim.tbl_get(blink_opts, "signature", "enabled") == true then
-            if not opts.features then opts.features = {} end
-            opts.features.signature_help = false
-          end
-        end,
       },
       {
         "folke/lazydev.nvim",
@@ -317,8 +274,6 @@ return {
         ---@type CatppuccinOptions
         opts = { integrations = { blink_cmp = true } },
       },
-      -- disable built in completion plugins
-      { "rcarriga/cmp-dap", enabled = false },
     },
   },
 }

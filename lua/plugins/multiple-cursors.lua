@@ -23,6 +23,8 @@ return {
         maps.i[lhs] = map
       end
       local prefix = "<Leader>m"
+      maps.n["<Leader>m"] = {desc = "󰆾 Multiple cursors" }
+      maps.x["<Leader>m"] = {desc = "󰆾 Multiple cursors" }
       for lhs, map in pairs {
         [prefix .. "a"] = { "<Cmd>MultipleCursorsAddMatches<CR>", desc = "Add cursor matches" },
         [prefix .. "A"] = { "<Cmd>MultipleCursorsAddMatchesV<CR>", desc = "Add cursor matches in previous visual area" },
