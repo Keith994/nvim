@@ -4,9 +4,16 @@ return {
   lazy = false,
   opts = {
     animate = {
-      duration = 20,
+      enabled = true,
+      style = "out",
+      duration = 30,
       easing = 'linear',
       fps = 60,
+    },
+    indent = {
+      animate = {
+        enabled = true,
+      }
     },
     dim = {
       scope = {
@@ -21,13 +28,30 @@ return {
         enabled = true,
         easing = "outQuad",
         duration = {
-          step = 20,   -- ms per step
+          step = 30,   -- ms per step
           total = 300, -- maximum duration
         },
       },
-      -- what buffers to dim
+      -- what buffers to animate
       filter = function(buf)
-        return vim.g.snacks_dim ~= false
+        return vim.g.snacks_dim ~= false and vim.bo[buf].buftype ~= "terminal"
+      end,
+    },
+    scroll = {
+      enabled = true,
+      animate = {
+        duration = { step = 30, total = 300 },
+        easing = "linear",
+      },
+      -- faster animation when repeating scroll after delay
+      animate_repeat = {
+        delay = 100, -- delay in ms before using the repeat animation
+        duration = { step = 30, total = 300 },
+        easing = "linear",
+      },
+      -- what buffers to animate
+      filter = function(buf)
+        return vim.g.snacks_scroll ~= false and vim.bo[buf].buftype ~= "terminal"
       end,
     },
     picker = {
