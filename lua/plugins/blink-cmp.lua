@@ -71,6 +71,7 @@ return {
   {
     "Saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
+    build = "cargo build --release",
     opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
     opts = {
       -- remember to enable your providers here

@@ -48,8 +48,6 @@ return {
         snacks_animate = true,
         snacks_dim = true,
         snacks_indent = true,
-        snacks_toggle = true,
-        snacks_scroll = true,
         -- configure global vim variables (vim.g)
         -- NOTE: `mapLeader` and `mapLocalleader` must be set in the AstroNvim opts or before `lazy.setup`
         -- This can be found in the `lua/lazy_setup.lua` file

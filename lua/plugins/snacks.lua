@@ -16,6 +16,7 @@ return {
       }
     },
     dim = {
+      enabled = true,
       scope = {
         min_size = 5,
         max_size = 20,
@@ -35,23 +36,6 @@ return {
       -- what buffers to animate
       filter = function(buf)
         return vim.g.snacks_dim ~= false and vim.bo[buf].buftype ~= "terminal"
-      end,
-    },
-    scroll = {
-      enabled = true,
-      animate = {
-        duration = { step = 30, total = 300 },
-        easing = "linear",
-      },
-      -- faster animation when repeating scroll after delay
-      animate_repeat = {
-        delay = 100, -- delay in ms before using the repeat animation
-        duration = { step = 30, total = 300 },
-        easing = "linear",
-      },
-      -- what buffers to animate
-      filter = function(buf)
-        return vim.g.snacks_scroll ~= false and vim.bo[buf].buftype ~= "terminal"
       end,
     },
     picker = {
