@@ -216,6 +216,7 @@ return {
         keyword = {
           range = "prefix",
         },
+        ghost_text = { enabled = vim.g.ai_cmp },
         trigger = {
           prefetch_on_insert = false,
         },
