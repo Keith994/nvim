@@ -1,34 +1,41 @@
-local prefix = "<Leader>A"
+local prefix = "<Leader>a"
 return {
   "yetone/avante.nvim",
   build = vim.fn.has "win32" == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-    or "make",
+      or "make",
   event = "User AstroFile", -- load on file open because Avante manages it's own bindings
-  enabled = false,
   cmd = {
     "AvanteAsk",
     "AvanteBuild",
     "AvanteEdit",
     "AvanteRefresh",
     "AvanteSwitchProvider",
+    "AvanteShowRepoMap",
+    "AvanteModels",
     "AvanteChat",
     "AvanteToggle",
     "AvanteClear",
+    "AvanteFocus",
+    "AvanteStop",
   },
   dependencies = {
+    { "stevearc/dressing.nvim", optional = true },
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
     provider = "qwen",
+    -- behavior = {
+    --   enable_cursor_plannning_mode = true,
+    -- },
     vendors = {
       deepseek = {
         __inherited_from = "openai",
         api_key_name = "DEEPSEEK_API_KEY",
-        endpoint = "https://api.deepseek.com",
-        model = "deepseek-coder",
-        timeout = 10000,
+        endpoint = "https://api.deepseek.com/chat/completions",
+        model = "deepseek-chat",
+        timeout = 8000,
         temperature = 0.5,
         max_tokens = 4096,
       },
@@ -38,12 +45,24 @@ return {
         endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
         model = "qwen2.5-coder-32b-instruct",
       },
+      GLMTranslation = {
+        __inherited_from = "openai",
+        endpoint = "https://open.bigmodel.cn/api/paas/v4",
+        model = "glm-4-flash",
+        max_tokens = 4096,
+        api_key_name = "GLM_KEY",
+        temperature = 0.3,
+        top_p = 0.7,
+      },
     },
     mappings = {
       ask = prefix .. "<CR>",
       edit = prefix .. "e",
       refresh = prefix .. "r",
       focus = prefix .. "f",
+      select_model = prefix .. "?",
+      stop = prefix .. "S",
+      select_history = prefix .. "h",
       toggle = {
         default = prefix .. "t",
         debug = prefix .. "d",
@@ -57,11 +76,30 @@ return {
       },
       files = {
         add_current = prefix .. ".",
+        add_all_buffers = prefix .. "B",
       },
     },
   },
   specs = { -- configure optional plugins
-    { "AstroNvim/astroui", opts = { icons = { Avante = "" } } },
+    { "AstroNvim/astroui", opts = { icons = { Avante = " " } } },
+    {
+      "Kaiser-Yang/blink-cmp-avante",
+      lazy = true,
+      specs = {
+        {
+          "Saghen/blink.cmp",
+          optional = true,
+          opts = {
+            sources = {
+              default = { "avante" },
+              providers = {
+                avante = { module = "blink-cmp-avante", name = "Avante" },
+              },
+            },
+          },
+        },
+      },
+    },
     { -- if copilot.lua is available, default to copilot provider
       "zbirenbaum/copilot.lua",
       optional = true,
@@ -92,6 +130,20 @@ return {
         if not opts.filetypes then opts.filetypes = { "markdown", "quarto", "rmd" } end
         opts.filetypes = require("astrocore").list_insert_unique(opts.filetypes, { "Avante" })
       end,
+    },
+    {
+      "folke/snacks.nvim",
+      optional = true,
+      specs = {
+        {
+          "yetone/avante.nvim",
+          opts = {
+            file_selector = {
+              provider = "snacks",
+            },
+          },
+        },
+      },
     },
   },
 }

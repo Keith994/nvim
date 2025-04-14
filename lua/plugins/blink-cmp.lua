@@ -168,12 +168,26 @@ return {
           },
         }
       },
+      appearance = {
+        kind_icons = {
+          Copilot = " ",
+          llm = " ",
+          Avante = " ",
+          AvanteCmd = ' ',
+          AvanteMention = ' ',
+        },
+      },
       keymap = {
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },
         ["<C-N>"] = { "select_next", "fallback" },
         ["<C-P>"] = { "select_prev", "fallback" },
+        ["<C-y>"] = {
+          function(cmp)
+            cmp.show({ providers = { "llm" } })
+          end,
+        },
         -- ["<C-J>"] = { "select_next", "fallback" },
         -- ["<C-K>"] = { "select_prev", "fallback" },
         ["<C-U>"] = { "scroll_documentation_up", "fallback" },
