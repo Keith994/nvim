@@ -25,11 +25,17 @@ return {
     { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
-    provider = "qwen",
+    provider = "openrouter",
     -- behavior = {
     --   enable_cursor_plannning_mode = true,
     -- },
     vendors = {
+      openrouter = {
+        __inherited_from = 'openai',
+        endpoint = 'https://openrouter.ai/api/v1',
+        api_key_name = 'OPENROUTER_API_KEY',
+        model = 'google/gemini-2.0-flash-001',
+      },
       deepseek = {
         __inherited_from = "openai",
         api_key_name = "DEEPSEEK_API_KEY",
