@@ -26,15 +26,22 @@ return {
   },
   opts = {
     provider = "openrouter",
-    -- behavior = {
-    --   enable_cursor_plannning_mode = true,
-    -- },
+    auto_suggestions_provider = "openrouter",
+    suggestion = {
+      debounce = 800,
+      throttle = 800,
+    },
     vendors = {
       openrouter = {
         __inherited_from = 'openai',
         endpoint = 'https://openrouter.ai/api/v1',
         api_key_name = 'OPENROUTER_API_KEY',
-        model = 'google/gemini-2.0-flash-001',
+        -- proxy = 'socks5://127.0.0.1:1080',
+        model = 'deepseek/deepseek-chat-v3-0324',
+        -- model = 'google/gemini-2.0-flash-001',
+        -- model = 'openai/gpt-4o-mini',
+        -- model = 'google/gemini-2.5-pro-preview-03-25',
+        -- model = 'x-ai/grok-3-beta',
       },
       deepseek = {
         __inherited_from = "openai",
@@ -84,29 +91,27 @@ return {
         add_current = prefix .. ".",
         add_all_buffers = prefix .. "B",
       },
+      cancel = {
+        normal = { "<C-c>", "<C-g>", "<Esc>", "q" },
+        insert = { "<C-c>", "<C-g>" },
+      },
+      sidebar = {
+        apply_all = "A",
+        apply_cursor = "a",
+        retry_user_request = "r",
+        edit_user_request = "e",
+        switch_windows = "<Tab>",
+        reverse_switch_windows = "<S-Tab>",
+        remove_file = "d",
+        add_file = "@",
+        close = { "<Esc>", "q" },
+        close_from_input = { insert = "<C-g>" }, -- 例如，{ normal = "<Esc>", insert = "<C-d>" }
+      },
     },
   },
   specs = { -- configure optional plugins
     { "AstroNvim/astroui", opts = { icons = { Avante = " " } } },
-    {
-      "Kaiser-Yang/blink-cmp-avante",
-      lazy = true,
-      specs = {
-        {
-          "Saghen/blink.cmp",
-          optional = true,
-          opts = {
-            sources = {
-              default = { "avante" },
-              providers = {
-                avante = { module = "blink-cmp-avante", name = "Avante" },
-              },
-            },
-          },
-        },
-      },
-    },
-    { -- if copilot.lua is available, default to copilot provider
+    {       -- if copilot.lua is available, default to copilot provider
       "zbirenbaum/copilot.lua",
       optional = true,
       specs = {

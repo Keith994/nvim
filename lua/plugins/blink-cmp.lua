@@ -73,11 +73,21 @@ return {
     event = { "InsertEnter", "CmdlineEnter" },
     build = "cargo build --release",
     opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
+    dependencies = {
+      'Kaiser-Yang/blink-cmp-avante',
+    },
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = { "avante", "lsp", "path", "snippets", "buffer" },
         providers = {
+          avante = {
+            module = "blink-cmp-avante",
+            name = "Avante",
+            enabled = true,
+            max_items = 5,
+            score_offset = 100, -- the higher the number, the higher the priority
+          },
           lsp = {
             name = "lsp",
             enabled = true,
@@ -183,11 +193,6 @@ return {
         ["<Down>"] = { "select_next", "fallback" },
         ["<C-N>"] = { "select_next", "fallback" },
         ["<C-P>"] = { "select_prev", "fallback" },
-        ["<C-y>"] = {
-          function(cmp)
-            cmp.show({ providers = { "llm" } })
-          end,
-        },
         -- ["<C-J>"] = { "select_next", "fallback" },
         -- ["<C-K>"] = { "select_prev", "fallback" },
         ["<C-U>"] = { "scroll_documentation_up", "fallback" },
