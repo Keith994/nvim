@@ -149,7 +149,7 @@ return {
         {
           "yetone/avante.nvim",
           opts = {
-            file_selector = {
+            selector = {
               provider = "snacks",
             },
           },
