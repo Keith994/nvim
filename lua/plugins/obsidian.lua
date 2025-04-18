@@ -1,10 +1,12 @@
 return {
   "obsidian-nvim/obsidian.nvim",
+  -- enabled = false,
   -- the obsidian vault in this default config  ~/obsidian-vault
   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
   -- event = { "bufreadpre " .. vim.fn.expand "~" .. "/my-vault/**.md" },
-  -- lazy = false,
+  lazy = true,
   event = { "BufReadPre  */obsidian-vault/notes/**.md" },
+  cmd = { "ObsidianFollowLink" },
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
@@ -15,12 +17,12 @@ return {
             ["gf"] = {
               function()
                 if require("obsidian").util.cursor_on_markdown_link() then
-                  return "<Cmd>ObsidianFollowLink<CR>"
+                  vim.cmd "ObsidianFollowLink"
                 else
-                  return "gf"
+                  vim.cmd "edit <cfile>"
                 end
               end,
-              desc = "Obsidian Follow Link",
+              desc = "Obsidian Follow Link | edit cursor file",
             },
           },
         },
@@ -135,7 +137,7 @@ return {
     -- Optional, configure additional syntax highlighting / extmarks.
     -- This requires you have `conceallevel` set to 1 or 2. See `:help conceallevel` for more details.
     ui = {
-      enable = false,          -- set to false to disable all additional syntax features
+      enable = false,         -- set to false to disable all additional syntax features
       update_debounce = 200,  -- update delay after a text change (in milliseconds)
       max_file_length = 5000, -- disable UI features for files with more than this many lines
       -- Define how various check-boxes are displayed

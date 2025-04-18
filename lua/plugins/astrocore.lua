@@ -34,7 +34,6 @@ return {
         spell = false,         -- sets vim.opt.spell
         signcolumn = "yes",    -- sets vim.opt.signcolumn to auto
         wrap = true,           -- sets vim.opt.wrap
-        guifont = "LigaSFMonoNerdFont-Regular",
         showcmd = false,
         cmdheight = 1,
         expandtab = true,
@@ -45,8 +44,6 @@ return {
         winminwidth = 5, -- Minimum window width
       },
       g = {              -- vim.g.<key>
-        snacks_animate = true,
-        snacks_dim = true,
         snacks_indent = true,
         -- configure global vim variables (vim.g)
         -- NOTE: `mapLeader` and `mapLocalleader` must be set in the AstroNvim opts or before `lazy.setup`
@@ -101,6 +98,7 @@ return {
         ["<Leader>fa"] = { function() require("snacks").picker.autocmds() end, desc = "Find autocmd", },
         ["<Leader>fb"] = { function() require("snacks").picker.grep_buffers() end, desc = "Grep Open Buffers", },
         ["<Leader>fi"] = { function() require("snacks").picker.icons() end, desc = "Find icons", },
+        ["<Leader>fH"] = { function() require("snacks").picker.highlights() end, desc = "Find highlight group", },
         ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
         ["J"] = { function() require("astrocore.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end, desc = "Previous buffer", },
         [">b"] = { function() require("astrocore.buffer").move(vim.v.count > 0 and vim.v.count or 1) end, desc = "Move buffer tab right", },

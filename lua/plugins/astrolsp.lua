@@ -58,6 +58,17 @@ return {
     },
     -- enable servers that you already have installed without mason
     servers = {
+      yamlls = {
+        setting = {
+          yaml = {
+            format = {
+              enable = false
+            },
+            schemaStore = { enable = false, url = "" }
+          },
+        }
+
+      }
       -- "pyright"
     },
     -- customize language server configuration options passed to `lspconfig`

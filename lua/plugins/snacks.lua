@@ -3,41 +3,6 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
-    animate = {
-      enabled = true,
-      style = "out",
-      duration = 30,
-      easing = 'linear',
-      fps = 60,
-    },
-    indent = {
-      animate = {
-        enabled = true,
-      }
-    },
-    dim = {
-      enabled = true,
-      scope = {
-        min_size = 5,
-        max_size = 20,
-        siblings = true,
-      },
-      -- animate scopes. Enabled by default for Neovim >= 0.10
-      -- Works on older versions but has to trigger redraws during animation.
-      ---@type snacks.animate.Config|{enabled?: boolean}
-      animate = {
-        enabled = true,
-        easing = "outQuad",
-        duration = {
-          step = 30,   -- ms per step
-          total = 300, -- maximum duration
-        },
-      },
-      -- what buffers to animate
-      filter = function(buf)
-        return vim.g.snacks_dim ~= false and vim.bo[buf].buftype ~= "terminal"
-      end,
-    },
     picker = {
       ui_select = true,
       layout = {
