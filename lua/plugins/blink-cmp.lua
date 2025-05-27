@@ -80,7 +80,11 @@ return {
       -- remember to enable your providers here
       sources = {
         default = { "avante", "lsp", "path", "snippets", "buffer" },
+        per_filetype = {
+          sql = { "snippets", "dadbod", "buffer" },
+        },
         providers = {
+          dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
           avante = {
             module = "blink-cmp-avante",
             name = "Avante",
