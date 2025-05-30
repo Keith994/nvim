@@ -70,6 +70,7 @@ return {
     },
     mappings = {
       ask = prefix .. "<CR>",
+      new_ask = prefix .. "n",
       edit = prefix .. "e",
       refresh = prefix .. "r",
       focus = prefix .. "f",

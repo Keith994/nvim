@@ -4,15 +4,6 @@
 --       as this provides autocomplete and documentation while editing
 if vim.g.vscode then return {} end
 
--- diagnostic
-local diagnostic_goto = function(next, severity)
-  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-  severity = severity and vim.diagnostic.severity[severity] or nil
-  return function()
-    go({ severity = severity })
-  end
-end
-
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
@@ -108,13 +99,6 @@ return {
         },
         ["<Leader>lS"] = nil,
         ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
-
-        ["]d"] = { function() diagnostic_goto(true) end, desc = "Next Diagnostic" },
-        ["[d"] = { function() diagnostic_goto(false) end, desc = "Prev Diagnostic" },
-        ["]e"] = { function() diagnostic_goto(true, "ERROR") end, desc = "Next Error" },
-        ["[e"] = { function() diagnostic_goto(false, "ERROR") end, desc = "Prev Error" },
-        ["]w"] = { function() diagnostic_goto(true, "WARN") end, desc = "Next Warning" },
-        ["[w"] = { function() diagnostic_goto(false, "WARN") end, desc = "Prev Warning" },
 
         -- C-S-F9
         ["<F45>"] = { function() require("dap").clear_breakpoints() end, desc = "clear breakpoints" },
