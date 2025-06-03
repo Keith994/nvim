@@ -31,7 +31,7 @@ return {
       debounce = 800,
       throttle = 800,
     },
-    vendors = {
+    providers = {
       openrouter = {
         __inherited_from = 'openai',
         endpoint = 'https://openrouter.ai/api/v1',
@@ -49,8 +49,10 @@ return {
         endpoint = "https://api.deepseek.com/chat/completions",
         model = "deepseek-chat",
         timeout = 8000,
-        temperature = 0.5,
-        max_tokens = 4096,
+        extra_request_body = {
+          temperature = 0.5,
+          max_tokens = 4096,
+        },
       },
       qwen = {
         __inherited_from = "openai",
@@ -64,9 +66,12 @@ return {
         model = "glm-4-flash",
         max_tokens = 4096,
         api_key_name = "GLM_KEY",
-        temperature = 0.3,
-        top_p = 0.7,
+        extra_request_body = {
+          temperature = 0.3,
+          top_p = 0.7,
+        },
       },
+
     },
     mappings = {
       ask = prefix .. "<CR>",
