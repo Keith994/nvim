@@ -15,8 +15,8 @@ return {
     opts = function(_, opts)
       local maps = opts.mappings
       for lhs, map in pairs {
-        ["<C-Down>"] = { "<Cmd>MultipleCursorsAddDown<CR>", desc = "Add cursor down" },
-        ["<C-Up>"] = { "<Cmd>MultipleCursorsAddUp<CR>", desc = "Add cursor up" },
+        -- ["<C-Down>"] = { "<Cmd>MultipleCursorsAddDown<CR>", desc = "Add cursor down" },
+        -- ["<C-Up>"] = { "<Cmd>MultipleCursorsAddUp<CR>", desc = "Add cursor up" },
         ["<C-LeftMouse>"] = { "<Cmd>MultipleCursorsMouseAddDelete<CR>", desc = "Add cursor with mouse" },
       } do
         maps.n[lhs] = map

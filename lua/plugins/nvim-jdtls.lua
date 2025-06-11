@@ -34,7 +34,12 @@ return {
         ---@type AstroLSPOpts
         opts = function(_, opts)
           local maps = opts.mappings
-          maps.n["<Leader>lj"] = { function() require("jdtls").set_runtime() end, desc = "set jdk version" }
+          maps.n["<Leader>lv"] = { function() require("jdtls").set_runtime() end, desc = "set jdk version" }
+          maps.n["<Leader>lC"] = {
+            function() require("toggleterm").exec("mvnd compile", 0, 50, "", "vertical", "", true, false) end,
+            desc =
+            "compile"
+          }
           local utils = require "astrocore"
           return utils.extend_tbl({
             ---@diagnostic disable: missing-fields
@@ -174,7 +179,8 @@ return {
           bundles = {
             vim.fn.expand "$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar",
             -- unpack remaining bundles
-            (table.unpack or unpack)(vim.split(vim.fn.glob "$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar", "\n", {})),
+            (table.unpack or unpack)(vim.split(
+                  vim.fn.glob "$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar", "\n", {})),
           },
           extendedClientCapabilities = {
             classFileContentsSupport = true,
@@ -215,5 +221,24 @@ return {
         end,
       })
     end,
+  },
+  {
+    "JavaHello/spring-boot.nvim",
+    ft = { "java", "yaml", "jproperties" },
+    specs = {
+      {
+        "mfussenegger/nvim-jdtls",
+        optional = true,
+        opts = function(_, opts)
+          if not opts.init_options then opts.init_options = {} end
+          if not opts.init_options.bundles then opts.init_options.bundles = {} end
+          vim.list_extend(opts.init_options.bundles, require("spring_boot").java_extensions())
+        end,
+      },
+    },
+    opts = {
+      java_cmd = "/usr/lib/jvm/java-21-openjdk/bin/java",
+      exploded_ls_jar_data = true,
+    },
   },
 }
