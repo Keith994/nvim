@@ -237,7 +237,7 @@ return {
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
         keyword = {
-          range = "prefix",
+          range = "full",
         },
         ghost_text = { enabled = vim.g.ai_cmp },
         trigger = {
@@ -249,9 +249,9 @@ return {
             -- Asynchronously use semantic token to determine if brackets should be added
             semantic_token_resolution = {
               enabled = true,
-              blocked_filetypes = { "java" },
+              -- blocked_filetypes = { "java" },
               -- How long to wait for semantic tokens to return before assuming no brackets should be added
-              timeout_ms = 400,
+              timeout_ms = 100,
             },
           },
           dot_repeat = false,

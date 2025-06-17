@@ -104,10 +104,10 @@ return {
             },
             eclipse = { downloadSources = true },
             edit = {
-              validateAllOpenBuffersOnChanges = true,
+              validateAllOpenBuffersOnChanges = false,
             },
             format = {
-              enabled = false,
+              enabled = true,
             },
             progressReports = {
               enabled = false,
@@ -134,7 +134,7 @@ return {
               },
             },
             diagnostic = {
-              refreshAfterSave = true,
+              refreshAfterSave = false,
             },
             maven = { downloadSources = true },
             implementationsCodeLens = { enabled = false },

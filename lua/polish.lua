@@ -7,7 +7,7 @@ create_command("JavaTestNearestMethod",
 create_command("Json", function() vim.bo.filetype = "json" end, { desc = "json filetype" })
 create_command("SqlType", function() vim.bo.filetype = "sql" end, { desc = "sql filetype" })
 create_command("XmlType", function() vim.bo.filetype = "xml" end, { desc = "xml filetype" })
-create_command("Ld",
+create_command("L",
   function() require("resession").load(vim.fn.getcwd(), { dir = "dirsession" }) end,
   { desc = "load current dir session" }
 )
