@@ -100,14 +100,14 @@ return {
         settings = {
           java = {
             autobuild = {
-              enabled = false,
+              enabled = true,
             },
             eclipse = { downloadSources = true },
             edit = {
-              validateAllOpenBuffersOnChanges = false,
+              validateAllOpenBuffersOnChanges = true,
             },
             format = {
-              enabled = true,
+              enabled = false,
             },
             progressReports = {
               enabled = false,
@@ -240,5 +240,21 @@ return {
       java_cmd = "/usr/lib/jvm/java-21-openjdk/bin/java",
       exploded_ls_jar_data = true,
     },
+  },
+  {
+    "rcasia/neotest-java",
+    ft = "java",
+    dependencies = {
+      "mfussenegger/nvim-jdtls",
+    },
+  },
+  {
+    "nvim-neotest/neotest",
+    optional = true,
+    dependencies = { "rcasia/neotest-java" },
+    opts = function(_, opts)
+      if not opts.adapters then opts.adapters = {} end
+      table.insert(opts.adapters, require "neotest-java" (require("astrocore").plugin_opts "neotest-java"))
+    end,
   },
 }

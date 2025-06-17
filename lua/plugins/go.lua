@@ -73,7 +73,7 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
-        require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl" })
+        require("astrocore").list_insert_unique(opts.ensure_installed, { "gomodifytags", "gofumpt", "iferr", "impl", "gotests", "goimports"})
     end,
   },
   {
@@ -82,7 +82,7 @@ return {
     opts = function(_, opts)
       opts.ensure_installed = require("astrocore").list_insert_unique(
         opts.ensure_installed,
-        { "delve", "gopls", "gomodifytags", "gofumpt", "iferr", "impl" }
+        { "delve", "gopls", "gomodifytags", "gofumpt", "gotests", "goimports", "iferr", "impl" }
       )
     end,
   },
@@ -102,34 +102,80 @@ return {
     opts = {},
   },
   {
-    "ray-x/go.nvim",
-    -- commit = "591a0b8",
-    ft = { "go", "gomod" },
+    "olexsmir/gopher.nvim",
+    ft = "go",
+    build = function()
+      if not require("lazy.core.config").spec.plugins["mason.nvim"] then
+        vim.print "Installing go dependencies..."
+        vim.cmd.GoInstallDeps()
+      end
+    end,
     dependencies = {
-      {
-        "ray-x/guihua.lua",
-        -- commit = "3b3126a"
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      { "williamboman/mason.nvim", optional = true }, -- by default use Mason for go dependencies
+    },
+    opts = {},
+  },
+  -- {
+  --   "ray-x/go.nvim",
+  --   -- commit = "591a0b8",
+  --   ft = { "go", "gomod" },
+  --   dependencies = {
+  --     {
+  --       "ray-x/guihua.lua",
+  --       -- commit = "3b3126a"
+  --     },
+  --   },
+  --   opts = function()
+  --     local opts = {
+  --       -- verbose = true,
+  --       log_path = vim.fn.expand "$HOME" .. "/tmp/gonvim.log",
+  --       lsp_codelens = false,
+  --       comment_placeholder = "Keith",
+  --       dap_debug = true,
+  --       dap_debug_gui = false,
+  --       dap_debug_vt = true,
+  --       dap_debug_keymap = false, -- true: use keymap for debugger defined in go/dap.lua
+  --       run_in_floaterm = true, -- set to true to run in float window.
+  --       icons = false,
+  --       sign_priority = 500,
+  --       lsp_inlay_hints = {
+  --         enable = false,
+  --       },
+  --     }
+  --
+  --     return opts
+  --   end,
+  -- },
+  {
+    "nvim-neotest/neotest",
+    optional = true,
+    dependencies = { "fredrikaverpil/neotest-golang" },
+    opts = function(_, opts)
+      if not opts.adapters then opts.adapters = {} end
+      table.insert(opts.adapters, require "neotest-golang"(require("astrocore").plugin_opts "neotest-golang"))
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        go = { "goimports", lsp_format = "last" },
       },
     },
-    opts = function()
-      local opts = {
-        -- verbose = true,
-        log_path = vim.fn.expand "$HOME" .. "/tmp/gonvim.log",
-        lsp_codelens = false,
-        comment_placeholder = "Keith",
-        dap_debug = true,
-        dap_debug_gui = false,
-        dap_debug_vt = true,
-        dap_debug_keymap = false, -- true: use keymap for debugger defined in go/dap.lua
-        run_in_floaterm = true, -- set to true to run in float window.
-        icons = false,
-        sign_priority = 500,
-        lsp_inlay_hints = {
-          enable = false,
-        },
-      }
-
-      return opts
-    end,
+  },
+  {
+    "echasnovski/mini.icons",
+    optional = true,
+    opts = {
+      file = {
+        [".go-version"] = { glyph = "", hl = "MiniIconsBlue" },
+      },
+      filetype = {
+        gotmpl = { glyph = "󰟓", hl = "MiniIconsGrey" },
+      },
+    },
   },
 }

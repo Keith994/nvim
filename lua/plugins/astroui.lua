@@ -10,7 +10,7 @@ return {
   ---@type AstroUIOpts
   opts = {
     -- change colorscheme
-    colorscheme = "carbonfox",
+    colorscheme = "duskfox",
     -- colorscheme = "catppuccin",
     -- AstroUI allows you to easily modify highlight groups easily for any and all colorschemes
     highlights = {
@@ -26,7 +26,7 @@ return {
     },
     -- Icons can be configured throughout the interface
     icons = {
-      VimIcon = "",
+      VimIcon = " ",
       ScrollText = "",
       GitBranch = "",
       GitAdd = "",
