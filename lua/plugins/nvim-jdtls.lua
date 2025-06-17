@@ -57,7 +57,7 @@ return {
       local root_dir =
           vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
       -- calculate workspace dir
-      local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+      local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
       local workspace_dir = vim.fn.stdpath "data" .. "/site/java/workspace-root/" .. project_name
       -- vim.fn.mkdir(workspace_dir, "p")
 
@@ -70,7 +70,7 @@ return {
         cmd = {
           "/usr/lib/jvm/java-21-openjdk/bin/java",
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-          "-Dosgi.bundles.defaultStartLevel=6",
+          "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
           "-Dlog:disable",
           "-Djdt.ls.debug=false",
@@ -90,7 +90,7 @@ return {
           "--add-opens",
           "java.base/java.lang=ALL-UNNAMED",
           "-jar",
-          vim.fn.expand "$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher.jar",
+          vim.fn.expand "$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher_1.7.0.v20250331-1702.jar",
           "-configuration",
           vim.fn.expand "$MASON/share/jdtls/config",
           "-data",
@@ -184,6 +184,7 @@ return {
           },
           extendedClientCapabilities = {
             classFileContentsSupport = true,
+            resolveAdditionalTextEditsSupport = true,
           },
         },
         handlers = {
