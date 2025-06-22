@@ -14,12 +14,12 @@ return {
     },
     -- Configure core features of AstroNvim
     features = {
-      large_buf = { size = 1024 * 500 * 10, lines = 50000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true,                                      -- enable autopairs at start
-      cmp = true,                                            -- enable completion at start
-      diagnostics_mode = 3,                                  -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
-      highlighturl = true,                                   -- highlight URLs at start
-      notifications = true,                                  -- enable notifications at start
+      large_buf = {enabled = false, notify = true, size = 1024 * 500, lines = 3000 }, -- set global limits for large files for disabling features like treesitter
+      autopairs = true,                                     -- enable autopairs at start
+      cmp = true,                                           -- enable completion at start
+      diagnostics_mode = 3,                                 -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      highlighturl = true,                                  -- highlight URLs at start
+      notifications = true,                                 -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -58,7 +58,7 @@ return {
         -- second key is the lefthand side of the map
         ["<Leader>w"] = { "󱂬 Windows", desc = nil },
         ["<Leader>x"] = { " Trouble", desc = nil },
-        ["<LocalLeader>w"] = { "<cmd>w<cr>", desc = "Save" },
+        -- ["<LocalLeader>w"] = { "<cmd>w<cr>", desc = "Save" },
         ["<C-w>"] = { "<cmd>wq<cr>", desc = "Write and Quit Window" },
         ["<C-s>"] = { function() require("resession").save() end, desc = "Force Write And Save Session", },
         [";"] = { ":" },

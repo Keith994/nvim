@@ -22,7 +22,7 @@ return {
         local get_file_path = function() return vim.fn.expand "%" end
         local get_project_path = function() return vim.fn.getcwd() end
 
-        local prefix = "<Leader>T"
+        local prefix = "t"
 
         maps.n[prefix] = {
           desc = require("astroui").get_icon("Tests", 1, true) .. "Tests",

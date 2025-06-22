@@ -110,6 +110,9 @@ return {
         ["<F21>"] = { function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "condition_breakpoint", },
         ["K"] = { function() require("astrocore.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end, desc = "Next buffer", },
       },
+      i = {
+        ["<C-K>"] = { function() vim.lsp.buf.signature_help() end, desc = "signature help", },
+      },
       v = {
         ["<LocalLeader>f"] = { function() vim.lsp.buf.format() end, desc = "Format code" },
       },

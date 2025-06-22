@@ -79,9 +79,10 @@ return {
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "avante", "lsp", "path", "snippets", "buffer" },
+        default = { "buffer", "lsp", "snippets", "path", },
         per_filetype = {
           sql = { "snippets", "dadbod", "buffer" },
+          java = { "lsp", "path" },
         },
         providers = {
           dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
@@ -97,6 +98,7 @@ return {
             enabled = true,
             module = "blink.cmp.sources.lsp",
             min_keyword_length = function() if vim.bo.filetype == 'java' then return 0 else return 0 end end,
+            max_items = 50,
             -- When linking markdown notes, I would get snippets and text in the
             -- suggestions, I want those to show only if there are no LSP
             -- suggestions
@@ -180,7 +182,7 @@ return {
               return items
             end,
           },
-        }
+        },
       },
       appearance = {
         kind_icons = {
@@ -233,11 +235,11 @@ return {
           "fallback",
         },
       },
-      fuzzy = { implementation = "prefer_rust" },
+      fuzzy = { implementation = "rust" },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
         keyword = {
-          range = "full",
+          range = "prefix",
         },
         ghost_text = { enabled = vim.g.ai_cmp },
         trigger = {

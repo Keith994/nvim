@@ -58,7 +58,7 @@ return {
           vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
-      local workspace_dir = vim.fn.stdpath "data" .. "/site/java/workspace-root/" .. project_name
+      local workspace_dir = vim.fn.expand("$HOME/.cache/jdtls/" .. project_name)
       -- vim.fn.mkdir(workspace_dir, "p")
 
       -- validate operating system
@@ -77,13 +77,20 @@ return {
           "-Dlombok.disableConfig=true",
           "-Dsun.zip.disableMemoryMapping=true",
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
-          "-Xms2g",             -- 初始堆内存提升
+          "-Xms1g",             -- 初始堆内存提升
           "-Xmx8g",             -- 最大堆内存提升
           "-XX:+UseParallelGC", -- 启用 G1 GC
           "-XX:GCTimeRatio=4",  -- 启用 G1 GC
+          '-XX:+ParallelRefProcEnabled',
           "-XX:AdaptiveSizePolicyWeight=90",
           "-XX:+UseStringDeduplication",
-          "-XX:MetaspaceSize=512M",
+          '-XX:MaxGCPauseMillis=200', -- 优化 GC 停顿
+          '-XX:MetaspaceSize=1G',     -- Metaspace 初始大小
+          '-XX:MaxMetaspaceSize=2G',  -- 限制 Metaspace 上限
+
+          "-XX:+UnlockExperimentalVMOptions",
+          '-XX:G1NewSizePercent=20',
+          '-XX:InitiatingHeapOccupancyPercent=35',
           "--add-modules=ALL-SYSTEM",
           "--add-opens",
           "java.base/java.util=ALL-UNNAMED",
@@ -100,7 +107,7 @@ return {
         settings = {
           java = {
             autobuild = {
-              enabled = true,
+              enabled = false,
             },
             eclipse = { downloadSources = true },
             edit = {
@@ -113,7 +120,7 @@ return {
               enabled = false,
             },
             configuration = {
-              updateBuildConfiguration = "automatic",
+              updateBuildConfiguration = "disabled",
               maven = {
                 userSettings = "none",
               },
@@ -134,25 +141,26 @@ return {
               },
             },
             diagnostic = {
-              refreshAfterSave = false,
+              refreshAfterSave = true,
             },
             maven = { downloadSources = true },
             implementationsCodeLens = { enabled = false },
             referencesCodeLens = { enabled = false },
             inlayHints = { parameterNames = { enabled = false } },
-            signatureHelp = { enabled = false },
+            signatureHelp = { enabled = true },
             contentProvider = {
               preferred = "fernflower",
             },
             completion = {
               enabled = true,
               favoriteStaticMembers = {
-                "org.hamcrest.MatcherAssert.assertThat",
-                "org.hamcrest.Matchers.*",
-                "org.hamcrest.CoreMatchers.*",
-                "org.junit.jupiter.api.Assertions.*",
-                "java.util.Objects.requireNonNull",
-                "java.util.Objects.requireNonNullElse",
+                -- "org.hamcrest.MatcherAssert.assertThat",
+                -- "org.hamcrest.Matchers.*",
+                -- "org.hamcrest.CoreMatchers.*",
+                -- "org.junit.jupiter.api.Assertions.*",
+                -- "java.util.Objects.requireNonNull",
+                -- "java.util.Objects.requireNonNullElse",
+                "org.junit.Assert.*",
                 "org.mockito.Mockito.*",
               },
               filteredTypes = {
@@ -162,9 +170,9 @@ return {
                 "jdk.*",
                 "sun.*",
               },
-              guessMethodArguments = true,
+              guessMethodArguments = "off",
               maxResults = 30,
-              postfix = false,
+              postfix = true,
               matchCase = "OFF",
             },
             sources = {
@@ -185,10 +193,24 @@ return {
           extendedClientCapabilities = {
             classFileContentsSupport = true,
             resolveAdditionalTextEditsSupport = true,
+            progressReportProvider = true,
+            generateToStringPromptSupport = true,
+            advancedExtractRefactoringSupport = true,
+            advancedOrganizeImportsSupport = true,
+            -- 关键优化：关闭高开销功能
+            completion = {
+              maxResults = 30,   -- 限制补全结果数量
+              lazyResolve = true -- 延迟解析补全项
+            },
+            shouldLanguageServerExitOnShutdown = true
           },
         },
         handlers = {
           ["$/progress"] = function() end, -- disable progress updates.
+        },
+        flags = {
+          debounce_text_changes = 300, -- 增加输入防抖
+          allow_incremental_sync = true
         },
         filetypes = { "java" },
         on_attach = function(...)
