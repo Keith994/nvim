@@ -20,33 +20,34 @@ return {
       large_buf = true,
       autoformat = false,     -- enable or disable auto formatting on start
       codelens = false,       -- enable/disable codelens refresh on start
-      inlay_hints = false,    -- enable/disable inlay hints on start
+      inlay_hints = true,    -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
       signature_help = true,
     },
     -- customize lsp formatting options
-    formatting = {
-      -- control auto formatting on save
-      format_on_save = {
-        enabled = false,    -- enable or disable format on save globally
-        allow_filetypes = { -- enable format on save for specified filetypes only
-          "python",
-        },
-        ignore_filetypes = { -- disable format on save for specified filetypes
-          -- "python",
-          "go",
-          "java",
-        },
-      },
-      disabled = { -- disable formatting capabilities for the listed language servers
-        -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
-        -- "lua_ls",
-      },
-      timeout_ms = 3000, -- default format timeout
-      -- filter = function(client) -- fully override the default formatting function
-      --   return true
-      -- end
-    },
+    -- formatting = {
+    --   enabled = false,
+    --   -- control auto formatting on save
+    --   format_on_save = {
+    --     enabled = true,    -- enable or disable format on save globally
+    --     -- allow_filetypes = { -- enable format on save for specified filetypes only
+    --     --   "go",
+    --     -- },
+    --     ignore_filetypes = { -- disable format on save for specified filetypes
+    --       -- "python",
+    --       -- "go",
+    --       "java",
+    --     },
+    --   },
+    --   disabled = { -- disable formatting capabilities for the listed language servers
+    --     -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
+    --     -- "lua_ls",
+    --   },
+    --   timeout_ms = 10000, -- default format timeout
+    --   -- filter = function(client) -- fully override the default formatting function
+    --   --   return true
+    --   -- end
+    -- },
     -- enable servers that you already have installed without mason
     servers = {
       yamlls = {
@@ -85,7 +86,7 @@ return {
         ["gr"] = { function() require("snacks.picker").lsp_references() end, desc = "References of current symbol" },
         ["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" },
         ["gI"] = { function() require("snacks.picker").lsp_implementations() end, desc = "lsp implementations" },
-        ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format code" },
+        ["<localleader>f"] = { function() vim.cmd.Format() end, desc = "Format Buffer" },
         ["<leader>lc"] = { function() require('snacks.picker').lsp_config() end, desc = "LSP configurations" },
         ["<leader>la"] = { function() vim.lsp.buf.code_action() end, desc = "LSP code action" },
         ["<leader>lR"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },

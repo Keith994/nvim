@@ -6,6 +6,9 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.recipes.vscode" },
+  { import = "astrocommunity.recipes.vscode-icons" },
+  -- { import = "astrocommunity.recipes.astrolsp-auto-signature-help" },
+  -- { import = "astrocommunity.recipes.astrolsp-no-insert-inlay-hints" },
   -- { import = "astrocommunity.bars-and-lines.dropbar-nvim" },
   -- { import = "astrocommunity.recipes.astrolsp-auto-signature-help" },
   { import = "astrocommunity.colorscheme.nightfox-nvim" },

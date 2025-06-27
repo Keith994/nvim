@@ -51,7 +51,7 @@ return {
     opts = function(_, opts)
       local utils = require "astrocore"
       -- use this function notation to build some variables
-      local root_markers = { ".git", "pom.xml", "mvnw", "gradlew", "build.gradle", ".project" }
+      -- local root_markers = { ".git", "pom.xml", "mvnw", "gradlew", "build.gradle", ".project" }
       -- local root_markers = { "pom.xml", "gradlew" }
       -- local root_dir = require("jdtls.setup").find_root(root_markers)
       local root_dir =
