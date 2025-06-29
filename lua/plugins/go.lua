@@ -1,7 +1,19 @@
 if vim.g.vscode then return {} end
+-- Utility function to extend or override a config table, similar to the way
+-- that Plugin.opts works.
+---@param config table
+---@param custom function | table | nil
+local function extend_or_override(config, custom, ...)
+  if type(custom) == "function" then
+    config = custom(config, ...) or config
+  elseif custom then
+    config = vim.tbl_deep_extend("force", config, custom) --[[@as table]]
+  end
+  return config
+end
 local create_command = vim.api.nvim_create_user_command
 
-function is_test_file()
+local function is_test_file()
   local file = vim.fn.expand('%')
   if #file <= 1 then
     vim.notify("no buffer name", vim.log.levels.ERROR)
@@ -12,7 +24,7 @@ function is_test_file()
   return file, (not is_test and is_source), is_test
 end
 
-function alternate()
+local function alternate()
   local file, is_source, is_test = is_test_file()
   local alt_file = file
   if is_test then
@@ -25,7 +37,7 @@ function alternate()
   return alt_file
 end
 
-function switch(bang, cmd)
+local function switch(bang, cmd)
   local alt_file = alternate()
   if not vim.fn.filereadable(alt_file) and not vim.fn.bufexists(alt_file) and not bang then
     vim.notify("couldn't find " .. alt_file, vim.log.levels.ERROR)
@@ -41,12 +53,36 @@ end
 
 return {
   {
-    "AstroNvim/astrolsp",
-    optional = true,
-    ---@type AstroLSPOpts
+    "olexsmir/gopher.nvim",
+    ft = "go",
+    build = function()
+      if not require("lazy.core.config").spec.plugins["mason.nvim"] then
+        vim.print "Installing go dependencies..."
+        vim.cmd.GoInstallDeps()
+      end
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = function(_, opts)
+      create_command("GoAlt", function() switch(nil, '') end, { desc = "Alt File" })
+      create_command("GoAltV", function() switch(nil, 'vsplit') end, { desc = "Alt File vsplit" })
+      create_command("GoAltS", function() switch(nil, 'vsplit') end, { desc = "Alt File split" })
+      return extend_or_override(opts, {
+        gotag = {
+          transform = "camelcase",
+          -- default tags to add to struct fields
+          default_tag = "json",
+        }
+      })
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
     opts = {
       ---@diagnostic disable-next-line: missing-fields
-      config = {
+      servers = {
         gopls = {
           settings = {
             gopls = {
@@ -93,120 +129,53 @@ return {
           },
         },
       },
-    },
-  },
-  -- Golang support
-  {
-    "nvim-treesitter/nvim-treesitter",
-    optional = true,
-    opts = function(_, opts)
-      if opts.ensure_installed ~= "all" then
-        opts.ensure_installed =
-            require("astrocore").list_insert_unique(opts.ensure_installed, { "go", "gomod", "gosum", "gowork" })
-      end
-    end,
-  },
-
-  {
-    "jay-babu/mason-null-ls.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed =
-          require("astrocore").list_insert_unique(opts.ensure_installed,
-            { "gomodifytags", "gofumpt", "iferr", "impl", "gotests", "goimports" })
-    end,
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = require("astrocore").list_insert_unique(
-        opts.ensure_installed,
-        { "delve", "gopls", "gomodifytags", "gofumpt", "gotests", "goimports", "iferr", "impl" }
-      )
-    end,
-  },
-  {
-    "leoluz/nvim-dap-go",
-    ft = "go",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      {
-        "jay-babu/mason-nvim-dap.nvim",
-        optional = true,
-        opts = function(_, opts)
-          opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "delve" })
+      setup = {
+        gopls = function(_, opts)
+          -- workaround for gopls not supporting semanticTokensProvider
+          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+          LazyVim.lsp.on_attach(function(client, _)
+            if not client.server_capabilities.semanticTokensProvider then
+              local semantic = client.config.capabilities.textDocument.semanticTokens
+              client.server_capabilities.semanticTokensProvider = {
+                full = true,
+                legend = {
+                  tokenTypes = semantic.tokenTypes,
+                  tokenModifiers = semantic.tokenModifiers,
+                },
+                range = true,
+              }
+            end
+          end, "gopls")
+          -- end workaround
         end,
       },
     },
-    opts = {},
   },
   {
-    "olexsmir/gopher.nvim",
-    ft = "go",
-    build = function()
-      if not require("lazy.core.config").spec.plugins["mason.nvim"] then
-        vim.print "Installing go dependencies..."
-        vim.cmd.GoInstallDeps()
-      end
-    end,
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "go", "gomod", "gowork", "gosum" } },
+  },
+  {
+    "mason-org/mason.nvim",
+    opts = { ensure_installed = { "goimports", "gofumpt" } },
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    optional = true,
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      { "williamboman/mason.nvim", optional = true }, -- by default use Mason for go dependencies
+      {
+        "mason-org/mason.nvim",
+        opts = { ensure_installed = { "gomodifytags", "impl" } },
+      },
     },
     opts = function(_, opts)
-      create_command("GoAlt", function() switch(nil, '') end, { desc = "Alt File" })
-      create_command("GoAltV", function() switch(nil, 'vsplit') end, { desc = "Alt File vsplit" })
-      create_command("GoAltS", function() switch(nil, 'vsplit') end, { desc = "Alt File split" })
-      local utils = require "astrocore"
-      return utils.extend_tbl(opts, {
-        gotag = {
-          transform = "camelcase",
-          -- default tags to add to struct fields
-          default_tag = "json",
-        }
+      local nls = require("null-ls")
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        nls.builtins.code_actions.gomodifytags,
+        nls.builtins.code_actions.impl,
+        nls.builtins.formatting.goimports,
+        nls.builtins.formatting.gofumpt,
       })
-    end,
-  },
-  -- {
-  --   "ray-x/go.nvim",
-  --   -- commit = "591a0b8",
-  --   ft = { "go", "gomod" },
-  --   dependencies = {
-  --     {
-  --       "ray-x/guihua.lua",
-  --       -- commit = "3b3126a"
-  --     },
-  --   },
-  --   opts = function()
-  --     local opts = {
-  --       -- verbose = true,
-  --       log_path = vim.fn.expand "$HOME" .. "/tmp/gonvim.log",
-  --       lsp_codelens = false,
-  --       comment_placeholder = "Keith",
-  --       dap_debug = true,
-  --       dap_debug_gui = false,
-  --       dap_debug_vt = true,
-  --       dap_debug_keymap = false, -- true: use keymap for debugger defined in go/dap.lua
-  --       run_in_floaterm = true, -- set to true to run in float window.
-  --       icons = false,
-  --       sign_priority = 500,
-  --       lsp_inlay_hints = {
-  --         enable = false,
-  --       },
-  --     }
-  --
-  --     return opts
-  --   end,
-  -- },
-  {
-    "nvim-neotest/neotest",
-    optional = true,
-    dependencies = { "fredrikaverpil/neotest-golang" },
-    opts = function(_, opts)
-      if not opts.adapters then opts.adapters = {} end
-      table.insert(opts.adapters, require "neotest-golang" (require("astrocore").plugin_opts "neotest-golang"))
     end,
   },
   {
@@ -214,13 +183,43 @@ return {
     optional = true,
     opts = {
       formatters_by_ft = {
-        go = { "goimports", lsp_format = "last" },
+        go = { "goimports", "gofumpt" },
       },
     },
   },
   {
-    "echasnovski/mini.icons",
+    "mfussenegger/nvim-dap",
     optional = true,
+    dependencies = {
+      {
+        "mason-org/mason.nvim",
+        opts = { ensure_installed = { "delve" } },
+      },
+      {
+        "leoluz/nvim-dap-go",
+        opts = {},
+      },
+    },
+  },
+  {
+    "nvim-neotest/neotest",
+    optional = true,
+    dependencies = {
+      "fredrikaverpil/neotest-golang",
+    },
+    opts = {
+      adapters = {
+        ["neotest-golang"] = {
+          -- Here we can set options for neotest-golang, e.g.
+          go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
+          dap_go_enabled = true, -- requires leoluz/nvim-dap-go
+        },
+      },
+    },
+  },
+  -- Filetype icons
+  {
+    "echasnovski/mini.icons",
     opts = {
       file = {
         [".go-version"] = { glyph = "", hl = "MiniIconsBlue" },
@@ -230,4 +229,5 @@ return {
       },
     },
   },
+
 }

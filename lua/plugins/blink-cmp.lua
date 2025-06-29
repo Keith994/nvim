@@ -1,85 +1,33 @@
-local function has_words_before()
-  local line, col = (unpack or table.unpack)(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
-end
-
----@type function?, function?
-local icon_provider, hl_provider
-
-local function get_kind_icon(CTX)
-  -- Evaluate icon provider
-  if not icon_provider then
-    local _, mini_icons = pcall(require, "mini.icons")
-    if _G.MiniIcons then
-      icon_provider = function(ctx)
-        local is_specific_color = ctx.kind_hl and ctx.kind_hl:match "^HexColor" ~= nil
-        if ctx.item.source_name == "LSP" then
-          local icon, hl = mini_icons.get("lsp", ctx.kind or "")
-          if icon then
-            ctx.kind_icon = icon
-            if not is_specific_color then ctx.kind_hl = hl end
-          end
-        elseif ctx.item.source_name == "Path" then
-          ctx.kind_icon, ctx.kind_hl = mini_icons.get(ctx.kind == "Folder" and "directory" or "file", ctx.label)
-        end
-      end
-    end
-    if not icon_provider then
-      local lspkind_avail, lspkind = pcall(require, "lspkind")
-      if lspkind_avail then
-        icon_provider = function(ctx)
-          if ctx.item.source_name == "LSP" then
-            local icon = lspkind.symbolic(ctx.kind, { mode = "symbol" })
-            if icon then ctx.kind_icon = icon end
-          end
-        end
-      end
-    end
-    if not icon_provider then icon_provider = function() end end
-  end
-  -- Evaluate highlight provider
-  if not hl_provider then
-    local highlight_colors_avail, highlight_colors = pcall(require, "nvim-colorizer")
-    if highlight_colors_avail then
-      local kinds
-      hl_provider = function(ctx)
-        if not kinds then kinds = require("blink.cmp.types").CompletionItemKind end
-        if ctx.item.kind == kinds.Color then
-          local doc = vim.tbl_get(ctx, "item", "documentation")
-          if doc then
-            local color_item = highlight_colors_avail and highlight_colors.format(doc, { kind = kinds[kinds.Color] })
-            if color_item and color_item.abbr_hl_group then
-              if color_item.abbr then ctx.kind_icon = color_item.abbr end
-              ctx.kind_hl = color_item.abbr_hl_group
-            end
-          end
-        end
-      end
-    end
-    if not hl_provider then hl_provider = function() end end
-  end
-  -- Call resolved providers
-  icon_provider(CTX)
-  hl_provider(CTX)
-  -- Return text and highlight information
-  return { text = CTX.kind_icon .. CTX.icon_gap, highlight = CTX.kind_hl }
-end
-
 local trigger_text = ";"
-
 return {
   {
-    "Saghen/blink.cmp",
-    event = { "InsertEnter", "CmdlineEnter" },
-    build = "cargo build --release",
-    opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
-    dependencies = {
-      'Kaiser-Yang/blink-cmp-avante',
+    "saghen/blink.cmp",
+    version = not vim.g.lazyvim_blink_main and "*",
+    build = vim.g.lazyvim_blink_main and "cargo build --release",
+    opts_extend = {
+      "sources.completion.enabled_providers",
+      "sources.compat",
+      "sources.default",
+      "term.sources",
     },
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+      "Kaiser-Yang/blink-cmp-avante",
+      -- add blink.compat to dependencies
+      {
+        "saghen/blink.compat",
+        optional = true, -- make optional so it's only enabled if any extras need it
+        opts = {},
+        version = not vim.g.lazyvim_blink_main and "*",
+      },
+    },
+    event = { "InsertEnter", "CmdlineEnter" },
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
     opts = {
-      -- remember to enable your providers here
       sources = {
-        default = { "buffer", "lsp", "snippets", "path", },
+        default = { "buffer", "lsp", "snippets", "path" },
         per_filetype = {
           sql = { "snippets", "dadbod", "buffer" },
           java = { "lsp", "path" },
@@ -97,7 +45,13 @@ return {
             name = "lsp",
             enabled = true,
             module = "blink.cmp.sources.lsp",
-            min_keyword_length = function() if vim.bo.filetype == 'java' then return 0 else return 0 end end,
+            min_keyword_length = function()
+              if vim.bo.filetype == "java" then
+                return 0
+              else
+                return 0
+              end
+            end,
             max_items = 50,
             -- When linking markdown notes, I would get snippets and text in the
             -- suggestions, I want those to show only if there are no LSP
@@ -184,123 +138,170 @@ return {
           },
         },
       },
+      snippets = {
+        expand = function(snippet, _)
+          return LazyVim.cmp.expand(snippet)
+        end,
+      },
       appearance = {
+        -- sets the fallback highlight groups to nvim-cmp's highlight groups
+        -- useful for when your theme doesn't support blink.cmp
+        -- will be removed in a future release, assuming themes add support
+        use_nvim_cmp_as_default = false,
+        -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
         kind_icons = {
           Copilot = " ",
           llm = " ",
           Avante = " ",
-          AvanteCmd = ' ',
-          AvanteMention = ' ',
+          AvanteCmd = " ",
+          AvanteMention = " ",
         },
       },
-      keymap = {
-        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
-        ["<Up>"] = { "select_prev", "fallback" },
-        ["<Down>"] = { "select_next", "fallback" },
-        ["<C-N>"] = { "select_next", "fallback" },
-        ["<C-P>"] = { "select_prev", "fallback" },
-        -- ["<C-J>"] = { "select_next", "fallback" },
-        -- ["<C-K>"] = { "select_prev", "fallback" },
-        ["<C-U>"] = { "scroll_documentation_up", "fallback" },
-        ["<C-D>"] = { "scroll_documentation_down", "fallback" },
-        ["<C-e>"] = { "hide", "fallback" },
-        ["<CR>"] = { "accept", "fallback" },
-        ["<C-J>"] = {
-          "select_next",
-          "snippet_forward",
-          function(cmp)
-            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
-          end,
-          "fallback",
-        },
-        ["<C-K>"] = {
-          "select_prev",
-          "snippet_backward",
-          "fallback",
-        },
-        ["<Tab>"] = {
-          "select_next",
-          "snippet_forward",
-          function(cmp)
-            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
-          end,
-          "fallback",
-        },
-        ["<S-Tab>"] = {
-          "select_prev",
-          "snippet_backward",
-          function(cmp)
-            if vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
-          end,
-          "fallback",
-        },
-      },
-      fuzzy = { implementation = "rust" },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
-        keyword = {
-          range = "prefix",
+        accept = {
+          -- experimental auto-brackets support
+          auto_brackets = {
+            enabled = true,
+          },
         },
-        ghost_text = { enabled = vim.g.ai_cmp },
         trigger = {
           prefetch_on_insert = false,
         },
-        accept = {
-          auto_brackets = {
-            enabled = true,
-            -- Asynchronously use semantic token to determine if brackets should be added
-            semantic_token_resolution = {
-              enabled = true,
-              -- blocked_filetypes = { "java" },
-              -- How long to wait for semantic tokens to return before assuming no brackets should be added
-              timeout_ms = 100,
-            },
+        menu = {
+          draw = {
+            treesitter = { "lsp" },
           },
-          dot_repeat = false,
-          create_undo_point = false,
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        ghost_text = {
+          enabled = vim.g.ai_cmp,
         },
       },
+
+      -- experimental signature help support
       signature = {
+        enabled = true,
         window = {
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
         },
       },
-    },
-    specs = {
-      {
-        "L3MON4D3/LuaSnip",
-        optional = true,
-        specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
+
+      cmdline = {
+        enabled = false,
       },
-      {
-        "folke/lazydev.nvim",
-        optional = true,
-        specs = {
-          {
-            "Saghen/blink.cmp",
-            opts = function(_, opts)
-              if pcall(require, "lazydev.integrations.blink") then
-                return require("astrocore").extend_tbl(opts, {
-                  sources = {
-                    -- add lazydev to your completion providers
-                    default = { "lazydev" },
-                    providers = {
-                      lazydev = { name = "LazyDev", module = "lazydev.integrations.blink", score_offset = 100 },
-                    },
-                  },
-                })
-              end
-            end,
+      fuzzy = { implementation = "rust" },
+
+      keymap = {
+        preset = "enter",
+        ["<C-y>"] = { "select_and_accept" },
+      },
+    },
+    ---@param opts blink.cmp.Config | { sources: { compat: string[] } }
+    config = function(_, opts)
+      -- setup compat sources
+      local enabled = opts.sources.default
+      for _, source in ipairs(opts.sources.compat or {}) do
+        opts.sources.providers[source] = vim.tbl_deep_extend(
+          "force",
+          { name = source, module = "blink.compat.source" },
+          opts.sources.providers[source] or {}
+        )
+        if type(enabled) == "table" and not vim.tbl_contains(enabled, source) then
+          table.insert(enabled, source)
+        end
+      end
+
+      -- add ai_accept to <Tab> key
+      if not opts.keymap["<Tab>"] then
+        if opts.keymap.preset == "super-tab" then -- super-tab
+          opts.keymap["<Tab>"] = {
+            require("blink.cmp.keymap.presets")["super-tab"]["<Tab>"][1],
+            LazyVim.cmp.map({ "snippet_forward", "ai_accept" }),
+            "fallback",
+          }
+        else -- other presets
+          opts.keymap["<Tab>"] = {
+            LazyVim.cmp.map({ "snippet_forward", "ai_accept" }),
+            "fallback",
+          }
+        end
+      end
+
+      -- Unset custom prop to pass blink.cmp validation
+      opts.sources.compat = nil
+
+      -- check if we need to override symbol kinds
+      for _, provider in pairs(opts.sources.providers or {}) do
+        ---@cast provider blink.cmp.SourceProviderConfig|{kind?:string}
+        if provider.kind then
+          local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
+          local kind_idx = #CompletionItemKind + 1
+
+          CompletionItemKind[kind_idx] = provider.kind
+          ---@diagnostic disable-next-line: no-unknown
+          CompletionItemKind[provider.kind] = kind_idx
+
+          ---@type fun(ctx: blink.cmp.Context, items: blink.cmp.CompletionItem[]): blink.cmp.CompletionItem[]
+          local transform_items = provider.transform_items
+          ---@param ctx blink.cmp.Context
+          ---@param items blink.cmp.CompletionItem[]
+          provider.transform_items = function(ctx, items)
+            items = transform_items and transform_items(ctx, items) or items
+            for _, item in ipairs(items) do
+              item.kind = kind_idx or item.kind
+              item.kind_icon = LazyVim.config.icons.kinds[item.kind_name] or item.kind_icon or nil
+            end
+            return items
+          end
+
+          -- Unset custom prop to pass blink.cmp validation
+          provider.kind = nil
+        end
+      end
+
+      require("blink.cmp").setup(opts)
+    end,
+  },
+
+  -- add icons
+  {
+    "saghen/blink.cmp",
+    opts = function(_, opts)
+      opts.appearance = opts.appearance or {}
+      opts.appearance.kind_icons = vim.tbl_extend("force", opts.appearance.kind_icons or {}, LazyVim.config.icons.kinds)
+    end,
+  },
+
+  -- lazydev
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        -- add lazydev to your completion providers
+        default = { "lazydev" },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100, -- show at a higher priority than lsp
           },
         },
       },
-      {
-        "catppuccin",
-        optional = true,
-        ---@type CatppuccinOptions
-        opts = { integrations = { blink_cmp = true } },
-      },
+    },
+  },
+  -- catppuccin support
+  {
+    "catppuccin",
+    optional = true,
+    opts = {
+      integrations = { blink_cmp = true },
     },
   },
 }

@@ -71,7 +71,7 @@ return {
         },
       },
     },
-    notifier = { enabled = true },
+    -- notifier = { enabled = true },
     -- Folke pointed me to the snacks docs
     -- https://github.com/LazyVim/LazyVim/discussions/4251#discussioncomment-11198069
     -- Here's the lazygit snak docs

@@ -1,17 +1,17 @@
 return {
   "mikavilpas/yazi.nvim",
   event = "VeryLazy",
-  specs = {
-    "nvim-neo-tree/neo-tree.nvim",
-    enabled = false,
-  },
+  -- specs = {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   enabled = false,
+  -- },
   keys = {
     -- 👇 in this section, choose your own keymappings!
-    {
-      "<leader>e",
-      "<cmd>Yazi cwd<cr>",
-      desc = "Open yazi at the current file",
-    },
+    -- {
+    --   "<leader>e",
+    --   "<cmd>Yazi cwd<cr>",
+    --   desc = "Open yazi at the current file",
+    -- },
     {
       "<leader>o",
       "<cmd>Yazi<cr>",
