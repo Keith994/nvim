@@ -18,63 +18,28 @@ return {
     -- Configuration table of features provided by AstroLSP
     features = {
       large_buf = true,
-      autoformat = false,     -- enable or disable auto formatting on start
-      codelens = false,       -- enable/disable codelens refresh on start
-      inlay_hints = true,    -- enable/disable inlay hints on start
+      autoformat = false, -- enable or disable auto formatting on start
+      codelens = false, -- enable/disable codelens refresh on start
+      inlay_hints = true, -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
       signature_help = true,
     },
-    -- customize lsp formatting options
-    -- formatting = {
-    --   enabled = false,
-    --   -- control auto formatting on save
-    --   format_on_save = {
-    --     enabled = true,    -- enable or disable format on save globally
-    --     -- allow_filetypes = { -- enable format on save for specified filetypes only
-    --     --   "go",
-    --     -- },
-    --     ignore_filetypes = { -- disable format on save for specified filetypes
-    --       -- "python",
-    --       -- "go",
-    --       "java",
-    --     },
-    --   },
-    --   disabled = { -- disable formatting capabilities for the listed language servers
-    --     -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
-    --     -- "lua_ls",
-    --   },
-    --   timeout_ms = 10000, -- default format timeout
-    --   -- filter = function(client) -- fully override the default formatting function
-    --   --   return true
-    --   -- end
-    -- },
     -- enable servers that you already have installed without mason
     servers = {
       yamlls = {
         setting = {
           yaml = {
             format = {
-              enable = false
+              enable = false,
             },
-            schemaStore = { enable = false, url = "" }
+            schemaStore = { enable = false, url = "" },
           },
-        }
-
-      }
+        },
+      },
       -- "pyright"
     },
-    -- customize language server configuration options passed to `lspconfig`
-    ---@diagnostic disable: missing-fields
-    -- customize how language servers are attached
-    handlers = {
-      -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
-      -- function(server, opts) require("lspconfig")[server].setup(opts) end
-
-      -- the key is the server that is being setup with `lspconfig`
-      -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
-      -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
-    },
     -- mappings to be set up on attaching of a language server
+    -- stylua: ignore
     mappings = {
       n = {
         ["gy"] = { function() vim.lsp.buf.hover() end, desc = "Hover symbol details" },
@@ -94,10 +59,7 @@ return {
         ["<llader>lG"] = { function() require("snacks.picker").lsp_workspace_symbols() end, desc = "search workspace symbols" },
         ["<leader>ld"] = { "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Open document diagnostics" },
         ["<leader>lw"] = { "<Cmd>Trouble diagnostics toggle<CR>", desc = "Open workspace diagnostics" },
-        ["<Leader>lG"] = {
-          function() require("snacks.picker").lsp_workspace_symbols() end,
-          desc = "Search workspace symbols",
-        },
+        ["<Leader>lG"] = { function() require("snacks.picker").lsp_workspace_symbols() end,desc = "Search workspace symbols", },
         ["<Leader>lS"] = nil,
         ["<Leader>ls"] = { function() require("snacks.picker").lsp_symbols() end, desc = "Search symbols" },
 

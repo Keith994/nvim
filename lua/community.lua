@@ -64,7 +64,6 @@ return {
   { import = "astrocommunity.motion.mini-bracketed" },
   { import = "astrocommunity.motion.mini-surround" },
   -- { import = "astrocommunity.syntax.hlargs-nvim" },
-  { import = "astrocommunity.search.nvim-spectre" },
   -- { import = "astrocommunity.comment.mini-comment" },
   { import = "astrocommunity.programming-language-support.nvim-jqx" },
   -- { import = "astrocommunity.completion.blink-cmp" }, -- 免费的AI编程助手，会收集信息
