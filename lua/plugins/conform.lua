@@ -8,8 +8,7 @@ return {
       json = { "jq" },
       lua = { "stylua" },
       jsonc = { "jq" },
-      java = { "google-java-format" },
-      yaml = { "prettierd" }
+      yaml = { "prettierd" },
     },
   },
 }

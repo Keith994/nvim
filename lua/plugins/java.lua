@@ -386,6 +386,17 @@ return {
       -- Avoid race condition by calling attach the first time, since the autocmd won't fire.
       attach_jdtls()
     end,
+    specs = {
+      {
+        "stevearc/conform.nvim",
+        optional = true,
+        opts = {
+          formatters_by_ft = {
+            java = { "google-java-format" },
+          },
+        },
+      },
+    },
   },
   {
     "JavaHello/spring-boot.nvim",
