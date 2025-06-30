@@ -21,7 +21,7 @@ return {
     optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
-          require("astrocore").list_insert_unique(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test" })
+        require("astrocore").list_insert_unique(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test" })
     end,
   },
   {
@@ -37,8 +37,7 @@ return {
           maps.n["<Leader>lv"] = { function() require("jdtls").set_runtime() end, desc = "set jdk version" }
           maps.n["<Leader>lC"] = {
             function() require("toggleterm").exec("mvnd compile", 0, 50, "", "vertical", "", true, false) end,
-            desc =
-            "compile"
+            desc = "compile",
           }
           local utils = require "astrocore"
           return utils.extend_tbl({
@@ -55,7 +54,7 @@ return {
       -- local root_markers = { "pom.xml", "gradlew" }
       -- local root_dir = require("jdtls.setup").find_root(root_markers)
       local root_dir =
-          vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
+        vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
       local workspace_dir = vim.fn.expand("$HOME/.cache/jdtls/" .. project_name)
@@ -77,20 +76,21 @@ return {
           "-Dlombok.disableConfig=true",
           "-Dsun.zip.disableMemoryMapping=true",
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
-          "-Xms1g",             -- 初始堆内存提升
-          "-Xmx8g",             -- 最大堆内存提升
-          "-XX:+UseParallelGC", -- 启用 G1 GC
-          "-XX:GCTimeRatio=4",  -- 启用 G1 GC
-          '-XX:+ParallelRefProcEnabled',
+          "-Xms1g", -- 初始堆内存提升
+          "-Xmx8g", -- 最大堆内存提升
+          "-noverify",
+          "-XX:+UseZGC", -- 启用 G1 GC
+          "-XX:GCTimeRatio=4", -- 启用 G1 GC
+          "-XX:+ParallelRefProcEnabled",
           "-XX:AdaptiveSizePolicyWeight=90",
           "-XX:+UseStringDeduplication",
-          '-XX:MaxGCPauseMillis=200', -- 优化 GC 停顿
-          '-XX:MetaspaceSize=1G',     -- Metaspace 初始大小
-          '-XX:MaxMetaspaceSize=2G',  -- 限制 Metaspace 上限
+          "-XX:MaxGCPauseMillis=200", -- 优化 GC 停顿
+          "-XX:MetaspaceSize=1G", -- Metaspace 初始大小
+          "-XX:MaxMetaspaceSize=2G", -- 限制 Metaspace 上限
 
           "-XX:+UnlockExperimentalVMOptions",
-          '-XX:G1NewSizePercent=20',
-          '-XX:InitiatingHeapOccupancyPercent=35',
+          "-XX:G1NewSizePercent=20",
+          "-XX:InitiatingHeapOccupancyPercent=35",
           "--add-modules=ALL-SYSTEM",
           "--add-opens",
           "java.base/java.util=ALL-UNNAMED",
@@ -106,6 +106,9 @@ return {
         root_dir = root_dir,
         settings = {
           java = {
+            index = {
+              preload = { "org.springframework.*" },
+            },
             autobuild = {
               enabled = false,
             },
@@ -141,7 +144,7 @@ return {
               },
             },
             diagnostic = {
-              refreshAfterSave = true,
+              refreshAfterSave = false,
             },
             maven = { downloadSources = true },
             implementationsCodeLens = { enabled = false },
@@ -160,8 +163,8 @@ return {
                 -- "org.junit.jupiter.api.Assertions.*",
                 -- "java.util.Objects.requireNonNull",
                 -- "java.util.Objects.requireNonNullElse",
-                "org.junit.Assert.*",
-                "org.mockito.Mockito.*",
+                -- "org.junit.Assert.*",
+                -- "org.mockito.Mockito.*",
               },
               filteredTypes = {
                 "com.sun.*",
@@ -172,8 +175,8 @@ return {
               },
               guessMethodArguments = "off",
               maxResults = 30,
-              postfix = true,
-              matchCase = "OFF",
+              postfix = false,
+              matchCase = "off",
             },
             sources = {
               organizeImports = {
@@ -187,8 +190,9 @@ return {
           bundles = {
             vim.fn.expand "$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar",
             -- unpack remaining bundles
-            (table.unpack or unpack)(vim.split(
-                  vim.fn.glob "$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar", "\n", {})),
+            (table.unpack or unpack)(
+              vim.split(vim.fn.glob "$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar", "\n", {})
+            ),
           },
           extendedClientCapabilities = {
             classFileContentsSupport = true,
@@ -199,18 +203,18 @@ return {
             advancedOrganizeImportsSupport = true,
             -- 关键优化：关闭高开销功能
             completion = {
-              maxResults = 30,   -- 限制补全结果数量
-              lazyResolve = true -- 延迟解析补全项
+              maxResults = 100, -- 限制补全结果数量
+              lazyResolve = false, -- 延迟解析补全项
             },
-            shouldLanguageServerExitOnShutdown = true
+            shouldLanguageServerExitOnShutdown = true,
           },
         },
         handlers = {
           ["$/progress"] = function() end, -- disable progress updates.
         },
         flags = {
-          debounce_text_changes = 300, -- 增加输入防抖
-          allow_incremental_sync = true
+          debounce_text_changes = 200, -- 增加输入防抖
+          allow_incremental_sync = true,
         },
         filetypes = { "java" },
         on_attach = function(...)
@@ -277,7 +281,7 @@ return {
     dependencies = { "rcasia/neotest-java" },
     opts = function(_, opts)
       if not opts.adapters then opts.adapters = {} end
-      table.insert(opts.adapters, require "neotest-java" (require("astrocore").plugin_opts "neotest-java"))
+      table.insert(opts.adapters, require "neotest-java"(require("astrocore").plugin_opts "neotest-java"))
     end,
   },
 }

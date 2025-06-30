@@ -74,15 +74,15 @@ return {
     build = "cargo build --release",
     opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
     dependencies = {
-      'Kaiser-Yang/blink-cmp-avante',
+      "Kaiser-Yang/blink-cmp-avante",
     },
     opts = {
       -- remember to enable your providers here
       sources = {
-        default = { "buffer", "lsp", "snippets", "path", },
+        default = { "buffer", "lsp", "snippets", "path" },
         per_filetype = {
           sql = { "snippets", "dadbod", "buffer" },
-          java = { "lsp", "path" },
+          java = { "lsp", "path", "snippets" },
         },
         providers = {
           dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
@@ -97,7 +97,6 @@ return {
             name = "lsp",
             enabled = true,
             module = "blink.cmp.sources.lsp",
-            min_keyword_length = function() if vim.bo.filetype == 'java' then return 0 else return 0 end end,
             max_items = 50,
             -- When linking markdown notes, I would get snippets and text in the
             -- suggestions, I want those to show only if there are no LSP
@@ -121,9 +120,7 @@ return {
             opts = {
               trailing_slash = false,
               label_trailing_slash = true,
-              get_cwd = function(context)
-                return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
-              end,
+              get_cwd = function(context) return vim.fn.expand(("#%d:p:h"):format(context.bufnr)) end,
               show_hidden_files_by_default = true,
             },
           },
@@ -160,11 +157,10 @@ return {
             -- so, so I still have to use the transform_items here
             -- This removes the ";" only for the friendly-snippets snippets
             transform_items = function(_, items)
-              local line = vim.api.nvim_get_current_line()
               local col = vim.api.nvim_win_get_cursor(0)[2]
-              local before_cursor = line:sub(1, col)
-              local start_pos, end_pos = before_cursor:find(trigger_text .. "[^" .. trigger_text .. "]*$")
-              if start_pos then
+              local before_cursor = vim.api.nvim_get_current_line():sub(1, col)
+              local trigger_pos = before_cursor:find(trigger_text .. "[^" .. trigger_text .. "]*$")
+              if trigger_pos then
                 for _, item in ipairs(items) do
                   if not item.trigger_text_modified then
                     ---@diagnostic disable-next-line: inject-field
@@ -172,8 +168,8 @@ return {
                     item.textEdit = {
                       newText = item.insertText or item.label,
                       range = {
-                        start = { line = vim.fn.line(".") - 1, character = start_pos - 1 },
-                        ["end"] = { line = vim.fn.line(".") - 1, character = end_pos },
+                        start = { line = vim.fn.line "." - 1, character = trigger_pos - 1 },
+                        ["end"] = { line = vim.fn.line "." - 1, character = col },
                       },
                     }
                   end
@@ -189,8 +185,8 @@ return {
           Copilot = " ",
           llm = " ",
           Avante = " ",
-          AvanteCmd = ' ',
-          AvanteMention = ' ',
+          AvanteCmd = " ",
+          AvanteMention = " ",
         },
       },
       keymap = {
@@ -266,13 +262,14 @@ return {
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
         },
       },
+      snippets = { preset = "default" },
     },
     specs = {
-      {
-        "L3MON4D3/LuaSnip",
-        optional = true,
-        specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
-      },
+      -- {
+      --   "L3MON4D3/LuaSnip",
+      --   optional = true,
+      --   specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
+      -- },
       {
         "folke/lazydev.nvim",
         optional = true,
