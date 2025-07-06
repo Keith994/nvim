@@ -1,10 +1,11 @@
 local function has_words_before()
   local line, col = (unpack or table.unpack)(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 ---@type function?, function?
 local icon_provider, hl_provider
+
 
 local function get_kind_icon(CTX)
   -- Evaluate icon provider
@@ -21,17 +22,8 @@ local function get_kind_icon(CTX)
           end
         elseif ctx.item.source_name == "Path" then
           ctx.kind_icon, ctx.kind_hl = mini_icons.get(ctx.kind == "Folder" and "directory" or "file", ctx.label)
-        end
-      end
-    end
-    if not icon_provider then
-      local lspkind_avail, lspkind = pcall(require, "lspkind")
-      if lspkind_avail then
-        icon_provider = function(ctx)
-          if ctx.item.source_name == "LSP" then
-            local icon = lspkind.symbolic(ctx.kind, { mode = "symbol" })
-            if icon then ctx.kind_icon = icon end
-          end
+        elseif ctx.item.source_name == "Snippets" then
+          ctx.kind_icon, ctx.kind_hl = mini_icons.get("lsp", "snippet")
         end
       end
     end
@@ -39,7 +31,7 @@ local function get_kind_icon(CTX)
   end
   -- Evaluate highlight provider
   if not hl_provider then
-    local highlight_colors_avail, highlight_colors = pcall(require, "nvim-colorizer")
+    local highlight_colors_avail, highlight_colors = pcall(require, "nvim-highlight-colors")
     if highlight_colors_avail then
       local kinds
       hl_provider = function(ctx)
@@ -69,42 +61,32 @@ local trigger_text = ";"
 
 return {
   {
-    "Saghen/blink.cmp",
+    "saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
     build = "cargo build --release",
     opts_extend = { "sources.default", "sources.cmdline", "term.sources" },
-    dependencies = {
-      "Kaiser-Yang/blink-cmp-avante",
-    },
     opts = {
       -- remember to enable your providers here
       sources = {
         default = { "buffer", "lsp", "snippets", "path" },
         per_filetype = {
           sql = { "snippets", "dadbod", "buffer" },
-          java = { "lsp", "path", "snippets" },
+          java = { "lsp", "path" },
         },
         providers = {
           dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
-          avante = {
-            module = "blink-cmp-avante",
-            name = "Avante",
-            enabled = true,
-            max_items = 5,
-            score_offset = 100, -- the higher the number, the higher the priority
-          },
           lsp = {
             name = "lsp",
             enabled = true,
             module = "blink.cmp.sources.lsp",
+            min_keyword_length = function()
+              if vim.bo.filetype == "java" then
+                return 0
+              else
+                return 0
+              end
+            end,
             max_items = 50,
-            -- When linking markdown notes, I would get snippets and text in the
-            -- suggestions, I want those to show only if there are no LSP
-            -- suggestions
-            --
-            -- Enabled fallbacks as this seems to be working now
-            -- Disabling fallbacks as my snippets wouldn't show up when editing
-            -- lua files
             fallbacks = { "buffer" },
             score_offset = 90, -- the higher the number, the higher the priority
           },
@@ -120,7 +102,9 @@ return {
             opts = {
               trailing_slash = false,
               label_trailing_slash = true,
-              get_cwd = function(context) return vim.fn.expand(("#%d:p:h"):format(context.bufnr)) end,
+              get_cwd = function(context)
+                return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
+              end,
               show_hidden_files_by_default = true,
             },
           },
@@ -157,10 +141,11 @@ return {
             -- so, so I still have to use the transform_items here
             -- This removes the ";" only for the friendly-snippets snippets
             transform_items = function(_, items)
+              local line = vim.api.nvim_get_current_line()
               local col = vim.api.nvim_win_get_cursor(0)[2]
-              local before_cursor = vim.api.nvim_get_current_line():sub(1, col)
-              local trigger_pos = before_cursor:find(trigger_text .. "[^" .. trigger_text .. "]*$")
-              if trigger_pos then
+              local before_cursor = line:sub(1, col)
+              local start_pos, end_pos = before_cursor:find(trigger_text .. "[^" .. trigger_text .. "]*$")
+              if start_pos then
                 for _, item in ipairs(items) do
                   if not item.trigger_text_modified then
                     ---@diagnostic disable-next-line: inject-field
@@ -168,8 +153,8 @@ return {
                     item.textEdit = {
                       newText = item.insertText or item.label,
                       range = {
-                        start = { line = vim.fn.line "." - 1, character = trigger_pos - 1 },
-                        ["end"] = { line = vim.fn.line "." - 1, character = col },
+                        start = { line = vim.fn.line(".") - 1, character = start_pos - 1 },
+                        ["end"] = { line = vim.fn.line(".") - 1, character = end_pos },
                       },
                     }
                   end
@@ -178,15 +163,6 @@ return {
               return items
             end,
           },
-        },
-      },
-      appearance = {
-        kind_icons = {
-          Copilot = " ",
-          llm = " ",
-          Avante = " ",
-          AvanteCmd = " ",
-          AvanteMention = " ",
         },
       },
       keymap = {
@@ -205,7 +181,9 @@ return {
           "select_next",
           "snippet_forward",
           function(cmp)
-            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
+            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then
+              return cmp.show()
+            end
           end,
           "fallback",
         },
@@ -218,7 +196,9 @@ return {
           "select_next",
           "snippet_forward",
           function(cmp)
-            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
+            if has_words_before() or vim.api.nvim_get_mode().mode == "c" then
+              return cmp.show()
+            end
           end,
           "fallback",
         },
@@ -226,7 +206,9 @@ return {
           "select_prev",
           "snippet_backward",
           function(cmp)
-            if vim.api.nvim_get_mode().mode == "c" then return cmp.show() end
+            if vim.api.nvim_get_mode().mode == "c" then
+              return cmp.show()
+            end
           end,
           "fallback",
         },
@@ -234,6 +216,26 @@ return {
       fuzzy = { implementation = "rust" },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
+        menu = {
+          auto_show = function(ctx)
+            return ctx.mode ~= "cmdline"
+          end,
+          border = "rounded",
+          winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+          draw = {
+            treesitter = { "lsp" },
+            components = {
+              kind_icon = {
+                text = function(ctx)
+                  return get_kind_icon(ctx).text
+                end,
+                highlight = function(ctx)
+                  return get_kind_icon(ctx).highlight
+                end,
+              },
+            },
+          },
+        },
         keyword = {
           range = "prefix",
         },
@@ -257,19 +259,19 @@ return {
         },
       },
       signature = {
+        enabled = true,
         window = {
           border = "rounded",
           winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
         },
       },
-      snippets = { preset = "default" },
     },
     specs = {
-      -- {
-      --   "L3MON4D3/LuaSnip",
-      --   optional = true,
-      --   specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
-      -- },
+      {
+        "L3MON4D3/LuaSnip",
+        optional = true,
+        specs = { { "Saghen/blink.cmp", opts = { snippets = { preset = "luasnip" } } } },
+      },
       {
         "folke/lazydev.nvim",
         optional = true,
@@ -278,7 +280,7 @@ return {
             "Saghen/blink.cmp",
             opts = function(_, opts)
               if pcall(require, "lazydev.integrations.blink") then
-                return require("astrocore").extend_tbl(opts, {
+                return require("util").extend_tbl(opts, {
                   sources = {
                     -- add lazydev to your completion providers
                     default = { "lazydev" },
@@ -295,36 +297,7 @@ return {
       {
         "catppuccin",
         optional = true,
-        ---@type CatppuccinOptions
         opts = { integrations = { blink_cmp = true } },
-      },
-    },
-  },
-  {
-    "garymjr/nvim-snippets",
-    dependencies = { "rafamadriz/friendly-snippets" },
-    opts = { friendly_snippets = true },
-    lazy = true,
-    specs = {
-      { "L3MON4D3/LuaSnip", optional = true, enabled = false },
-      {
-        "hrsh7th/nvim-cmp",
-        optional = true,
-        dependencies = { "garymjr/nvim-snippets" },
-        opts = function(_, opts)
-          if not opts.sources then opts.sources = {} end
-          table.insert(opts.sources, { name = "snippets", priority = 750 })
-        end,
-      },
-      {
-        "Saghen/blink.cmp",
-        optional = true,
-        opts = { snippets = { preset = "default" } },
-      },
-      {
-        "danymat/neogen",
-        optional = true,
-        opts = { snippet_engine = "nvim" },
       },
     },
   },

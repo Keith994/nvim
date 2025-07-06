@@ -1,0 +1,244 @@
+local map = vim.keymap.set
+local del = vim.keymap.del
+
+-- localleader
+map("n", "<localleader>p", function()
+  local str = vim.fn.expand("%:p:f")
+  require("util").info("当前文件路径：" .. str)
+end, { desc = "Current Path" })
+map("n", "<localleader>c", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window", silent = true })
+map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true })
+
+map("n", "<S-h>", "0", { desc = "Line Head" })
+map("n", "<S-l>", "$", { desc = "Line Tail" })
+
+-- insert
+map("i", "<c-a>", "<ESC>^i")
+map("i", "<c-e>", "<End>")
+map("i", "<c-l>", "<right>")
+map("i", "<c-h>", "<left>")
+map("i", "<S-Tab>", "<c-d>")
+
+-- command line
+map("c", "<c-a>", "<HOME>")
+map("c", "<c-e>", "<End>")
+map("c", "<c-f>", "<right>")
+map("c", "<c-b>", "<left>")
+map("c", "<c-h>", "<bs>")
+map("c", "<c-d>", "<del>")
+map("c", "<c-t>", [[<C-R>=expand("%:p:h") . "/" <CR>]])
+
+-- Open ComandLine
+map("n", ";", ":", { desc = "Open ComandLine", remap = true })
+-- save file
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+-- quit
+map("n", "<leader>qq", "<cmd>q<cr>", { desc = "Quit" })
+map("n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit All" })
+-- highlights under cursor
+map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
+map("n", "<leader>uI", function()
+  vim.treesitter.inspect_tree()
+  vim.api.nvim_input("I")
+end, { desc = "Inspect Tree" })
+
+-- floating terminal
+local root = require("util.root")
+map("n", "<leader>fT", function()
+  require("snacks").terminal()
+end, { desc = "Terminal (cwd)" })
+map("n", "<leader>ft", function()
+  require("snacks").terminal(nil, { cwd = root() })
+end, { desc = "Terminal (Root Dir)" })
+map("n", "<c-/>", function()
+  require("snacks").terminal(nil, { cwd = root() })
+end, { desc = "Terminal (Root Dir)" })
+map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+
+-- better up/down
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+
+-- Move to window using the <ctrl> hjkl keys
+map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
+map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
+
+-- Resize window using <ctrl> arrow keys
+map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
+map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
+map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
+map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+
+-- Move Lines
+map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
+map("n", "<A-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
+map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
+map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
+map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
+map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
+
+-- buffers
+map("n", "<S-j>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
+map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
+map("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+map("n", "<leader>bb", function()
+  require("snacks").picker.buffers()
+end, { desc = "Switch to Other Buffer" })
+map("n", "<leader>bo", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+map("n", "<leader>bd", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
+--stylua: ignore
+map("n", "<leader>bc", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" }) 
+
+-- Clear search and stop snippet on escape
+map({ "i", "n", "s" }, "<esc>", function()
+  vim.cmd("noh")
+  return "<esc>"
+end, { expr = true, desc = "Escape and Clear hlsearch" })
+
+-- Clear search, diff update and redraw
+-- taken from runtime/lua/_editor.lua
+map(
+  "n",
+  "<leader>ur",
+  "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
+  { desc = "Redraw / Clear hlsearch / Diff Update" }
+)
+
+-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
+map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })
+map("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
+map("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
+map("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev Search Result" })
+map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
+map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
+
+-- better indenting
+map("v", "<", "<gv")
+map("v", ">", ">gv")
+
+-- commenting
+map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
+map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
+
+-- lazy
+map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+
+-- new file
+map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+
+map("n", "<leader>xl", function()
+  local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+  if not success and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Location List" })
+
+-- quickfix list
+map("n", "<leader>xq", function()
+  local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+  if not success and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Quickfix List" })
+
+map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
+
+-- diagnostic
+local diagnostic_goto = function(next, severity)
+  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+  severity = severity and vim.diagnostic.severity[severity] or nil
+  return function()
+    go({ severity = severity })
+  end
+end
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
+map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
+map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
+map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
+
+
+-- stylua: ignore start
+
+map("n", "<leader>e", function() require("snacks").explorer() end,{ desc = "Explorer" })
+map("n", "<leader>,", function() require("snacks").picker.buffers() end,{ desc = "Buffers" })
+map("n", "<leader>/", function ()require("snacks").picker.grep() end,{ desc = "Grep (Root Dir)" })
+map("n", "<leader><space>", function ()require("snacks").picker.files() end,{ desc = "Find Files (Root Dir)" })
+map("n", "<leader>n", function() require("snacks").picker.notifications() end,{ desc = "Notification History" })
+-- find
+map("n", "<leader>fb", function() require("snacks").picker.buffers() end,{ desc = "Buffers" })
+map("n", "<leader>fB", function() require("snacks").picker.buffers({ hidden = true, nofile = true }) end,{ desc = "Buffers (all)" })
+map("n", "<leader>fc", function() require("snacks").picker.config() end,{ desc = "Find Config File" })
+map("n", "<leader>ff", function() require("snacks").picker.files() end,{ desc = "Find Files (Root Dir)" })
+map("n", "<leader>fF", function() require("snacks").picker.files({root = false}) end ,{ desc = "Find Files (cwd)" })
+map("n", "<leader>fg", function() require("snacks").picker.git_files() end,{ desc = "Find Files (git-files)" })
+map("n", "<leader>fr", function() require("snacks").picker.recent() end,{ desc = "Recent" })
+map("n", "<leader>fR", function() require("snacks").picker.recent({ filter = { cwd = true }}) end,{ desc = "Recent (cwd)" })
+map("n", "<leader>fp", function() require("snacks").picker.projects() end,{ desc = "Projects" })
+-- git
+map("n", "<leader>gd", function() require("snacks").picker.git_diff() end,{ desc = "Git Diff (hunks)" })
+map("n", "<leader>gs", function() require("snacks").picker.git_status() end,{ desc = "Git Status" })
+map("n", "<leader>gS", function() require("snacks").picker.git_stash() end,{ desc = "Git Stash" })
+map("n", "<leader>gg", function() require("snacks").lazygit( { cwd = root.git() }) end, { desc = "Lazygit (Root Dir)" })
+map("n", "<leader>gG", function() require("snacks").lazygit() end, { desc = "Lazygit (cwd)" })
+map("n", "<leader>gf", function() require("snacks").picker.git_log_file() end, { desc = "Git Current File History" })
+map("n", "<leader>gl", function() require("snacks").picker.git_log({ cwd = root.git() }) end, { desc = "Git Log" })
+map("n", "<leader>gL", function() require("snacks").picker.git_log() end, { desc = "Git Log (cwd)" })
+map("n", "<leader>gb", function() require("snacks").picker.git_log_line() end, { desc = "Git Blame Line" })
+map({ "n", "x" }, "<leader>gB", function() require("snacks").gitbrowse() end, { desc = "Git Browse (open)" })
+map({"n", "x" }, "<leader>gY", function()
+  require("snacks").gitbrowse({ open = function(url) vim.fn.setreg("+", url) end, notify = false })
+end, { desc = "Git Browse (copy)" })
+-- Grep
+map("n", "<leader>sb", function() require("snacks").picker.lines() end,{ desc = "Buffer Lines" })
+map("n", "<leader>sB", function() require("snacks").picker.grep_buffers() end,{ desc = "Grep Open Buffers" })
+map("n", "<leader>sg", function() require("snacks").picker.grep() end,{ desc = "Grep (Root Dir)" })
+map("n", "<leader>sG", function() require("snacks").picker.grep({ root = false }) end,{ desc = "Grep (cwd)" })
+map("n", "<leader>sp", function() require("snacks").picker.lazy() end,{ desc = "Search for Plugin Spec" })
+map("n", "<leader>sw", function() require("snacks").picker.grep_word() end,{ desc = "Visual selection or word (Root Dir)" })
+map("x", "<leader>sw", function() require("snacks").picker.grep_word() end,{ desc = "Visual selection or word (Root Dir)" })
+map("n", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,{ desc = "Visual selection or word (cwd)"})
+map("x", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,{ desc = "Visual selection or word (cwd)"})
+-- search
+map("n", "<leader>s'", function() require("snacks").picker.registers() end,{ desc = "Registers" })
+map("n", "<leader>s/", function() require("snacks").picker.search_history() end,{ desc = "Search History" })
+map("n", "<leader>sa", function() require("snacks").picker.autocmds() end,{ desc = "Autocmds" })
+map("n", "<leader>sc", function() require("snacks").picker.command_history() end,{ desc = "Command History" })
+map("n", "<leader>sC", function() require("snacks").picker.commands() end,{ desc = "Commands" })
+map("n", "<leader>sd", function() require("snacks").picker.diagnostics() end,{ desc = "Diagnostics" })
+map("n", "<leader>sD", function() require("snacks").picker.diagnostics_buffer() end,{ desc = "Buffer Diagnostics" })
+map("n", "<leader>sh", function() require("snacks").picker.help() end,{ desc = "Help Pages" })
+map("n", "<leader>sH", function() require("snacks").picker.highlights() end,{ desc = "Highlights" })
+map("n", "<leader>si", function() require("snacks").picker.icons() end,{ desc = "Icons" })
+map("n", "<leader>sj", function() require("snacks").picker.jumps() end,{ desc = "Jumps" })
+map("n", "<leader>sk", function() require("snacks").picker.keymaps() end,{ desc = "Keymaps" })
+map("n", "<leader>sl", function() require("snacks").picker.loclist() end,{ desc = "Location List" })
+map("n", "<leader>sM", function() require("snacks").picker.man() end,{ desc = "Man Pages" })
+map("n", "<leader>sm", function() require("snacks").picker.marks() end,{ desc = "Marks" })
+map("n", "<leader>sR", function() require("snacks").picker.resume() end,{ desc = "Resume" })
+map("n", "<leader>sq", function() require("snacks").picker.qflist() end,{ desc = "Quickfix List" })
+map("n", "<leader>su", function() require("snacks").picker.undo() end,{ desc = "Undotree" })
+-- ui
+map("n", "<leader>uC", function() require("snacks").picker.colorschemes() end,{ desc = "Colorschemes" })
+
+--tabs
+map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
+map("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
+map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
+map("n", "<leader><tab>n", "<cmd>tabnew<cr>", { desc = "New Tab" })
+map("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+map("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+map("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
+map("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
+map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
