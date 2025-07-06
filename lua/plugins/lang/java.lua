@@ -5,6 +5,7 @@ function get_raw_config(server)
   end
   return require("lspconfig.server_configurations." .. server)
 end
+
 -- This is the same as in lspconfig.configs.jdtls, but avoids
 -- needing to require that when this module loads.
 local java_filetypes = { "java" }
@@ -89,16 +90,16 @@ return {
         "-Dlombok.disableConfig=true",
         "-javaagent:" .. vim.fn.expand("$MASON/share/jdtls/lombok.jar"),
         "-Dsun.zip.disableMemoryMapping=true",
-        "-Xms1g", -- 初始堆内存提升
-        "-Xmx8g", -- 最大堆内存提升
+        "-Xms1g",             -- 初始堆内存提升
+        "-Xmx8g",             -- 最大堆内存提升
         "-XX:+UseParallelGC", -- 启用 G1 GC
-        "-XX:GCTimeRatio=4", -- 启用 G1 GC
+        "-XX:GCTimeRatio=4",  -- 启用 G1 GC
         "-XX:+ParallelRefProcEnabled",
         "-XX:AdaptiveSizePolicyWeight=90",
         "-XX:+UseStringDeduplication",
         "-XX:MaxGCPauseMillis=200", -- 优化 GC 停顿
-        "-XX:MetaspaceSize=1G", -- Metaspace 初始大小
-        "-XX:MaxMetaspaceSize=2G", -- 限制 Metaspace 上限
+        "-XX:MetaspaceSize=1G",     -- Metaspace 初始大小
+        "-XX:MaxMetaspaceSize=2G",  -- 限制 Metaspace 上限
 
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:G1NewSizePercent=20",
@@ -150,10 +151,6 @@ return {
           return cmd1
         end,
 
-        -- These depend on nvim-dap, but can additionally be disabled by setting false here.
-        dap = { hotcodereplace = "auto", config_overrides = {} },
-        -- Can set this to false to disable main class scan, which is a performance killer for large project
-        dap_main = {},
         test = true,
         settings = {
           java = {
@@ -246,6 +243,13 @@ return {
             filetypes = { "java" },
           },
         },
+        on_attach = function()
+          require("jdtls").setup_dap({
+            hotcodereplace = "auto",
+            config_overrides = {},
+          })
+          require("jdtls.dap").setup_dap_main_class_configs({})
+        end,
       }
     end,
     config = function(_, opts)
@@ -256,8 +260,8 @@ return {
           vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"),
           -- unpack remaining bundles
           (table.unpack or unpack)(
-            vim.split(vim.fn.glob("$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar"), "\n", {})
-          ),
+                vim.split(vim.fn.glob("$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar"), "\n", {})
+              ),
         },
         extendedClientCapabilities = {
           classFileContentsSupport = true,
@@ -268,7 +272,7 @@ return {
           advancedOrganizeImportsSupport = true,
           -- 关键优化：关闭高开销功能
           completion = {
-            maxResults = 30, -- 限制补全结果数量
+            maxResults = 30,    -- 限制补全结果数量
             lazyResolve = true, -- 延迟解析补全项
           },
           shouldLanguageServerExitOnShutdown = true,
@@ -298,98 +302,64 @@ return {
         callback = attach_jdtls,
       })
 
-      -- Setup keymap and dap after the lsp is fully attached.
-      -- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
-      -- https://neovim.io/doc/user/lsp.html#LspAttach
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(args)
-          vim.notify("lspAttch callback".. vim.api.nvim_get_current_buf()) -- TODO: 附加了两次
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client and client.name == "jdtls" then
-            local wk = require("which-key")
-            wk.add({
-              {
-                mode = "n",
-                buffer = args.buf,
-                { "<leader>cx", group = "extract" },
-                { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
-                { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
-                { "<leader>cgs", require("jdtls").super_implementation, desc = "Goto Super" },
-                { "<leader>cgS", require("jdtls.tests").goto_subjects, desc = "Goto Subjects" },
-                { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
-              },
-            })
-            wk.add({
-              {
-                mode = "v",
-                buffer = args.buf,
-                { "<leader>cx", group = "extract" },
-                {
-                  "<leader>cxm",
-                  [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]],
-                  desc = "Extract Method",
-                },
-                {
-                  "<leader>cxv",
-                  [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]],
-                  desc = "Extract Variable",
-                },
-                {
-                  "<leader>cxc",
-                  [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]],
-                  desc = "Extract Constant",
-                },
-              },
-            })
-
-            local mason_registry = require("mason-registry")
-            if opts.dap and mason_registry.is_installed("java-debug-adapter") then
-              -- custom init for Java debugger
-              require("jdtls").setup_dap(opts.dap)
-              if opts.dap_main then
-                require("jdtls.dap").setup_dap_main_class_configs(opts.dap_main)
-              end
-
-              -- Java Test require Java debugger to work
-              if opts.test and mason_registry.is_installed("java-test") then
-                -- custom keymaps for Java test runner (not yet compatible with neotest)
-                wk.add({
-                  {
-                    mode = "n",
-                    buffer = args.buf,
-                    { "<leader>t", group = "test" },
-                    {
-                      "<leader>tt",
-                      function()
-                        require("jdtls.dap").test_class({
-                          config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
-                        })
-                      end,
-                      desc = "Run All Test",
-                    },
-                    {
-                      "<leader>tr",
-                      function()
-                        require("jdtls.dap").test_nearest_method({
-                          config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
-                        })
-                      end,
-                      desc = "Run Nearest Test",
-                    },
-                    { "<leader>tT", require("jdtls.dap").pick_test, desc = "Run Test" },
-                  },
-                })
-              end
-            end
-
-            -- User can set additional keymaps in opts.on_attach
-            if opts.on_attach then
-              opts.on_attach(args)
-            end
-          end
-        end,
+      local wk = require("which-key")
+      wk.add({
+        {
+          mode = "n",
+          { "<leader>cx",  group = "extract" },
+          { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
+          { "<leader>cxc", require("jdtls").extract_constant,     desc = "Extract Constant" },
+          { "<leader>cgs", require("jdtls").super_implementation, desc = "Goto Super" },
+          { "<leader>cgS", require("jdtls.tests").goto_subjects,  desc = "Goto Subjects" },
+          { "<leader>co",  require("jdtls").organize_imports,     desc = "Organize Imports" },
+        },
       })
-
+      wk.add({
+        {
+          mode = "v",
+          { "<leader>cx", group = "extract" },
+          {
+            "<leader>cxm",
+            [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]],
+            desc = "Extract Method",
+          },
+          {
+            "<leader>cxv",
+            [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]],
+            desc = "Extract Variable",
+          },
+          {
+            "<leader>cxc",
+            [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]],
+            desc = "Extract Constant",
+          },
+        },
+      })
+      wk.add({
+        {
+          mode = "n",
+          { "<leader>t",  group = "test" },
+          {
+            "<leader>tt",
+            function()
+              require("jdtls.dap").test_class({
+                config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
+              })
+            end,
+            desc = "Run All Test",
+          },
+          {
+            "<leader>tr",
+            function()
+              require("jdtls.dap").test_nearest_method({
+                config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
+              })
+            end,
+            desc = "Run Nearest Test",
+          },
+          { "<leader>tT", require("jdtls.dap").pick_test, desc = "Run Test" },
+        },
+      })
       -- Avoid race condition by calling attach the first time, since the autocmd won't fire.
       attach_jdtls()
     end,

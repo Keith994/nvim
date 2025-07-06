@@ -28,6 +28,27 @@ local function keymaps(event)
   map("<Leader>cd", "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", "Document Diagnostics")
   map("<Leader>cD", "<Cmd>Trouble diagnostics toggle<CR>", "Workspace Diagnostics")
 
+  map("<F29>", function() -- C+F5
+    require("dap").continue()
+  end, "Debug: Start/Continue")
+  map("<F5>", function()
+    require("dap").continue()
+  end, "Debug: Start/Continue")
+  map("<S-F5>", function()
+    require("dap").terminate()
+  end, "Debug: Terminate")
+  map("<F6>", function()
+    require("dap").pause()
+  end, "Debug: Pause")
+  map("<F10>", function()
+    require("dap").step_over()
+  end, "Debug: Step Over")
+  map("<F11>", function()
+    require("dap").step_out()
+  end, "Debug: Step Out")
+  map("<F11>", function()
+    require("dap").step_out()
+  end, "Debug: Step Out")
   -- C-S-F9
   map("<F45>", require("dap").clear_breakpoints, "Clear Breakpoints")
   -- C-f10
@@ -46,7 +67,7 @@ return {
     event = "VeryLazy",
     dependencies = {
       "mfussenegger/nvim-dap",
-      { "mason-org/mason.nvim", opts = {} },
+      { "mason-org/mason.nvim",           opts = {} },
       { "mason-org/mason-lspconfig.nvim", config = function() end },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
@@ -117,7 +138,7 @@ return {
             title = "LSP Progress",
             opts = function(notif)
               notif.icon = ev.data.params.value.kind == "end" and " "
-                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+                  or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
             end,
           })
         end,
