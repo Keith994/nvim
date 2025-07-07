@@ -14,6 +14,9 @@ return {
           lua_ls = {
             settings = {
               Lua = {
+                diagnostics = {
+                  globals = { "vim", "utils" }, -- Important!  Tells lua_ls that 'vim' is a global variable.
+                },
                 workspace = {
                   checkThirdParty = false,
                 },

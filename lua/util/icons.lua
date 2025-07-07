@@ -2,7 +2,7 @@ return {
   misc = {
     dots = "󰇘",
     separator = "",
-    VimIcon = "",
+    VimIcon = "󰣇",
   },
   ft = {
     octo = "",
@@ -15,7 +15,7 @@ return {
     tab = { "", "" },
   },
   dap = {
-    Stopped = { "󰁕", "DiagnosticWarn", "DapStoppedLine" },
+    Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
     Breakpoint = "",
     BreakpointCondition = "",
     BreakpointRejected = { "", "DiagnosticError" },

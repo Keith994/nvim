@@ -16,6 +16,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("config")
 
+
 require("lazy").setup({
   spec = {
     -- import/override with your plugins
@@ -52,4 +53,4 @@ require("lazy").setup({
     },
   },
 })
-vim.cmd.colorscheme("nightfox")
+vim.cmd.colorscheme("catppuccin-mocha")

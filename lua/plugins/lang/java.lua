@@ -51,7 +51,7 @@ return {
     dependencies = {
       {
         "mason-org/mason.nvim",
-        opts = { ensure_installed = { "java-debug-adapter", "java-test" } },
+        opts = { ensure_installed = { "java-debug-adapter", "java-test", "google-java-format@1.26.0" } },
       },
     },
   },

@@ -270,6 +270,7 @@ return {
         map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
         map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
         map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
+        map("n", "<leader>gp", gs.preview_hunk_inline, "Preview Hunk Inline")
         map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
         map("n", "<leader>ghB", function() gs.blame() end, "Blame Buffer")
         map("n", "<leader>ghd", gs.diffthis, "Diff This")
@@ -581,5 +582,16 @@ return {
       },
     },
     opts = {},
+  },
+  {
+    "max397574/better-escape.nvim",
+    event = "VeryLazy",
+    opts = {
+      timeout = 300,
+      default_mappings = false,
+      mappings = {
+        i = { j = { k = "<Esc>", j = "<Esc>" } },
+      },
+    },
   },
 }

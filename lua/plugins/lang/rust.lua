@@ -91,7 +91,6 @@ local pack = {
 -- Rustaceanvim v5 supports neovim v0.10+
 table.insert(pack, {
   "mrcjkb/rustaceanvim",
-  version = "^6",
   ft = "rust",
   opts = function()
     local adapter

@@ -7,7 +7,7 @@ vim.api.nvim_create_user_command("Format", function(args)
       ["end"] = { args.line2, end_line:len() },
     }
   end
-  require("conform").format({ async = true, range = range, timeout_ms=5000 })
+  require("conform").format({ async = true, range = range, timeout_ms = 5000 })
 end, {
   desc = "Format buffer",
   range = true,

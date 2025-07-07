@@ -6,21 +6,14 @@ return {
       events = { "BufWritePost", "BufReadPost" },
       linters_by_ft = {
         fish = { "fish" },
-        java = { "sonarlint-language-server" },
-        go = { "golangci-lint-langserver" },
+        java = { "checkstyle" },
+        go = { "golangcilint" },
+        lua = { "selene" },
         -- ['_'] = { 'fallback linter' },
         -- ["*"] = { "typos" },
       },
       ---@type table<string,table>
-      linters = {
-        -- selene = {
-        --   -- `condition` is another LazyVim extension that allows you to
-        --   -- dynamically enable/disable linters based on the context.
-        --   condition = function(ctx)
-        --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-        --   end,
-        -- },
-      },
+      linters = {},
     },
     config = function(_, opts)
       local M = {}
@@ -71,7 +64,7 @@ return {
         -- Filter out linters that don't exist or don't match the condition.
         local ctx = { filename = vim.api.nvim_buf_get_name(0) }
         ctx.dirname = vim.fn.fnamemodify(ctx.filename, ":h")
-        names = vim.tbl_filter(function(name)
+        local lint_names = vim.tbl_filter(function(name)
           local linter = lint.linters[name]
           if not linter then
             utils.warn("Linter not found: " .. name, { title = "nvim-lint" })
@@ -80,8 +73,8 @@ return {
         end, names)
 
         -- Run linters.
-        if #names > 0 then
-          lint.try_lint(names)
+        if #lint_names > 0 then
+          lint.try_lint(lint_names)
         end
       end
 
