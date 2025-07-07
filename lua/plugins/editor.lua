@@ -127,7 +127,7 @@ return {
       require("snacks").setup(opts)
       -- HACK: restore vim.notify after snacks setup and let noice.nvim take over
       -- this is needed to have early notifications show up in noice history
-      if require("util").is_available("noice.nvim") then
+      if utils.is_available("noice.nvim") then
         vim.notify = notify
       end
     end,
@@ -575,7 +575,7 @@ return {
         opts = function(_, opts)
           if opts.ensure_installed ~= "all" then
             opts.ensure_installed =
-                require("util").list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
+                utils.list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
           end
         end,
       },

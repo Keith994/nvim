@@ -1,7 +1,7 @@
 local create_command = vim.api.nvim_create_user_command
-local list_insert_unique = require("util").list_insert_unique
+local list_insert_unique = utils.list_insert_unique
 
-function is_test_file()
+local is_test_file = function()
   local file = vim.fn.expand("%")
   if #file <= 1 then
     vim.notify("no buffer name", vim.log.levels.ERROR)
@@ -12,7 +12,7 @@ function is_test_file()
   return file, (not is_test and is_source), is_test
 end
 
-function alternate()
+local alternate = function()
   local file, is_source, is_test = is_test_file()
   local alt_file = file
   if is_test then
@@ -25,7 +25,7 @@ function alternate()
   return alt_file
 end
 
-function switch(bang, cmd)
+local switch = function(bang, cmd)
   local alt_file = alternate()
   if not vim.fn.filereadable(alt_file) and not vim.fn.bufexists(alt_file) and not bang then
     vim.notify("couldn't find " .. alt_file, vim.log.levels.ERROR)
@@ -93,7 +93,7 @@ return {
           },
         },
       }
-      return require"util".extend_tbl(opts, ret)
+      return utils.extend_tbl(opts, ret)
     end,
   },
   -- Golang support
@@ -155,7 +155,7 @@ return {
       create_command("GoAltS", function()
         switch(nil, "vsplit")
       end, { desc = "Alt File split" })
-      return require"util".extend_tbl(opts, {
+      return utils.extend_tbl(opts, {
         gotag = {
           transform = "camelcase",
           -- default tags to add to struct fields
@@ -172,7 +172,7 @@ return {
       if not opts.adapters then
         opts.adapters = {}
       end
-      table.insert(opts.adapters, require("neotest-golang")(require"util".plugin_opts("neotest-golang")))
+      table.insert(opts.adapters, require("neotest-golang")(utils.plugin_opts("neotest-golang")))
     end,
   },
   {

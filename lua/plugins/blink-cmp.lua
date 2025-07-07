@@ -280,7 +280,7 @@ return {
             "Saghen/blink.cmp",
             opts = function(_, opts)
               if pcall(require, "lazydev.integrations.blink") then
-                return require("util").extend_tbl(opts, {
+                return utils.extend_tbl(opts, {
                   sources = {
                     -- add lazydev to your completion providers
                     default = { "lazydev" },

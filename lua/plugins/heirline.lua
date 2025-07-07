@@ -32,7 +32,7 @@ return {
             -- injects custom icon
             local sep = require("heirline-components.core.env").separators
             require("heirline-components.core.env").separators =
-              require("util").extend_tbl(sep, require("util.icons").separators)
+              utils.extend_tbl(sep, require("util.icons").separators)
           end,
         },
       },
@@ -40,7 +40,7 @@ return {
     opts = function()
       local lib = require("heirline-components.all")
       local function bufnr(opts)
-        opts = require("util").extend_tbl({}, opts)
+        opts = utils.extend_tbl({}, opts)
         return function(self)
           return lib.utils.stylize(
             tostring(self and self.bufnr or vim.api.nvim_get_current_buf()) .. (opts.suffix or " "),
@@ -52,7 +52,7 @@ return {
         local hl = lib.hl
         local condition = lib.condition
         local buf_utils = require("heirline-components.buffer")
-        local extend_tbl = require("util").extend_tbl
+        local extend_tbl = utils.extend_tbl
 
         local file_info_table = lib.component.file_info(extend_tbl({
           file_icon = {

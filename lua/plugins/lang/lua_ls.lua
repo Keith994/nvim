@@ -1,7 +1,7 @@
 local function selene_configured(path)
   return #vim.fs.find("selene.toml", { path = path, upward = true, type = "file" }) > 0
 end
-local list_insert_unique = require("util").list_insert_unique
+local list_insert_unique = utils.list_insert_unique
 local is_aarch64 = vim.loop.os_uname().machine == "aarch64"
 return {
 
@@ -39,7 +39,7 @@ return {
           },
         },
       }
-      return require("util").extend_tbl(opts, ret)
+      return utils.extend_tbl(opts, ret)
     end,
   },
   {

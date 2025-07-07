@@ -36,39 +36,11 @@ return {
         endpoint = "https://openrouter.ai/api/v1",
         api_key_name = "OPENROUTER_API_KEY",
         -- proxy = 'socks5://127.0.0.1:1080',
-        model = "deepseek/deepseek-chat-v3-0324",
-        -- model = 'google/gemini-2.0-flash-001',
+        -- model = "deepseek/deepseek-chat-v3-0324",
+        model = 'google/gemini-2.0-flash-001',
         -- model = 'openai/gpt-4o-mini',
         -- model = 'google/gemini-2.5-pro-preview-03-25',
         -- model = 'x-ai/grok-3-beta',
-      },
-      deepseek = {
-        __inherited_from = "openai",
-        api_key_name = "DEEPSEEK_API_KEY",
-        endpoint = "https://api.deepseek.com/chat/completions",
-        model = "deepseek-chat",
-        timeout = 8000,
-        extra_request_body = {
-          temperature = 0.5,
-          max_tokens = 4096,
-        },
-      },
-      qwen = {
-        __inherited_from = "openai",
-        api_key_name = "DASHSCOPE_API_KEY",
-        endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        model = "qwen2.5-coder-32b-instruct",
-      },
-      GLMTranslation = {
-        __inherited_from = "openai",
-        endpoint = "https://open.bigmodel.cn/api/paas/v4",
-        model = "glm-4-flash",
-        max_tokens = 4096,
-        api_key_name = "GLM_KEY",
-        extra_request_body = {
-          temperature = 0.3,
-          top_p = 0.7,
-        },
       },
     },
     mappings = {
@@ -118,7 +90,7 @@ return {
       "folke/which-key.nvim",
       optional = true,
       opts = function(_, opts)
-        return require("util").extend_tbl(
+        return utils.extend_tbl(
           opts,
           {
             spec = {
@@ -151,7 +123,7 @@ return {
         if not opts.file_types then
           opts.file_types = { "markdown" }
         end
-        opts.file_types = require("util").list_insert_unique(opts.file_types, { "Avante" })
+        opts.file_types = utils.list_insert_unique(opts.file_types, { "Avante" })
       end,
     },
     {
@@ -162,7 +134,7 @@ return {
         if not opts.filetypes then
           opts.filetypes = { "markdown", "quarto", "rmd" }
         end
-        opts.filetypes = require("util").list_insert_unique(opts.filetypes, { "Avante" })
+        opts.filetypes = utils.list_insert_unique(opts.filetypes, { "Avante" })
       end,
     },
     {

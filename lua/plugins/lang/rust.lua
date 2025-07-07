@@ -4,7 +4,7 @@ local pack = {
     optional = true,
     opts = function(_, opts)
       if opts.ensure_installed ~= "all" then
-        opts.ensure_installed = require("util").list_insert_unique(opts.ensure_installed, { "rust", "toml" })
+        opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "rust", "toml" })
       end
     end,
   },
@@ -41,21 +41,21 @@ local pack = {
     "mason-org/mason-lspconfig.nvim",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed = require("util").list_insert_unique(opts.ensure_installed, { "taplo" })
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "taplo" })
     end,
   },
   {
     "jay-babu/mason-nvim-dap.nvim",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed = require("util").list_insert_unique(opts.ensure_installed, { "codelldb" })
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "codelldb" })
     end,
   },
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed = require("util").list_insert_unique(opts.ensure_installed, { "codelldb", "taplo" })
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "codelldb", "taplo" })
     end,
   },
   {
@@ -136,7 +136,7 @@ table.insert(pack, {
     }
   end,
   config = function(_, opts)
-    vim.g.rustaceanvim = require("util").extend_tbl(opts, vim.g.rustaceanvim)
+    vim.g.rustaceanvim = utils.extend_tbl(opts, vim.g.rustaceanvim)
   end,
 })
 

@@ -3,7 +3,7 @@ return {
   event = "VeryLazy",
   dependencies = { "MunifTanjim/nui.nvim" },
   opts = function(_, opts)
-    local util = require("util")
+    local util = utils
     return util.extend_tbl(opts, {
       lsp = {
         progress = {
@@ -33,7 +33,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
       opts = function(_, opts)
         if opts.ensure_installed ~= "all" then
-          opts.ensure_installed = require("util").list_insert_unique(
+          opts.ensure_installed = utils.list_insert_unique(
             opts.ensure_installed,
             { "bash", "markdown", "markdown_inline", "regex", "vim" }
           )

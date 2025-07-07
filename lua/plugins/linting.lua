@@ -74,7 +74,7 @@ return {
         names = vim.tbl_filter(function(name)
           local linter = lint.linters[name]
           if not linter then
-            require("util").warn("Linter not found: " .. name, { title = "nvim-lint" })
+            utils.warn("Linter not found: " .. name, { title = "nvim-lint" })
           end
           return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
         end, names)

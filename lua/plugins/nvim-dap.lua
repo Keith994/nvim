@@ -34,8 +34,8 @@ return {
 
     config = function()
       -- load mason-nvim-dap here, after all adapters have been setup
-      if require("util").is_available("mason-nvim-dap.nvim") then
-        require("mason-nvim-dap").setup(require("util").opts("mason-nvim-dap.nvim"))
+      if utils.is_available("mason-nvim-dap.nvim") then
+        require("mason-nvim-dap").setup(utils.opts("mason-nvim-dap.nvim"))
       end
 
       vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
@@ -84,7 +84,7 @@ return {
         toggleUI(4)
       end, "Toggle Debugger UI")
 
-      local utils = require("util")
+      local utils = utils
       return utils.extend_tbl({
         layouts = {
           {

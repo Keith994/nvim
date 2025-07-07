@@ -4,7 +4,7 @@ local del = vim.keymap.del
 -- localleader
 map("n", "<localleader>p", function()
   local str = vim.fn.expand("%:p:f")
-  require("util").info("当前文件路径：" .. str)
+  utils.info("当前文件路径：" .. str)
 end, { desc = "Current Path" })
 map("n", "<localleader>c", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window", silent = true })
 map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true })
