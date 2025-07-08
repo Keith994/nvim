@@ -242,3 +242,22 @@ map("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 map("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
 map("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
+-- neotest
+local get_file_path = function() return vim.fn.expand "%" end
+local get_project_path = function() return vim.fn.getcwd() end
+local prefix = "t"
+map("n", prefix.."r", function() require("neotest").run.run() end, {desc = "Run test"})
+map("n", prefix.."t", function() require("neotest").run.run() end, {desc = "Run test"})
+map("n", prefix.."d", function() require("neotest").run.run{strategy = "dap"} end, {desc = "Debug test"})
+map("n", prefix.."f", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in file"})
+map("n", prefix.."p", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in project"})
+map("n", prefix.."<CR>", function() require("neotest").summary.toggle() end, {desc = "Test Summary"})
+map("n", prefix.."O", function() require("neotest").output.open() end, {desc = "Output hover"})
+map("n", prefix.."o", function() require("neotest").output_panel.toggle() end, {desc = "Output window"})
+map("n", "]T", function() require("neotest").jump.next() end, {desc = "Next test"})
+map("n", "[T", function() require("neotest").jump.prev() end, {desc = "Previous test"})
+local watch_prefix = prefix .. "W"
+map("n", watch_prefix.."t", function() require("neotest").watch.toggle() end, {desc = "Toggle watch test"})
+map("n", watch_prefix.."f", function() require("neotest").watch.toggle(get_file_path()) end, {desc = "Toggle watch all test in file"})
+map("n", watch_prefix.."p", function() require("neotest").watch.toggle(get_project_path()) end, {desc = "Toggle watch all tests in project"})
+map("n", watch_prefix.."S", function() require("neotest").watch.stop() end, {desc = "Stop all watches"})

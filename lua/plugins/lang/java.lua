@@ -61,17 +61,19 @@ return {
   {
     "neovim/nvim-lspconfig",
     optional = true,
-    opts = {
-      -- make sure mason installs the server
-      servers = {
-        jdtls = {},
-      },
-      setup = {
-        jdtls = function()
-          return true -- avoid duplicate servers
-        end,
-      },
-    },
+    opts = function(_, opts)
+      return utils.extend_tbl(opts, {
+        -- make sure mason installs the server
+        servers = {
+          jdtls = {},
+        },
+        setup = {
+          jdtls = function()
+            return true -- avoid duplicate servers
+          end,
+        },
+      })
+    end,
   },
 
   -- Set up nvim-jdtls to attach to java files.
@@ -391,18 +393,19 @@ return {
     "rcasia/neotest-java",
     ft = "java",
     dependencies = {
-      "mfussenegger/nvim-jdtls",
+      "mfussenegger/nvim-dap", -- for the debugger
+      "rcarriga/nvim-dap-ui",  -- recommended
     },
   },
   {
     "nvim-neotest/neotest",
     optional = true,
-    dependencies = { "rcasia/neotest-java" },
-    opts = {
-      adapters = {
-        ["neotest-java"] = {},
-      },
-    },
+    opts = function(_, opts)
+      if not opts.adapters then
+        opts.adapters = {}
+      end
+      table.insert(opts.adapters, require("neotest-java")({}))
+    end
   },
   {
     "stevearc/conform.nvim",

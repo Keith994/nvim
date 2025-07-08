@@ -179,6 +179,7 @@ return {
           },
           -- better descriptions
           { "gx", desc = "Open with system app" },
+          { "t",  group = "test",               icon = { icons = "󰙨" } },
         },
       },
     },
@@ -393,7 +394,13 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     vscode = true,
-    opts = {},
+    opts = {
+      modes = {
+        char = {
+          enabled = false,
+        }
+      }
+    },
     -- stylua: ignore
     keys = {
       { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },

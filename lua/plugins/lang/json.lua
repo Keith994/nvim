@@ -6,20 +6,25 @@ return {
       {
         "neovim/nvim-lspconfig",
         optional = true,
-        opts = {
+        opts = function(_, opts)
           -- make sure mason installs the server
-          servers = {
-            jsonls = {
-              on_new_config = function(config)
-                if not config.settings.json.schemas then
-                  config.settings.json.schemas = {}
-                end
-                vim.list_extend(config.settings.json.schemas, require("schemastore").json.schemas())
-              end,
-              settings = { json = { validate = { enable = true } } },
-            },
-          },
-        },
+          return utils.extend_tbl(
+            opts,
+            {
+              servers = {
+                jsonls = {
+                  on_new_config = function(config)
+                    if not config.settings.json.schemas then
+                      config.settings.json.schemas = {}
+                    end
+                    vim.list_extend(config.settings.json.schemas, require("schemastore").json.schemas())
+                  end,
+                  settings = { json = { validate = { enable = true } } },
+                },
+              },
+            }
+          )
+        end,
       },
     },
   },

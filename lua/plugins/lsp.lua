@@ -64,7 +64,7 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
     dependencies = {
       "mfussenegger/nvim-dap",
       {
@@ -182,8 +182,11 @@ return {
       local servers = opts.servers
       local ensure_installed = opts.ensure_installed
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+      vim.lsp.enable({ "lua_ls", "gopls", "rust_analyzer" })
       require("mason-lspconfig").setup({
         ensure_installed = {},
+        automatic_enable = false,
         automatic_installation = false,
         handlers = {
           function(server_name)
@@ -192,8 +195,8 @@ return {
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-            vim.lsp.config(server)
-            -- require("lspconfig")[server_name].setup(server)
+            -- vim.lsp.config(server)
+            require("lspconfig")[server_name].setup(server)
           end,
         },
       })
