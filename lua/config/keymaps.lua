@@ -245,15 +245,15 @@ map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
 -- neotest
 local get_file_path = function() return vim.fn.expand "%" end
 local get_project_path = function() return vim.fn.getcwd() end
-local prefix = "t"
+local prefix = "<leader>t"
 map("n", prefix.."r", function() require("neotest").run.run() end, {desc = "Run test"})
 map("n", prefix.."t", function() require("neotest").run.run() end, {desc = "Run test"})
 map("n", prefix.."d", function() require("neotest").run.run{strategy = "dap"} end, {desc = "Debug test"})
 map("n", prefix.."f", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in file"})
 map("n", prefix.."p", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in project"})
 map("n", prefix.."<CR>", function() require("neotest").summary.toggle() end, {desc = "Test Summary"})
-map("n", prefix.."O", function() require("neotest").output.open() end, {desc = "Output hover"})
-map("n", prefix.."o", function() require("neotest").output_panel.toggle() end, {desc = "Output window"})
+map("n", prefix.."o", function() require("neotest").output.open() end, {desc = "Output hover"})
+map("n", prefix.."O", function() require("neotest").output_panel.toggle() end, {desc = "Output window"})
 map("n", "]T", function() require("neotest").jump.next() end, {desc = "Next test"})
 map("n", "[T", function() require("neotest").jump.prev() end, {desc = "Previous test"})
 local watch_prefix = prefix .. "W"

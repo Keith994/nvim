@@ -179,7 +179,11 @@ return {
           },
           -- better descriptions
           { "gx", desc = "Open with system app" },
-          { "t",  group = "test",               icon = { icons = "󰙨" } },
+          {
+            "<leader>t",
+            group = "test",
+            icon = { icon = "󰙨" }
+          },
         },
       },
     },
