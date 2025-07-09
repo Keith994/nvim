@@ -9,17 +9,10 @@ return {
     end,
   },
   {
-    "mason-org/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "lemminx" })
-    end,
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "lemminx" })
+      opts.ensure_installed = utils.extend_tbl(opts.ensure_installed, { "lemminx" })
     end,
   },
 }

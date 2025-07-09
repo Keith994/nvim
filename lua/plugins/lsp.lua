@@ -183,11 +183,8 @@ return {
       local ensure_installed = opts.ensure_installed
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-      vim.lsp.enable({ "lua_ls", "gopls", "rust_analyzer" })
       require("mason-lspconfig").setup({
         ensure_installed = {},
-        automatic_enable = false,
-        automatic_installation = false,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}

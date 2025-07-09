@@ -64,7 +64,7 @@ return {
                 },
                 codelenses = {
                   gc_details = true, -- Show a code lens toggling the display of gc's choices.
-                  generate = true, -- show the `go generate` lens.
+                  generate = true,   -- show the `go generate` lens.
                   regenerate_cgo = true,
                   test = true,
                   tidy = true,
@@ -92,6 +92,7 @@ return {
             },
           },
         },
+        ensure_installed = { "delve", "gopls", "gomodifytags", "gofumpt", "gotests", "goimports", "iferr", "impl" }
       }
       return utils.extend_tbl(opts, ret)
     end,
@@ -107,27 +108,11 @@ return {
     end,
   },
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = list_insert_unique(
-        opts.ensure_installed,
-        { "delve", "gopls", "gomodifytags", "gofumpt", "gotests", "goimports", "iferr", "impl" }
-      )
-    end,
-  },
-  {
     "leoluz/nvim-dap-go",
     ft = "go",
     dependencies = {
       "mfussenegger/nvim-dap",
-      {
-        "jay-babu/mason-nvim-dap.nvim",
-        optional = true,
-        opts = function(_, opts)
-          opts.ensure_installed = list_insert_unique(opts.ensure_installed, { "delve" })
-        end,
-      },
+      "jay-babu/mason-nvim-dap.nvim",
     },
     opts = {},
   },

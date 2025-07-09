@@ -10,6 +10,7 @@ return {
     optional = true,
     opts = function(_, opts)
       local ret = {
+        ensure_installed = { "lua_ls", "lua-language-server", "stylua", "selene" },
         servers = {
           lua_ls = {
             settings = {
@@ -52,24 +53,6 @@ return {
       if opts.ensure_installed ~= "all" then
         opts.ensure_installed = list_insert_unique(opts.ensure_installed, { "lua", "luap" })
       end
-    end,
-  },
-  {
-    "mason-org/mason-lspconfig.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = list_insert_unique(opts.ensure_installed, { "lua_ls" })
-    end,
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = list_insert_unique(opts.ensure_installed, {
-        "lua-language-server",
-        "stylua",
-        (not is_aarch64 and "selene") or nil,
-      })
     end,
   },
   {

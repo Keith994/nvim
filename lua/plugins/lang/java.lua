@@ -49,10 +49,7 @@ return {
       }
     end,
     dependencies = {
-      {
-        "mason-org/mason.nvim",
-        opts = { ensure_installed = { "java-debug-adapter", "java-test", "google-java-format@1.26.0" } },
-      },
+      "mason-org/mason.nvim",
     },
   },
 
@@ -72,6 +69,7 @@ return {
             return true -- avoid duplicate servers
           end,
         },
+        ensure_installed = { "java-debug-adapter", "java-test", "google-java-format" },
       })
     end,
   },
@@ -405,7 +403,7 @@ return {
         opts.adapters = {}
       end
       table.insert(opts.adapters, require("neotest-java")({}))
-    end
+    end,
   },
   {
     "stevearc/conform.nvim",

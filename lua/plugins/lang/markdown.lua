@@ -10,17 +10,10 @@ return {
     end,
   },
   {
-    "mason-org/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "marksman" })
-    end,
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "marksman", "prettierd" })
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, { "marksman" ,"prettierd"})
     end,
   },
   {
