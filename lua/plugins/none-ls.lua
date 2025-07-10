@@ -3,17 +3,6 @@ return {
   main = "null-ls",
   specs = {
     { "nvim-lua/plenary.nvim", lazy = true },
-    {
-      "AstroNvim/astrolsp",
-      opts = function(_, opts)
-        local maps = opts.mappings
-        maps.n["<Leader>lI"] = {
-          "<Cmd>NullLsInfo<CR>",
-          desc = "Null-ls information",
-          cond = function() return vim.fn.exists ":NullLsInfo" > 0 end,
-        }
-      end,
-    },
   },
   dependencies = {
     {
@@ -22,7 +11,10 @@ return {
       cmd = { "NullLsInstall", "NullLsUninstall" },
       opts_extend = { "ensure_installed" },
       opts = { ensure_installed = {}, handlers = {} },
-      config = function(...) require "astronvim.plugins.configs.mason-null-ls"(...) end,
+      config = function(_,opts)  
+  if require("astrocore").is_available "mason-tool-installer.nvim" then opts.ensure_installed = nil end
+  require("mason-null-ls").setup(opts)
+      end,
     },
   },
   event = "User AstroFile",

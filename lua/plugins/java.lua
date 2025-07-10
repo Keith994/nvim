@@ -33,19 +33,6 @@ return {
         optional = true,
         ---@type AstroLSPOpts
         opts = function(_, opts)
-          local maps = opts.mappings
-          maps.n["<Leader>lv"] = {
-            function()
-              require("jdtls").set_runtime()
-            end,
-            desc = "set jdk version",
-          }
-          maps.n["<Leader>lC"] = {
-            function()
-              require("toggleterm").exec("mvnd compile", 0, 50, "", "vertical", "", true, false)
-            end,
-            desc = "compile",
-          }
           local utils = require("astrocore")
           return utils.extend_tbl({
             ---@diagnostic disable: missing-fields

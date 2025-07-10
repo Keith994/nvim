@@ -7,15 +7,6 @@ return {
     "MasonUninstallAll",
     "MasonLog",
   },
-  specs = {
-    {
-      "AstroNvim/astrocore",
-      opts = function(_, opts)
-        local maps = opts.mappings
-        maps.n["<Leader>pm"] = { function() require("mason.ui").open() end, desc = "Mason Installer" }
-      end,
-    },
-  },
   opts_extend = { "registries" },
   opts = function(_, opts)
     if not opts.registries then opts.registries = {} end

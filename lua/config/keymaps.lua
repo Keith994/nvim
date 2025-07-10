@@ -63,16 +63,16 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, 
 map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
 -- Move to window using the <ctrl> hjkl keys
-map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
+map("n", "<C-h>", function() require("smart-splits").move_cursor_left() end, { desc = "Go to Left Window", remap = true })
+map("n", "<C-j>", function() require("smart-splits").move_cursor_down() end, { desc = "Go to Lower Window", remap = true })
+map("n", "<C-k>", function() require("smart-splits").move_cursor_up() end, { desc = "Go to Upper Window", remap = true })
+map("n", "<C-l>", function() require("smart-splits").move_cursor_right() end, { desc = "Go to Right Window", remap = true })
 
 -- Resize window using <ctrl> arrow keys
-map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
-map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
-map("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
-map("n", "<C-Left>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+map("n", "<C-Up>", function() require("smart-splits").resize_up() end, { desc = "Increase Window Height" })
+map("n", "<C-Down>",function() require("smart-splits").resize_down() end , { desc = "Decrease Window Height" })
+map("n", "<C-Right>",function() require("smart-splits").resize_right() end , { desc = "Decrease Window Width" })
+map("n", "<C-Left>",function() require("smart-splits").resize_left() end , { desc = "Increase Window Width" })
 
 -- Move Lines
 map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })

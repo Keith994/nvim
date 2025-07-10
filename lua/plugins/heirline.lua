@@ -57,7 +57,7 @@ return {
             mode_text = { icon = { kind = "VimIcon", padding = { right = 1, left = 1 } } },
             surround = {
               separator = "left",
-              color = lib.hl.mode_bg,
+              color = status.hl.mode_bg,
               update = {
                 "ModeChanged",
                 pattern = "*:*",
@@ -77,7 +77,7 @@ return {
           status.component.fill(),
           status.component.cmd_info({ lsp_progress = false }),
           status.component.lsp(),
-          status.component.builder(status.setup_providers({
+          status.component.builder(require"astroui.status.utils".setup_providers({
             ruler = {},
             percentage = { padding = { left = 1, right = 1 } },
             surround = { separator = "right", color = "nav_bg" },

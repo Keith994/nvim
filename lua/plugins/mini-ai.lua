@@ -48,7 +48,7 @@ return {
     end,
     config = function(_, opts)
       require("mini.ai").setup(opts)
-      utils.on_load("which-key.nvim", function()
+      require"astrocore".on_load("which-key.nvim", function()
         vim.schedule(function()
           local objects = {
             { " ", desc = "whitespace" },
