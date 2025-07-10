@@ -3,8 +3,7 @@ return {
   event = "VeryLazy",
   dependencies = { "MunifTanjim/nui.nvim" },
   opts = function(_, opts)
-    local util = utils
-    return util.extend_tbl(opts, {
+    return require("astrocore").extend_tbl(opts, {
       lsp = {
         progress = {
           enabled = false,
@@ -23,7 +22,7 @@ return {
         bottom_search = true, -- use a classic bottom cmdline for search
         command_palette = true, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = util.is_available("inc-rename.nvim"), -- enables an input dialog for inc-rename.nvim
+        inc_rename = require("astrocore").is_available("inc-rename.nvim"), -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
       },
     })
@@ -33,7 +32,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
       opts = function(_, opts)
         if opts.ensure_installed ~= "all" then
-          opts.ensure_installed = utils.list_insert_unique(
+          opts.ensure_installed = require("astrocore").list_insert_unique(
             opts.ensure_installed,
             { "bash", "markdown", "markdown_inline", "regex", "vim" }
           )

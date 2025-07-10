@@ -14,14 +14,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("config")
-
 
 require("lazy").setup({
   spec = {
     -- import/override with your plugins
+    { import = "astro" },
+    { import = "community" },
+    { import = "plugins.lang" },
     { import = "plugins" },
-    { import = "plugins/lang" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -42,8 +42,8 @@ require("lazy").setup({
       -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
-        -- "matchparen",
+        "matchit",
+        "matchparen",
         -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
@@ -53,4 +53,3 @@ require("lazy").setup({
     },
   },
 })
-vim.cmd.colorscheme("catppuccin-mocha")

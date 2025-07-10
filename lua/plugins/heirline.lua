@@ -2,112 +2,58 @@ return {
   {
     "rebelot/heirline.nvim",
     event = "VimEnter",
-    dependencies = {
+    dependencies = { "echasnovski/mini.icons" },
+    specs = {
       {
-        "echasnovski/mini.icons",
-        {
-          "Zeioth/heirline-components.nvim",
-          opts = function()
-            local icons = require("util.icons")
-            local ret = {
-              icons = {
-                DiagnosticError = icons.diagnostics.Error,
-                DiagnosticHint = icons.diagnostics.Hint,
-                DiagnosticInfo = icons.diagnostics.Info,
-                DiagnosticWarn = icons.diagnostics.Warn,
-                PathSeparator = icons.misc.separator,
-
-                GitBranch = icons.git.branch,
-                GitAdd = icons.git.added,
-                GitChange = icons.git.modified,
-                GitDelete = icons.git.removed,
-                BreadcrumbSeparator = icons.misc.separator,
-                VimIcon = icons.misc.VimIcon,
-              },
-            }
-            return ret
-          end,
-          config = function(_, opts)
-            require("heirline-components").setup(opts)
-            -- injects custom icon
-            local sep = require("heirline-components.core.env").separators
-            require("heirline-components.core.env").separators =
-              utils.extend_tbl(sep, require("util.icons").separators)
-          end,
-        },
+        "AstroNvim/astrocore",
+        opts = function(_, opts)
+          opts.autocmds.heirline_colors = {
+            {
+              event = "User",
+              pattern = "AstroColorScheme",
+              desc = "Refresh heirline colors",
+              callback = function()
+                if package.loaded["heirline"] then
+                  require("astroui.status.heirline").refresh_colors()
+                end
+              end,
+            },
+          }
+        end,
       },
     },
-    opts = function()
-      local lib = require("heirline-components.all")
-      local function bufnr(opts)
-        opts = utils.extend_tbl({}, opts)
+    opts = function(_, opts)
+      local status = require("astroui.status")
+      local ui_config = require("astroui").config
+      local cached_func = function(func, ...)
+        local cached
+        local args = { ... }
         return function(self)
-          return lib.utils.stylize(
-            tostring(self and self.bufnr or vim.api.nvim_get_current_buf()) .. (opts.suffix or " "),
-            opts
-          )
+          if cached == nil then
+            cached = func(unpack(args))
+          end
+          if type(cached) == "function" then
+            return cached(self)
+          end
+          return cached
         end
       end
-      local tabline_buffers = function(opts)
-        local hl = lib.hl
-        local condition = lib.condition
-        local buf_utils = require("heirline-components.buffer")
-        local extend_tbl = utils.extend_tbl
-
-        local file_info_table = lib.component.file_info(extend_tbl({
-          file_icon = {
-            condition = function(self)
-              return not self._show_picker
-            end,
-            hl = hl.file_icon("tabline"),
-          },
-          filename = {},
-          filetype = false,
-          file_modified = {
-            padding = { left = 1, right = 1 },
-            condition = condition.is_file,
-          },
-          unique_path = {
-            hl = function(self)
-              return hl.get_attributes(self.tab_type .. "_path")
-            end,
-          },
-          close_button = {
-            hl = function(self)
-              return hl.get_attributes(self.tab_type .. "_close")
-            end,
-            padding = { left = 1, right = 1 },
-            on_click = {
-              callback = function(_, minwid)
-                buf_utils.close(minwid)
-              end,
-              minwid = function(self)
-                return self.bufnr
-              end,
-              name = "heirline_tabline_close_buffer_callback",
-            },
-          },
-          padding = { left = 1, right = 1 },
-          hl = function(self)
-            local tab_type = self.tab_type
-            if self._show_picker and self.tab_type ~= "buffer_active" then
-              tab_type = "buffer_visible"
+      return require("astrocore").extend_tbl(opts, {
+        opts = {
+          colors = require("astroui").config.status.setup_colors(),
+          disable_winbar_cb = function(args)
+            local enabled = vim.tbl_get(ui_config, "status", "winbar", "enabled")
+            if enabled and status.condition.buffer_matches(enabled, args.buf) then
+              return false
             end
-            return hl.get_attributes(tab_type)
+            local disabled = vim.tbl_get(ui_config, "status", "winbar", "disabled")
+            return not require("astrocore.buffer").is_valid(args.buf)
+              or (disabled and status.condition.buffer_matches(disabled, args.buf))
           end,
-          surround = false,
-        }, opts))
-
-        table.insert(file_info_table, 3, {
-          provider = bufnr({ suffix = ":" }),
-        })
-
-        return require("heirline-components.core.heirline").make_buflist(file_info_table)
-      end
-      return {
-        statusline = {
+        },
+        statusline = { -- statusline
           hl = { fg = "fg", bg = "bg" },
-          lib.component.mode({
+          status.component.mode({
             mode_text = { icon = { kind = "VimIcon", padding = { right = 1, left = 1 } } },
             surround = {
               separator = "left",
@@ -118,27 +64,27 @@ return {
               },
             },
           }),
-          lib.component.file_info({
+          status.component.file_info({
             filetype = false,
             filename = {},
             surround = {
               separator = "left",
             },
           }),
-          lib.component.git_branch(),
-          lib.component.git_diff(),
-          lib.component.diagnostics(),
-          lib.component.fill(),
-          lib.component.cmd_info(),
-          lib.component.lsp({ lsp_progress = false }),
-          lib.component.builder(lib.utils.setup_providers({
+          status.component.git_branch(),
+          status.component.git_diff(),
+          status.component.diagnostics(),
+          status.component.fill(),
+          status.component.cmd_info({ lsp_progress = false }),
+          status.component.lsp(),
+          status.component.builder(status.setup_providers({
             ruler = {},
             percentage = { padding = { left = 1, right = 1 } },
             surround = { separator = "right", color = "nav_bg" },
-            hl = lib.hl.get_attributes("nav"),
+            hl = status.hl.get_attributes("nav"),
             update = { "CursorMoved", "CursorMovedI", "BufEnter" },
           }, { "ruler", "percentage" })),
-          lib.component.file_info({
+          status.component.file_info({
             filename = {
               fallback = "",
               fname = function(nr)
@@ -149,13 +95,13 @@ return {
               padding = { left = 1, right = 1 },
             },
             filetype = false,
-            hl = lib.hl.get_attributes("mode"),
+            hl = status.hl.get_attributes("mode"),
             file_icon = false,
             file_modified = false,
             file_read_only = false,
             surround = {
               separator = "right",
-              color = lib.hl.mode_bg,
+              color = status.hl.mode_bg,
               update = {
                 "ModeChanged",
                 pattern = "*:*",
@@ -163,30 +109,74 @@ return {
             },
           }),
         },
-        tabline = {
-          lib.component.tabline_conditional_padding(),
-          tabline_buffers(),
-          lib.component.fill({ hl = { bg = "tabline_bg" } }), -- fill the rest of the tabline with background color
-          lib.component.tabline_tabpages(),
+        winbar = { -- winbar
+          init = function(self)
+            self.bufnr = vim.api.nvim_get_current_buf()
+          end,
+          fallthrough = false,
+          {
+            condition = function()
+              return not status.condition.is_active()
+            end,
+            status.component.separated_path(),
+            status.component.file_info({
+              file_icon = { hl = cached_func(status.hl.file_icon, "winbar"), padding = { left = 0 } },
+              filename = {},
+              filetype = false,
+              file_read_only = false,
+              hl = cached_func(status.hl.get_attributes, "winbarnc", true),
+              surround = false,
+              update = { "BufEnter", "BufFilePost" },
+            }),
+          },
+          status.component.breadcrumbs({ hl = cached_func(status.hl.get_attributes, "winbar", true) }),
+        },
+        tabline = { -- bufferline
+          { -- automatic sidebar padding
+            condition = function(self)
+              self.winid = vim.api.nvim_tabpage_list_wins(0)[1]
+              self.winwidth = vim.api.nvim_win_get_width(self.winid)
+              return self.winwidth ~= vim.o.columns -- only apply to sidebars
+                and not require("astrocore.buffer").is_valid(vim.api.nvim_win_get_buf(self.winid)) -- if buffer is not in tabline
+            end,
+            provider = function(self)
+              return (" "):rep(self.winwidth + 1)
+            end,
+            hl = { bg = "tabline_bg" },
+          },
+          status.heirline.make_buflist(status.component.tabline_file_info()), -- component for each buffer tab
+          status.component.fill({ hl = { bg = "tabline_bg" } }), -- fill the rest of the tabline with background color
+          { -- tab list
+            condition = function()
+              return #vim.api.nvim_list_tabpages() >= 2
+            end, -- only show tabs if there are more than one
+            status.heirline.make_tablist({ -- component for each tab
+              provider = status.provider.tabnr(),
+              hl = function(self)
+                return status.hl.get_attributes(status.heirline.tab_type(self, "tab"), true)
+              end,
+            }),
+            { -- close button for current tab
+              provider = status.provider.close_button({ kind = "TabClose", padding = { left = 1, right = 1 } }),
+              hl = cached_func(status.hl.get_attributes, "tab_close", true),
+              on_click = {
+                callback = function()
+                  require("astrocore.buffer").close_tab()
+                end,
+                name = "heirline_tabline_close_tab_callback",
+              },
+            },
+          },
         },
         statuscolumn = {
           init = function(self)
             self.bufnr = vim.api.nvim_get_current_buf()
           end,
-          lib.component.foldcolumn(),
-          lib.component.numbercolumn(),
-          lib.component.signcolumn(),
+          status.component.foldcolumn(),
+          status.component.numbercolumn(),
+          status.component.signcolumn(),
         },
-      }
-    end,
-    config = function(_, opts)
-      local heirline = require("heirline")
-      local lib = require("heirline-components.all")
-
-      -- Setup
-      lib.init.subscribe_to_events()
-      heirline.load_colors(lib.hl.get_colors())
-      heirline.setup(opts)
+      })
     end,
   },
 }

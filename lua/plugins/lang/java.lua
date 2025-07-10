@@ -1,159 +1,121 @@
-function get_raw_config(server)
-  local ok, ret = pcall(require, "lspconfig.configs." .. server)
-  if ok then
-    return ret
-  end
-  return require("lspconfig.server_configurations." .. server)
-end
-
--- This is the same as in lspconfig.configs.jdtls, but avoids
--- needing to require that when this module loads.
-local java_filetypes = { "java" }
-
--- Utility function to extend or override a config table, similar to the way
--- that Plugin.opts works.
----@param config table
----@param custom function | table | nil
-local function extend_or_override(config, custom, ...)
-  if type(custom) == "function" then
-    config = custom(config, ...) or config
-  elseif custom then
-    config = vim.tbl_deep_extend("force", config, custom) --[[@as table]]
-  end
-  return config
-end
-
 return {
-  -- Add java to treesitter.
+  { import = "astrocommunity.pack.xml" },
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "java" } },
-  },
-
-  -- Ensure java debugger and test packages are installed.
-  {
-    "mfussenegger/nvim-dap",
-    optional = true,
-    opts = function()
-      -- Simple configuration to attach to remote java debug process
-      -- Taken directly from https://github.com/mfussenegger/nvim-dap/wiki/Java
-      local dap = require("dap")
-      dap.configurations.java = {
-        {
-          type = "java",
-          request = "attach",
-          name = "Debug (Attach) - Remote",
-          hostName = "127.0.0.1",
-          port = 5005,
-        },
-      }
-    end,
-    dependencies = {
-      "mason-org/mason.nvim",
-    },
-  },
-
-  -- Configure nvim-lspconfig to install the server automatically via mason, but
-  -- defer actually starting it to our configuration of nvim-jtdls below.
-  {
-    "neovim/nvim-lspconfig",
     optional = true,
     opts = function(_, opts)
-      return utils.extend_tbl(opts, {
-        -- make sure mason installs the server
-        servers = {
-          jdtls = {},
-        },
-        setup = {
-          jdtls = function()
-            return true -- avoid duplicate servers
-          end,
-        },
-        ensure_installed = { "java-debug-adapter", "java-test", "google-java-format" },
-      })
+      if opts.ensure_installed ~= "all" then
+        opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "java" })
+      end
     end,
   },
-
-  -- Set up nvim-jdtls to attach to java files.
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "javadbg", "javatest" })
+    end,
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.ensure_installed =
+        require("astrocore").list_insert_unique(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test" })
+    end,
+  },
   {
     "mfussenegger/nvim-jdtls",
-    dependencies = { "folke/which-key.nvim" },
-    ft = java_filetypes,
-    opts = function()
-      local cmd = {
-        "/usr/lib/jvm/java-21-openjdk/bin/java",
-        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-        "-Dosgi.bundles.defaultStartLevel=4",
-        "-Declipse.product=org.eclipse.jdt.ls.core.product",
-        -- "-Dlog:disable",
-        -- "-Djdt.ls.debug=false",
-        "-Dlombok.disableConfig=true",
-        "-javaagent:" .. vim.fn.expand("$MASON/share/jdtls/lombok.jar"),
-        "-Dsun.zip.disableMemoryMapping=true",
-        "-Xms1g",             -- 初始堆内存提升
-        "-Xmx8g",             -- 最大堆内存提升
-        "-XX:+UseParallelGC", -- 启用 G1 GC
-        "-XX:GCTimeRatio=4",  -- 启用 G1 GC
-        "-XX:+ParallelRefProcEnabled",
-        "-XX:AdaptiveSizePolicyWeight=90",
-        "-XX:+UseStringDeduplication",
-        "-XX:MaxGCPauseMillis=200", -- 优化 GC 停顿
-        "-XX:MetaspaceSize=1G",     -- Metaspace 初始大小
-        "-XX:MaxMetaspaceSize=2G",  -- 限制 Metaspace 上限
-
-        "-XX:+UnlockExperimentalVMOptions",
-        "-XX:G1NewSizePercent=20",
-        "-XX:InitiatingHeapOccupancyPercent=35",
-        "--add-modules=ALL-SYSTEM",
-        "--add-opens",
-        "java.base/java.util=ALL-UNNAMED",
-        "--add-opens",
-        "java.base/java.lang=ALL-UNNAMED",
-        "-jar",
-        vim.fn.expand("$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher_1.7.0.v20250331-1702.jar"),
-        "-configuration",
-        vim.fn.expand("$MASON/share/jdtls/config"),
-      }
-      return {
-        -- How to find the root dir for a given filename. The default comes from
-        -- lspconfig which provides a function specifically for java projects.
-        root_dir = get_raw_config("jdtls").default_config.root_dir,
-
-        -- How to find the project name for a given root dir.
-        project_name = function(root_dir)
-          return root_dir and vim.fs.basename(root_dir)
+    ft = { "java" },
+    dependencies = {
+      {
+        "AstroNvim/astrolsp",
+        optional = true,
+        ---@type AstroLSPOpts
+        opts = function(_, opts)
+          local maps = opts.mappings
+          maps.n["<Leader>lv"] = {
+            function()
+              require("jdtls").set_runtime()
+            end,
+            desc = "set jdk version",
+          }
+          maps.n["<Leader>lC"] = {
+            function()
+              require("toggleterm").exec("mvnd compile", 0, 50, "", "vertical", "", true, false)
+            end,
+            desc = "compile",
+          }
+          local utils = require("astrocore")
+          return utils.extend_tbl({
+            ---@diagnostic disable: missing-fields
+            handlers = { jdtls = false },
+          }, opts)
         end,
+      },
+    },
+    opts = function(_, opts)
+      local utils = require("astrocore")
+      -- use this function notation to build some variables
+      -- local root_markers = { ".git", "pom.xml", "mvnw", "gradlew", "build.gradle", ".project" }
+      -- local root_markers = { "pom.xml", "gradlew" }
+      -- local root_dir = require("jdtls.setup").find_root(root_markers)
+      local root_dir =
+        vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])
+      -- calculate workspace dir
+      local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
+      local workspace_dir = vim.fn.expand("$HOME/.cache/jdtls/" .. project_name)
+      -- vim.fn.mkdir(workspace_dir, "p")
 
-        -- Where are the config and workspace dirs for a project?
-        jdtls_config_dir = function(project_name)
-          return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/config"
-        end,
-        jdtls_workspace_dir = function(project_name)
-          return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/workspace"
-        end,
+      -- validate operating system
+      if not (vim.fn.has("mac") == 1 or vim.fn.has("unix") == 1 or vim.fn.has("win32") == 1) then
+        utils.notify("jdtls: Could not detect valid OS", vim.log.levels.ERROR)
+      end
 
-        -- How to run jdtls. This can be overridden to a full java command-line
-        -- if the Python wrapper script doesn't suffice.
-        cmd = cmd,
-        full_cmd = function(opts)
-          local fname = vim.api.nvim_buf_get_name(0)
-          local root_dir = opts.root_dir(fname)
-          local project_name = opts.project_name(root_dir)
-          local cmd1 = vim.deepcopy(opts.cmd)
-          if project_name then
-            vim.list_extend(cmd1, {
-              -- "-configuration",
-              -- opts.jdtls_config_dir(project_name),
-              "-data",
-              opts.jdtls_workspace_dir(project_name),
-            })
-          end
-          return cmd1
-        end,
+      return utils.extend_tbl({
+        cmd = {
+          "/usr/lib/jvm/java-21-openjdk/bin/java",
+          "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+          "-Dosgi.bundles.defaultStartLevel=4",
+          "-Declipse.product=org.eclipse.jdt.ls.core.product",
+          "-Dlog:disable",
+          "-Djdt.ls.debug=false",
+          "-Dlombok.disableConfig=true",
+          "-Dsun.zip.disableMemoryMapping=true",
+          "-javaagent:" .. vim.fn.expand("$MASON/share/jdtls/lombok.jar"),
+          "-Xms1g", -- 初始堆内存提升
+          "-Xmx8g", -- 最大堆内存提升
+          "-noverify",
+          "-XX:+UseZGC", -- 启用 G1 GC
+          "-XX:GCTimeRatio=4", -- 启用 G1 GC
+          "-XX:+ParallelRefProcEnabled",
+          "-XX:AdaptiveSizePolicyWeight=90",
+          "-XX:+UseStringDeduplication",
+          "-XX:MaxGCPauseMillis=200", -- 优化 GC 停顿
+          "-XX:MetaspaceSize=1G", -- Metaspace 初始大小
+          "-XX:MaxMetaspaceSize=2G", -- 限制 Metaspace 上限
 
-        test = true,
+          "-XX:+UnlockExperimentalVMOptions",
+          "-XX:G1NewSizePercent=20",
+          "-XX:InitiatingHeapOccupancyPercent=35",
+          "--add-modules=ALL-SYSTEM",
+          "--add-opens",
+          "java.base/java.util=ALL-UNNAMED",
+          "--add-opens",
+          "java.base/java.lang=ALL-UNNAMED",
+          "-jar",
+          vim.fn.expand("$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher_1.7.0.v20250331-1702.jar"),
+          "-configuration",
+          vim.fn.expand("$MASON/share/jdtls/config"),
+          "-data",
+          workspace_dir,
+        },
+        root_dir = root_dir,
         settings = {
           java = {
+            index = {
+              preload = { "org.springframework.*" },
+            },
             autobuild = {
               enabled = false,
             },
@@ -189,7 +151,7 @@ return {
               },
             },
             diagnostic = {
-              refreshAfterSave = true,
+              refreshAfterSave = false,
             },
             maven = { downloadSources = true },
             implementationsCodeLens = { enabled = false },
@@ -202,14 +164,14 @@ return {
             completion = {
               enabled = true,
               favoriteStaticMembers = {
-                "org.hamcrest.MatcherAssert.assertThat",
-                "org.hamcrest.Matchers.*",
-                "org.hamcrest.CoreMatchers.*",
-                "org.junit.jupiter.api.Assertions.*",
-                "java.util.Objects.requireNonNull",
-                "java.util.Objects.requireNonNullElse",
-                "org.junit.Assert.*",
-                "org.mockito.Mockito.*",
+                -- "org.hamcrest.MatcherAssert.assertThat",
+                -- "org.hamcrest.Matchers.*",
+                -- "org.hamcrest.CoreMatchers.*",
+                -- "org.junit.jupiter.api.Assertions.*",
+                -- "java.util.Objects.requireNonNull",
+                -- "java.util.Objects.requireNonNullElse",
+                -- "org.junit.Assert.*",
+                -- "org.mockito.Mockito.*",
               },
               filteredTypes = {
                 "com.sun.*",
@@ -220,8 +182,8 @@ return {
               },
               guessMethodArguments = "off",
               maxResults = 30,
-              postfix = true,
-              matchCase = "OFF",
+              postfix = false,
+              matchCase = "off",
             },
             sources = {
               organizeImports = {
@@ -229,139 +191,73 @@ return {
                 staticStarThreshold = 9999,
               },
             },
-            init_options = {},
-            handlers = {
-              ["$/progress"] = function() end, -- disable progress updates.
-            },
-            -- handlers = {
-            --   ["$/progress"] = function() end, -- disable progress updates.
-            -- },
-            flags = {
-              debounce_text_changes = 300, -- 增加输入防抖
-              allow_incremental_sync = true,
-            },
-            filetypes = { "java" },
           },
         },
-        on_attach = function()
-          require("jdtls").setup_dap({
-            hotcodereplace = "auto",
-            config_overrides = {},
-          })
-          require("jdtls.dap").setup_dap_main_class_configs({})
+        init_options = {
+          bundles = {
+            vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"),
+            -- unpack remaining bundles
+            (table.unpack or unpack)(
+              vim.split(vim.fn.glob("$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar"), "\n", {})
+            ),
+          },
+          extendedClientCapabilities = {
+            classFileContentsSupport = true,
+            resolveAdditionalTextEditsSupport = true,
+            progressReportProvider = true,
+            generateToStringPromptSupport = true,
+            advancedExtractRefactoringSupport = true,
+            advancedOrganizeImportsSupport = true,
+            -- 关键优化：关闭高开销功能
+            completion = {
+              maxResults = 100, -- 限制补全结果数量
+              lazyResolve = false, -- 延迟解析补全项
+            },
+            shouldLanguageServerExitOnShutdown = true,
+          },
+        },
+        handlers = {
+          ["$/progress"] = function() end, -- disable progress updates.
+        },
+        flags = {
+          debounce_text_changes = 200, -- 增加输入防抖
+          allow_incremental_sync = true,
+        },
+        filetypes = { "java" },
+        on_attach = function(...)
+          require("jdtls").setup_dap({ hotcodereplace = "auto" })
+          local astrolsp_avail, astrolsp = pcall(require, "astrolsp")
+          if astrolsp_avail then
+            astrolsp.on_attach(...)
+          end
         end,
-      }
+      }, opts)
     end,
     config = function(_, opts)
-      -- Find the extra bundles that should be passed on the jdtls command-line
-      -- if nvim-dap is enabled with java debug/test.
-      local init_options = {
-        bundles = {
-          vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"),
-          -- unpack remaining bundles
-          (table.unpack or unpack)(
-                vim.split(vim.fn.glob("$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar"), "\n", {})
-              ),
-        },
-        extendedClientCapabilities = {
-          classFileContentsSupport = true,
-          resolveAdditionalTextEditsSupport = true,
-          progressReportProvider = true,
-          generateToStringPromptSupport = true,
-          advancedExtractRefactoringSupport = true,
-          advancedOrganizeImportsSupport = true,
-          -- 关键优化：关闭高开销功能
-          completion = {
-            maxResults = 30,    -- 限制补全结果数量
-            lazyResolve = true, -- 延迟解析补全项
-          },
-          shouldLanguageServerExitOnShutdown = true,
-        },
-      } ---@type string[]
-      local function attach_jdtls()
-        local fname = vim.api.nvim_buf_get_name(0)
-
-        -- Configuration can be augmented and overridden by opts.jdtls
-        local config = extend_or_override({
-          cmd = opts.full_cmd(opts),
-          root_dir = opts.root_dir(fname),
-          init_options = init_options,
-          settings = opts.settings,
-        }, opts.jdtls)
-
-        -- Existing server will be reused if the root_dir matches.
-        require("jdtls").start_or_attach(config)
-        -- not need to require("jdtls.setup").add_commands(), start automatically adds commands
-      end
-
-      -- Attach the jdtls for each java buffer. HOWEVER, this plugin loads
-      -- depending on filetype, so this autocmd doesn't run for the first file.
-      -- For that, we call directly below.
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = java_filetypes,
-        callback = attach_jdtls,
+      -- setup autocmd on filetype detect java
+      vim.api.nvim_create_autocmd("Filetype", {
+        pattern = "java", -- autocmd to start jdtls
+        callback = function()
+          if opts.root_dir and opts.root_dir ~= "" then
+            require("jdtls").start_or_attach(opts)
+          else
+            require("astrocore").notify("jdtls: root_dir not found. Please specify a root marker", vim.log.levels.ERROR)
+          end
+        end,
       })
-
-      local wk = require("which-key")
-      wk.add({
-        {
-          mode = "n",
-          { "<leader>cx",  group = "extract" },
-          { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
-          { "<leader>cxc", require("jdtls").extract_constant,     desc = "Extract Constant" },
-          { "<leader>cgs", require("jdtls").super_implementation, desc = "Goto Super" },
-          { "<leader>cgS", require("jdtls.tests").goto_subjects,  desc = "Goto Subjects" },
-          { "<leader>co",  require("jdtls").organize_imports,     desc = "Organize Imports" },
-        },
+      -- create autocmd to load main class configs on LspAttach.
+      -- This ensures that the LSP is fully attached.
+      -- See https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
+      vim.api.nvim_create_autocmd("LspAttach", {
+        pattern = "*.java",
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          -- ensure that only the jdtls client is activated
+          if client.name == "jdtls" then
+            require("jdtls.dap").setup_dap_main_class_configs()
+          end
+        end,
       })
-      wk.add({
-        {
-          mode = "v",
-          { "<leader>cx", group = "extract" },
-          {
-            "<leader>cxm",
-            [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]],
-            desc = "Extract Method",
-          },
-          {
-            "<leader>cxv",
-            [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]],
-            desc = "Extract Variable",
-          },
-          {
-            "<leader>cxc",
-            [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]],
-            desc = "Extract Constant",
-          },
-        },
-      })
-      wk.add({
-        {
-          mode = "n",
-          { "<leader>t",  group = "test" },
-          {
-            "<leader>tt",
-            function()
-              require("jdtls.dap").test_class({
-                config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
-              })
-            end,
-            desc = "Run All Test",
-          },
-          {
-            "<leader>tr",
-            function()
-              require("jdtls.dap").test_nearest_method({
-                config_overrides = type(opts.test) ~= "boolean" and opts.test.config_overrides or nil,
-              })
-            end,
-            desc = "Run Nearest Test",
-          },
-          { "<leader>tT", require("jdtls.dap").pick_test, desc = "Run Test" },
-        },
-      })
-      -- Avoid race condition by calling attach the first time, since the autocmd won't fire.
-      attach_jdtls()
     end,
   },
   {
@@ -391,27 +287,18 @@ return {
     "rcasia/neotest-java",
     ft = "java",
     dependencies = {
-      "mfussenegger/nvim-dap", -- for the debugger
-      "rcarriga/nvim-dap-ui",  -- recommended
+      "mfussenegger/nvim-jdtls",
     },
   },
   {
     "nvim-neotest/neotest",
     optional = true,
+    dependencies = { "rcasia/neotest-java" },
     opts = function(_, opts)
       if not opts.adapters then
         opts.adapters = {}
       end
-      table.insert(opts.adapters, require("neotest-java")({}))
+      table.insert(opts.adapters, require("neotest-java")(require("astrocore").plugin_opts("neotest-java")))
     end,
-  },
-  {
-    "stevearc/conform.nvim",
-    optional = true,
-    opts = {
-      formatters_by_ft = {
-        java = { "google-java-format", lsp_format = "last" },
-      },
-    },
   },
 }

@@ -1,10 +1,11 @@
 local map = vim.keymap.set
 local del = vim.keymap.del
+local notify = require("notify")
 
 -- localleader
 map("n", "<localleader>p", function()
   local str = vim.fn.expand("%:p:f")
-  utils.info("当前文件路径：" .. str)
+  notify.notify("当前文件路径：" .. str)
 end, { desc = "Current Path" })
 map("n", "<localleader>c", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window", silent = true })
 map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true })
@@ -43,7 +44,7 @@ map("n", "<leader>uI", function()
 end, { desc = "Inspect Tree" })
 
 -- floating terminal
-local root = require("util.root")
+local root = require("root")
 map("n", "<leader>fT", function()
   require("snacks").terminal()
 end, { desc = "Terminal (cwd)" })
@@ -82,32 +83,37 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- buffers
-map("n", "<S-j>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
-map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-map("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+map("n", "<S-j>", function()
+  require("astrocore.buffer").nav(-vim.v.count1)
+end, { desc = "Prev Buffer" })
+map("n", "<S-k>", function()
+  require("astrocore.buffer").nav(vim.v.count1)
+end, { desc = "Next Buffer" })
+map("n", "[b", function()
+  require("astrocore.buffer").nav(-vim.v.count1)
+end, { desc = "Prev Buffer" })
+map("n", "]b", function()
+  require("astrocore.buffer").nav(vim.v.count1)
+end, { desc = "Next Buffer" })
 map("n", "<leader>bb", function()
   require("snacks").picker.buffers()
-end, { desc = "Switch to Other Buffer" })
+end, { desc = "Pick Buffer" })
 map("n", "<leader>bo", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>bd", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 --stylua: ignore
-map("n", "<leader>bc", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" }) 
+map("n", "<leader>bc", function() require("astrocore.buffer").close_all(true) end, { desc = "Delete Other Buffers" }) 
+map("n", "<leader>bl", function()
+  require("astrocore.buffer").close_left()
+end, { desc = "Close all buffers to the left" })
+map("n", "<leader>br", function()
+  require("astrocore.buffer").close_right()
+end, { desc = "Close all buffers to the right" })
 
 -- Clear search and stop snippet on escape
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   return "<esc>"
 end, { expr = true, desc = "Escape and Clear hlsearch" })
-
--- Clear search, diff update and redraw
--- taken from runtime/lua/_editor.lua
-map(
-  "n",
-  "<leader>ur",
-  "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
-  { desc = "Redraw / Clear hlsearch / Diff Update" }
-)
 
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })

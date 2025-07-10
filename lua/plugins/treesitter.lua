@@ -33,11 +33,10 @@ return {
   end,
   opts_extend = { "ensure_installed" },
   opts = function(_, opts)
-    if utils.is_available("mason.nvim") then
-      require("lazy").load({ plugins = { "mason.nvim" } })
-    end
-    opts = utils.extend_tbl(opts, {
-      auto_install = vim.fn.executable("tree-sitter") == 1, -- only enable auto install if `tree-sitter` cli is installed
+    local astrocore = require "astrocore"
+    if astrocore.is_available "mason.nvim" then require("lazy").load { plugins = { "mason.nvim" } } end
+    opts = astrocore.extend_tbl(opts, {
+      auto_install = vim.fn.executable "tree-sitter" == 1, -- only enable auto install if `tree-sitter` cli is installed
       highlight = { enable = true },
       incremental_selection = { enable = true },
       indent = { enable = true },
@@ -100,40 +99,12 @@ return {
       },
     })
     if opts.ensure_installed ~= "all" then
-      opts.ensure_installed = utils.list_insert_unique(
+      opts.ensure_installed = astrocore.list_insert_unique(
         opts.ensure_installed,
         { "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc" }
       )
     end
     return opts
   end,
-  config = function(plugin, opts)
-    local ts = require(plugin.main)
-
-    -- if no compiler or git available, disable installation
-    if
-        vim.fn.executable("git") == 0
-        or not vim.tbl_contains(require("nvim-treesitter.install").compilers, function(c)
-          return c ~= vim.NIL and vim.fn.executable(c) == 1
-        end, { predicate = true })
-    then
-      opts.auto_install = false
-      opts.ensure_installed = nil
-    end
-
-    -- disable all treesitter modules on large buffer
-    for _, module in ipairs(ts.available_modules()) do
-      if not opts[module] then
-        opts[module] = {}
-      end
-      local module_opts = opts[module]
-      local disable = module_opts.disable
-      module_opts.disable = function(lang, bufnr)
-        return (type(disable) == "table" and vim.tbl_contains(disable, lang))
-            or (type(disable) == "function" and disable(lang, bufnr))
-      end
-    end
-
-    ts.setup(opts)
-  end,
+  config = function(...) require "astronvim.plugins.configs.nvim-treesitter"(...) end,
 }

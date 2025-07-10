@@ -90,7 +90,7 @@ return {
       "folke/which-key.nvim",
       optional = true,
       opts = function(_, opts)
-        return utils.extend_tbl(
+        return require"astrocore".extend_tbl(
           opts,
           {
             spec = {
@@ -123,7 +123,7 @@ return {
         if not opts.file_types then
           opts.file_types = { "markdown" }
         end
-        opts.file_types = utils.list_insert_unique(opts.file_types, { "Avante" })
+        opts.file_types = require"astrocore".list_insert_unique(opts.file_types, { "Avante" })
       end,
     },
     {
@@ -134,7 +134,7 @@ return {
         if not opts.filetypes then
           opts.filetypes = { "markdown", "quarto", "rmd" }
         end
-        opts.filetypes = utils.list_insert_unique(opts.filetypes, { "Avante" })
+        opts.filetypes = require"astrocore".list_insert_unique(opts.filetypes, { "Avante" })
       end,
     },
     {
