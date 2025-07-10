@@ -2,7 +2,7 @@ return {
   misc = {
     dots = "󰇘",
     separator = "",
-    VimIcon = "󰣇",
+    VimIcon = " ",
   },
   ft = {
     octo = "",

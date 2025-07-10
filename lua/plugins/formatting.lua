@@ -21,6 +21,7 @@ return {
     formatters = {
       injected = { options = { ignore_errors = true } },
     },
+    default_format_opts = { lsp_format = "fallback" },
   },
   keys = {
     {
