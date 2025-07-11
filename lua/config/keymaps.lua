@@ -61,17 +61,26 @@ map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr =
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
+--stylua: ignore
 -- Move to window using the <ctrl> hjkl keys
-map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
-
+map("n", "<C-h>", function() require("smart-splits").move_cursor_left() end, { desc = "Go to Left Window", remap = true })
+--stylua: ignore
+map("n", "<C-j>", function() require("smart-splits").move_cursor_down() end,
+  { desc = "Go to Lower Window", remap = true })
+--stylua: ignore
+map("n", "<C-k>", function() require("smart-splits").move_cursor_up() end, { desc = "Go to Upper Window", remap = true })
+--stylua: ignore
+map("n", "<C-l>", function() require("smart-splits").move_cursor_right() end,
+  { desc = "Go to Right Window", remap = true })
+--stylua: ignore
 -- Resize window using <ctrl> arrow keys
-map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
-map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
-map("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
-map("n", "<C-Left>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+map("n", "<C-Up>", function() require("smart-splits").resize_up() end, { desc = "Increase Window Height" })
+--stylua: ignore
+map("n", "<C-Down>", function() require("smart-splits").resize_down() end, { desc = "Decrease Window Height" })
+--stylua: ignore
+map("n", "<C-Right>", function() require("smart-splits").resize_right() end, { desc = "Decrease Window Width" })
+--stylua: ignore
+map("n", "<C-Left>", function() require("smart-splits").resize_left() end, { desc = "Increase Window Width" })
 
 -- Move Lines
 map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
@@ -92,7 +101,7 @@ end, { desc = "Switch to Other Buffer" })
 map("n", "<leader>bo", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>bd", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 --stylua: ignore
-map("n", "<leader>bc", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" }) 
+map("n", "<leader>bc", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
 
 -- Clear search and stop snippet on escape
 map({ "i", "n", "s" }, "<esc>", function()
@@ -168,66 +177,72 @@ map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
 -- stylua: ignore start
 
-map("n", "<leader>e", function() require("snacks").explorer() end,{ desc = "Explorer" })
-map("n", "<leader>,", function() require("snacks").picker.buffers() end,{ desc = "Buffers" })
-map("n", "<leader>/", function ()require("snacks").picker.grep() end,{ desc = "Grep (Root Dir)" })
-map("n", "<leader><space>", function ()require("snacks").picker.files() end,{ desc = "Find Files (Root Dir)" })
-map("n", "<leader>n", function() require("snacks").picker.notifications() end,{ desc = "Notification History" })
+map("n", "<leader>e", function() require("snacks").explorer() end, { desc = "Explorer" })
+map("n", "<leader>,", function() require("snacks").picker.buffers() end, { desc = "Buffers" })
+map("n", "<leader>/", function() require("snacks").picker.grep() end, { desc = "Grep (Root Dir)" })
+map("n", "<leader><space>", function() require("snacks").picker.files() end, { desc = "Find Files (Root Dir)" })
+map("n", "<leader>n", function() require("snacks").picker.notifications() end, { desc = "Notification History" })
 -- find
-map("n", "<leader>fb", function() require("snacks").picker.buffers() end,{ desc = "Buffers" })
-map("n", "<leader>fB", function() require("snacks").picker.buffers({ hidden = true, nofile = true }) end,{ desc = "Buffers (all)" })
-map("n", "<leader>fc", function() require("snacks").picker.config() end,{ desc = "Find Config File" })
-map("n", "<leader>ff", function() require("snacks").picker.files() end,{ desc = "Find Files (Root Dir)" })
-map("n", "<leader>fF", function() require("snacks").picker.files({root = false}) end ,{ desc = "Find Files (cwd)" })
-map("n", "<leader>fg", function() require("snacks").picker.git_files() end,{ desc = "Find Files (git-files)" })
-map("n", "<leader>fr", function() require("snacks").picker.recent() end,{ desc = "Recent" })
-map("n", "<leader>fR", function() require("snacks").picker.recent({ filter = { cwd = true }}) end,{ desc = "Recent (cwd)" })
-map("n", "<leader>fp", function() require("snacks").picker.projects() end,{ desc = "Projects" })
+map("n", "<leader>fb", function() require("snacks").picker.buffers() end, { desc = "Buffers" })
+map("n", "<leader>fB", function() require("snacks").picker.buffers({ hidden = true, nofile = true }) end,
+  { desc = "Buffers (all)" })
+map("n", "<leader>fc", function() require("snacks").picker.config() end, { desc = "Find Config File" })
+map("n", "<leader>ff", function() require("snacks").picker.files() end, { desc = "Find Files (Root Dir)" })
+map("n", "<leader>fF", function() require("snacks").picker.files({ root = false }) end, { desc = "Find Files (cwd)" })
+map("n", "<leader>fg", function() require("snacks").picker.git_files() end, { desc = "Find Files (git-files)" })
+map("n", "<leader>fr", function() require("snacks").picker.recent() end, { desc = "Recent" })
+map("n", "<leader>fR", function() require("snacks").picker.recent({ filter = { cwd = true } }) end,
+  { desc = "Recent (cwd)" })
+map("n", "<leader>fp", function() require("snacks").picker.projects() end, { desc = "Projects" })
 -- git
-map("n", "<leader>gd", function() require("snacks").picker.git_diff() end,{ desc = "Git Diff (hunks)" })
-map("n", "<leader>gs", function() require("snacks").picker.git_status() end,{ desc = "Git Status" })
-map("n", "<leader>gS", function() require("snacks").picker.git_stash() end,{ desc = "Git Stash" })
-map("n", "<leader>gg", function() require("snacks").lazygit( { cwd = root.git() }) end, { desc = "Lazygit (Root Dir)" })
+map("n", "<leader>gd", function() require("snacks").picker.git_diff() end, { desc = "Git Diff (hunks)" })
+map("n", "<leader>gs", function() require("snacks").picker.git_status() end, { desc = "Git Status" })
+map("n", "<leader>gS", function() require("snacks").picker.git_stash() end, { desc = "Git Stash" })
+map("n", "<leader>gg", function() require("snacks").lazygit({ cwd = root.git() }) end, { desc = "Lazygit (Root Dir)" })
 map("n", "<leader>gG", function() require("snacks").lazygit() end, { desc = "Lazygit (cwd)" })
 map("n", "<leader>gf", function() require("snacks").picker.git_log_file() end, { desc = "Git Current File History" })
 map("n", "<leader>gl", function() require("snacks").picker.git_log({ cwd = root.git() }) end, { desc = "Git Log" })
 map("n", "<leader>gL", function() require("snacks").picker.git_log() end, { desc = "Git Log (cwd)" })
 map("n", "<leader>gb", function() require("snacks").picker.git_log_line() end, { desc = "Git Blame Line" })
 map({ "n", "x" }, "<leader>gB", function() require("snacks").gitbrowse() end, { desc = "Git Browse (open)" })
-map({"n", "x" }, "<leader>gY", function()
+map({ "n", "x" }, "<leader>gY", function()
   require("snacks").gitbrowse({ open = function(url) vim.fn.setreg("+", url) end, notify = false })
 end, { desc = "Git Browse (copy)" })
 -- Grep
-map("n", "<leader>sb", function() require("snacks").picker.lines() end,{ desc = "Buffer Lines" })
-map("n", "<leader>sB", function() require("snacks").picker.grep_buffers() end,{ desc = "Grep Open Buffers" })
-map("n", "<leader>sg", function() require("snacks").picker.grep() end,{ desc = "Grep (Root Dir)" })
-map("n", "<leader>sG", function() require("snacks").picker.grep({ root = false }) end,{ desc = "Grep (cwd)" })
-map("n", "<leader>sp", function() require("snacks").picker.lazy() end,{ desc = "Search for Plugin Spec" })
-map("n", "<leader>sw", function() require("snacks").picker.grep_word() end,{ desc = "Visual selection or word (Root Dir)" })
-map("x", "<leader>sw", function() require("snacks").picker.grep_word() end,{ desc = "Visual selection or word (Root Dir)" })
-map("n", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,{ desc = "Visual selection or word (cwd)"})
-map("x", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,{ desc = "Visual selection or word (cwd)"})
+map("n", "<leader>sb", function() require("snacks").picker.lines() end, { desc = "Buffer Lines" })
+map("n", "<leader>sB", function() require("snacks").picker.grep_buffers() end, { desc = "Grep Open Buffers" })
+map("n", "<leader>sg", function() require("snacks").picker.grep() end, { desc = "Grep (Root Dir)" })
+map("n", "<leader>sG", function() require("snacks").picker.grep({ root = false }) end, { desc = "Grep (cwd)" })
+map("n", "<leader>sp", function() require("snacks").picker.lazy() end, { desc = "Search for Plugin Spec" })
+map("n", "<leader>sw", function() require("snacks").picker.grep_word() end,
+  { desc = "Visual selection or word (Root Dir)" })
+map("x", "<leader>sw", function() require("snacks").picker.grep_word() end,
+  { desc = "Visual selection or word (Root Dir)" })
+map("n", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,
+  { desc = "Visual selection or word (cwd)" })
+map("x", "<leader>sW", function() require("snacks").picker.grep_word({ root = false }) end,
+  { desc = "Visual selection or word (cwd)" })
 -- search
-map("n", "<leader>s'", function() require("snacks").picker.registers() end,{ desc = "Registers" })
-map("n", "<leader>s/", function() require("snacks").picker.search_history() end,{ desc = "Search History" })
-map("n", "<leader>sa", function() require("snacks").picker.autocmds() end,{ desc = "Autocmds" })
-map("n", "<leader>sc", function() require("snacks").picker.command_history() end,{ desc = "Command History" })
-map("n", "<leader>sC", function() require("snacks").picker.commands() end,{ desc = "Commands" })
-map("n", "<leader>sd", function() require("snacks").picker.diagnostics() end,{ desc = "Diagnostics" })
-map("n", "<leader>sD", function() require("snacks").picker.diagnostics_buffer() end,{ desc = "Buffer Diagnostics" })
-map("n", "<leader>sh", function() require("snacks").picker.help() end,{ desc = "Help Pages" })
-map("n", "<leader>sH", function() require("snacks").picker.highlights() end,{ desc = "Highlights" })
-map("n", "<leader>si", function() require("snacks").picker.icons() end,{ desc = "Icons" })
-map("n", "<leader>sj", function() require("snacks").picker.jumps() end,{ desc = "Jumps" })
-map("n", "<leader>sk", function() require("snacks").picker.keymaps() end,{ desc = "Keymaps" })
-map("n", "<leader>sl", function() require("snacks").picker.loclist() end,{ desc = "Location List" })
-map("n", "<leader>sM", function() require("snacks").picker.man() end,{ desc = "Man Pages" })
-map("n", "<leader>sm", function() require("snacks").picker.marks() end,{ desc = "Marks" })
-map("n", "<leader>sR", function() require("snacks").picker.resume() end,{ desc = "Resume" })
-map("n", "<leader>sq", function() require("snacks").picker.qflist() end,{ desc = "Quickfix List" })
-map("n", "<leader>su", function() require("snacks").picker.undo() end,{ desc = "Undotree" })
+map("n", "<leader>s'", function() require("snacks").picker.registers() end, { desc = "Registers" })
+map("n", "<leader>s/", function() require("snacks").picker.search_history() end, { desc = "Search History" })
+map("n", "<leader>sa", function() require("snacks").picker.autocmds() end, { desc = "Autocmds" })
+map("n", "<leader>sc", function() require("snacks").picker.command_history() end, { desc = "Command History" })
+map("n", "<leader>sC", function() require("snacks").picker.commands() end, { desc = "Commands" })
+map("n", "<leader>sd", function() require("snacks").picker.diagnostics() end, { desc = "Diagnostics" })
+map("n", "<leader>sD", function() require("snacks").picker.diagnostics_buffer() end, { desc = "Buffer Diagnostics" })
+map("n", "<leader>sh", function() require("snacks").picker.help() end, { desc = "Help Pages" })
+map("n", "<leader>sH", function() require("snacks").picker.highlights() end, { desc = "Highlights" })
+map("n", "<leader>si", function() require("snacks").picker.icons() end, { desc = "Icons" })
+map("n", "<leader>sj", function() require("snacks").picker.jumps() end, { desc = "Jumps" })
+map("n", "<leader>sk", function() require("snacks").picker.keymaps() end, { desc = "Keymaps" })
+map("n", "<leader>sl", function() require("snacks").picker.loclist() end, { desc = "Location List" })
+map("n", "<leader>sM", function() require("snacks").picker.man() end, { desc = "Man Pages" })
+map("n", "<leader>sm", function() require("snacks").picker.marks() end, { desc = "Marks" })
+map("n", "<leader>sR", function() require("snacks").picker.resume() end, { desc = "Resume" })
+map("n", "<leader>sq", function() require("snacks").picker.qflist() end, { desc = "Quickfix List" })
+map("n", "<leader>su", function() require("snacks").picker.undo() end, { desc = "Undotree" })
 -- ui
-map("n", "<leader>uC", function() require("snacks").picker.colorschemes() end,{ desc = "Colorschemes" })
+map("n", "<leader>uC", function() require("snacks").picker.colorschemes() end, { desc = "Colorschemes" })
 
 --tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
@@ -246,18 +261,21 @@ map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
 local get_file_path = function() return vim.fn.expand "%" end
 local get_project_path = function() return vim.fn.getcwd() end
 local prefix = "<leader>t"
-map("n", prefix.."r", function() require("neotest").run.run() end, {desc = "Run test"})
-map("n", prefix.."t", function() require("neotest").run.run() end, {desc = "Run test"})
-map("n", prefix.."d", function() require("neotest").run.run{strategy = "dap"} end, {desc = "Debug test"})
-map("n", prefix.."f", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in file"})
-map("n", prefix.."p", function() require("neotest").run.run(get_project_path()) end, {desc = "Run all tests in project"})
-map("n", prefix.."<CR>", function() require("neotest").summary.toggle() end, {desc = "Test Summary"})
-map("n", prefix.."o", function() require("neotest").output.open() end, {desc = "Output hover"})
-map("n", prefix.."O", function() require("neotest").output_panel.toggle() end, {desc = "Output window"})
-map("n", "]T", function() require("neotest").jump.next() end, {desc = "Next test"})
-map("n", "[T", function() require("neotest").jump.prev() end, {desc = "Previous test"})
+map("n", prefix .. "r", function() require("neotest").run.run() end, { desc = "Run test" })
+map("n", prefix .. "t", function() require("neotest").run.run() end, { desc = "Run test" })
+map("n", prefix .. "d", function() require("neotest").run.run { strategy = "dap" } end, { desc = "Debug test" })
+map("n", prefix .. "f", function() require("neotest").run.run(get_project_path()) end, { desc = "Run all tests in file" })
+map("n", prefix .. "p", function() require("neotest").run.run(get_project_path()) end,
+  { desc = "Run all tests in project" })
+map("n", prefix .. "<CR>", function() require("neotest").summary.toggle() end, { desc = "Test Summary" })
+map("n", prefix .. "o", function() require("neotest").output.open() end, { desc = "Output hover" })
+map("n", prefix .. "O", function() require("neotest").output_panel.toggle() end, { desc = "Output window" })
+map("n", "]T", function() require("neotest").jump.next() end, { desc = "Next test" })
+map("n", "[T", function() require("neotest").jump.prev() end, { desc = "Previous test" })
 local watch_prefix = prefix .. "W"
-map("n", watch_prefix.."t", function() require("neotest").watch.toggle() end, {desc = "Toggle watch test"})
-map("n", watch_prefix.."f", function() require("neotest").watch.toggle(get_file_path()) end, {desc = "Toggle watch all test in file"})
-map("n", watch_prefix.."p", function() require("neotest").watch.toggle(get_project_path()) end, {desc = "Toggle watch all tests in project"})
-map("n", watch_prefix.."S", function() require("neotest").watch.stop() end, {desc = "Stop all watches"})
+map("n", watch_prefix .. "t", function() require("neotest").watch.toggle() end, { desc = "Toggle watch test" })
+map("n", watch_prefix .. "f", function() require("neotest").watch.toggle(get_file_path()) end,
+  { desc = "Toggle watch all test in file" })
+map("n", watch_prefix .. "p", function() require("neotest").watch.toggle(get_project_path()) end,
+  { desc = "Toggle watch all tests in project" })
+map("n", watch_prefix .. "S", function() require("neotest").watch.stop() end, { desc = "Stop all watches" })
