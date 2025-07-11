@@ -4,7 +4,7 @@ end
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
-  callback = function(ev) 
+  callback = function(ev)
     vim.bo[ev.buf].shiftwidth = 4
   end,
 })
