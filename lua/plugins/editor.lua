@@ -18,7 +18,7 @@ return {
         enabled = true,
         style = "minimal",
         top_down = false,
-        margin = { top = 0, right = 1, bottom = 0 },
+        margin = { top = 0, right = 1, bottom = 1 },
         width = { min = 40, max = 0.8 },
       },
       input = {
@@ -571,7 +571,9 @@ return {
   {
     "lambdalisue/suda.vim",
     cmd = { "SudaRead", "SudaWrite" },
-    opts = {},
+    config = function ()
+      
+    end
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
@@ -593,6 +595,21 @@ return {
       },
     },
     opts = {},
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        default = { "markdown" },
+        providers = {
+          markdown = {
+            name = "RenderMarkdown",
+            module = "render-markdown.integ.blink",
+            fallbacks = { "lsp" },
+          },
+        },
+      },
+    },
   },
   {
     "max397574/better-escape.nvim",

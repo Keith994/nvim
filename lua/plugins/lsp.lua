@@ -64,7 +64,7 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    -- event = "VeryLazy",
+    event = "VeryLazy",
     dependencies = {
       "mfussenegger/nvim-dap",
       {

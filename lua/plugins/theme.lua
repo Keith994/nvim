@@ -1,7 +1,6 @@
 return {
   {
     "EdenEast/nightfox.nvim",
-    lazy = true,
     opts = {
       options = {
         module_default = false,
@@ -24,7 +23,7 @@ return {
       groups = { all = { NormalFloat = { link = "Normal" } } },
     },
   },
-  { "rose-pine/neovim", name = "rose-pine", lazy = true, opts = {} },
+  { "rose-pine/neovim", name = "rose-pine", opts = {} },
   {
     "catppuccin/nvim",
     name = "catppuccin",

@@ -13,23 +13,23 @@ local config = {
   methods = { "lsp", "treesitter", "indent" },
 }
 
-local is_setup = false
-local lsp_bufs = {}
-local ts_bufs = {}
+M.is_setup = false
+M.lsp_bufs = {}
+M.ts_bufs = {}
 
 local fold_methods = {
   lsp = function(lnum, bufnr)
-    if lsp_bufs[bufnr or vim.api.nvim_get_current_buf()] then
+    if M.lsp_bufs[bufnr or vim.api.nvim_get_current_buf()] then
       return vim.lsp.foldexpr(lnum)
     end
   end,
   treesitter = function(lnum, bufnr)
-    if ts_bufs[bufnr] == nil then
+    if M.ts_bufs[bufnr] == nil then
       if not utils.is_available("nvim-treesitter") or package.loaded["nvim-treesitter"] then
-        ts_bufs[bufnr] = vim.bo.filetype and pcall(vim.treesitter.get_parser, bufnr)
+        M.ts_bufs[bufnr] = vim.bo.filetype and pcall(vim.treesitter.get_parser, bufnr)
       end
     end
-    if ts_bufs[bufnr] then
+    if M.ts_bufs[bufnr] then
       return vim.treesitter.foldexpr(lnum)
     end
   end,
@@ -60,7 +60,7 @@ end
 ---@param lnum? integer the current line number
 ---@return string foldlevel the calculated fold level
 function M.foldexpr(lnum)
-  if not is_setup then
+  if not M.is_setup then
     M.setup()
   end
   local bufnr = vim.api.nvim_get_current_buf()
@@ -107,6 +107,7 @@ function M.info(bufnr)
   table.insert(lines, "```lua")
   table.insert(lines, "methods = " .. vim.inspect(methods))
   table.insert(lines, "```")
+  utils.info(table.concat(lines, "\n"))
 end
 
 function M.setup()
@@ -120,7 +121,7 @@ function M.setup()
     callback = function(args)
       local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
       if client:supports_method("textDocument/foldingRange", args.buf) then
-        lsp_bufs[args.buf] = true
+        M.lsp_bufs[args.buf] = true
       end
     end,
   })
@@ -136,10 +137,10 @@ function M.setup()
           return
         end
       end
-      lsp_bufs[args.buf] = nil
+      M.lsp_bufs[args.buf] = nil
     end,
   })
-  is_setup = true
+  M.is_setup = true
 end
 
 return M

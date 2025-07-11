@@ -34,7 +34,7 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
-    enabled = true, -- check for plugin updates periodically
+    enabled = false, -- check for plugin updates periodically
     notify = false, -- notify on update
   }, -- automatically check for plugin updates
   performance = {
@@ -53,4 +53,7 @@ require("lazy").setup({
     },
   },
 })
-vim.cmd.colorscheme("catppuccin-mocha")
+-- init.lua (或者你主要的配置文件)
+vim.defer_fn(function()
+  vim.cmd.colorscheme"rose-pine-moon"
+end, 0)

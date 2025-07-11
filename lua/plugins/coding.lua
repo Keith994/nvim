@@ -17,16 +17,16 @@ return {
     },
     config = function(_, opts)
       require("snacks")
-        .toggle({
-          name = "Mini Pairs",
-          get = function()
-            return not vim.g.minipairs_disable
-          end,
-          set = function(state)
-            vim.g.minipairs_disable = not state
-          end,
-        })
-        :map("<leader>up")
+          .toggle({
+            name = "Mini Pairs",
+            get = function()
+              return not vim.g.minipairs_disable
+            end,
+            set = function(state)
+              vim.g.minipairs_disable = not state
+            end,
+          })
+          :map("<leader>up")
       local pairs = require("mini.pairs")
       pairs.setup(opts)
       local open = pairs.open
@@ -84,10 +84,10 @@ return {
             i = { "@block.inner", "@conditional.inner", "@loop.inner" },
           }),
           f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }), -- function
-          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }), -- class
-          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" }, -- tags
-          d = { "%f[%d]%d+" }, -- digits
-          e = { -- Word with case
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),       -- class
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },           -- tags
+          d = { "%f[%d]%d+" },                                                          -- digits
+          e = {                                                                         -- Word with case
             { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
             "^().*()$",
           },
@@ -105,8 +105,8 @@ return {
 
             local to_col = math.max(vim.fn.getline(end_line):len(), 1)
             return { from = { line = start_line, col = 1 }, to = { line = end_line, col = to_col } }
-          end, -- buffer
-          u = ai.gen_spec.function_call(), -- u for "Usage"
+          end,                                                       -- buffer
+          u = ai.gen_spec.function_call(),                           -- u for "Usage"
           U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
         },
       }
@@ -177,18 +177,6 @@ return {
   },
 
   {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    cmd = "LazyDev",
-    opts = {
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
-        { path = "lazy.nvim", words = { "LazyVim" } },
-      },
-    },
-  },
-  {
     "sindrets/diffview.nvim",
     cmd = {
       "DiffviewOpen",
@@ -201,6 +189,7 @@ return {
   },
   {
     "tpope/vim-dadbod",
+    ft = "sql",
     specs = {
       {
         "kristijanhusak/vim-dadbod-ui",
@@ -221,6 +210,35 @@ return {
           -- vim.g.db_ui_disable_mappings = 1
           vim.g.db_ui_show_database_icon = 1
         end,
+      },
+    },
+  },
+
+  -- Lazydev
+  {
+    "folke/lazydev.nvim",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "snacks.nvim",        words = { "Snacks" } },
+        { path = "lazy.nvim",          words = { "LazyVim" } },
+      },
+    },
+    ft = "lua",
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        -- add lazydev to your completion providers
+        default = { "lazydev" },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100, -- show at a higher priority than lsp
+          },
+        },
       },
     },
   },
