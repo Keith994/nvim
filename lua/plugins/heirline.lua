@@ -1,40 +1,37 @@
 return {
   {
     "rebelot/heirline.nvim",
-    event = "VimEnter",
+    event = "BufEnter",
     dependencies = {
+      "echasnovski/mini.icons",
       {
-        "echasnovski/mini.icons",
-        {
-          "Zeioth/heirline-components.nvim",
-          opts = function()
-            local icons = require("util.icons")
-            local ret = {
-              icons = {
-                DiagnosticError = icons.diagnostics.Error,
-                DiagnosticHint = icons.diagnostics.Hint,
-                DiagnosticInfo = icons.diagnostics.Info,
-                DiagnosticWarn = icons.diagnostics.Warn,
-                PathSeparator = icons.misc.separator,
+        "Zeioth/heirline-components.nvim",
+        opts = function()
+          local icons = require("util.icons")
+          local ret = {
+            icons = {
+              DiagnosticError = icons.diagnostics.Error,
+              DiagnosticHint = icons.diagnostics.Hint,
+              DiagnosticInfo = icons.diagnostics.Info,
+              DiagnosticWarn = icons.diagnostics.Warn,
+              PathSeparator = icons.misc.separator,
 
-                GitBranch = icons.git.branch,
-                GitAdd = icons.git.added,
-                GitChange = icons.git.modified,
-                GitDelete = icons.git.removed,
-                BreadcrumbSeparator = icons.misc.separator,
-                VimIcon = icons.misc.VimIcon,
-              },
-            }
-            return ret
-          end,
-          config = function(_, opts)
-            require("heirline-components").setup(opts)
-            -- injects custom icon
-            local sep = require("heirline-components.core.env").separators
-            require("heirline-components.core.env").separators =
-              utils.extend_tbl(sep, require("util.icons").separators)
-          end,
-        },
+              GitBranch = icons.git.branch,
+              GitAdd = icons.git.added,
+              GitChange = icons.git.modified,
+              GitDelete = icons.git.removed,
+              BreadcrumbSeparator = icons.misc.separator,
+              VimIcon = icons.misc.VimIcon,
+            },
+          }
+          return ret
+        end,
+        config = function(_, opts)
+          require("heirline-components").setup(opts)
+          -- injects custom icon
+          local sep = require("heirline-components.core.env").separators
+          require("heirline-components.core.env").separators = utils.extend_tbl(sep, require("util.icons").separators)
+        end,
       },
     },
     opts = function()
@@ -104,6 +101,8 @@ return {
 
         return require("heirline-components.core.heirline").make_buflist(file_info_table)
       end
+
+      -- local path_func = lib.provider.filename({ modify = ":.:h", fallback = "" })
       return {
         statusline = {
           hl = { fg = "fg", bg = "bg" },
@@ -163,6 +162,47 @@ return {
             },
           }),
         },
+        --stylua: ignore
+        -- winbar = {
+        --   init = function(self) self.bufnr = vim.api.nvim_get_current_buf() end,
+        --   fallthrough = false,
+        --   {
+        --     condition = function() return not lib.condition.is_active() end,
+        --     lib.component.separated_path(),
+        --     lib.component.file_info {
+        --       file_icon = { hl = lib.hl.file_icon "winbar", padding = { left = 0 } },
+        --       filename = {},
+        --       filetype = false,
+        --       file_read_only = false,
+        --       hl = lib.hl.get_attributes("winbarnc", true),
+        --       surround = false,
+        --       update = { "BufEnter", "BufFilePost" },
+        --     },
+        --   },
+        --   -- active winbar
+        --   {
+        --     -- show the path to the file relative to the working directory
+        --     lib.component.separated_path { path_func = path_func },
+        --     -- add the file name and icon
+        --     lib.component.file_info { -- add file_info to breadcrumbs
+        --       file_icon = { hl = lib.hl.filetype_color, padding = { left = 0 } },
+        --       filename = {},
+        --       filetype = false,
+        --       file_modified = false,
+        --       file_read_only = false,
+        --       hl = lib.hl.get_attributes("winbar", true),
+        --       surround = false,
+        --       update = "BufEnter",
+        --     },
+        --     -- show the breadcrumbs
+        --     lib.component.breadcrumbs {
+        --       icon = { hl = true },
+        --       hl = lib.hl.get_attributes("winbar", true),
+        --       prefix = true,
+        --       padding = { left = 0 },
+        --     },
+        --   },
+        -- },
         tabline = {
           lib.component.tabline_conditional_padding(),
           tabline_buffers(),
@@ -188,5 +228,25 @@ return {
       heirline.load_colors(lib.hl.get_colors())
       heirline.setup(opts)
     end,
+  },
+
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "UIEnter",
+    opts = {},
+    specs = {
+      {
+        "rebelot/heirline.nvim",
+        optional = true,
+        opts = function(_, opts)
+          opts.winbar = nil
+        end,
+      },
+      {
+        "catppuccin",
+        optional = true,
+        opts = { integrations = { dropbar = { enabled = true } } },
+      },
+    },
   },
 }
