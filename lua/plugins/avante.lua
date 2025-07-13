@@ -3,7 +3,7 @@ return {
   "yetone/avante.nvim",
   build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
     or "make",
-  event = "VeryLazy", -- load on file open because Avante manages it's own bindings
+  event = "BufReadPost", -- load on file open because Avante manages it's own bindings
   cmd = {
     "AvanteAsk",
     "AvanteBuild",

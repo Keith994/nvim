@@ -211,16 +211,6 @@ return {
       end
     end,
   },
-  -- For `plugins/helpview.lua` users.
-  {
-    "OXY2DEV/helpview.nvim",
-    event = "VeryLazy",
-    opts = {
-      preview = {
-        icon_provider = "mini", -- "mini" or "devicons"
-      },
-    },
-  },
   {
     "FabijanZulj/blame.nvim",
     cmd = "BlameToggle",
