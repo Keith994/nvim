@@ -64,7 +64,8 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    event = "VeryLazy",
+    cmd = { "Mason", "MasonInstall", "LspStart" },
+    event = "BufReadPre",
     dependencies = {
       "mfussenegger/nvim-dap",
       {

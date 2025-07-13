@@ -3,7 +3,7 @@ return {
   branch = "master",
   main = "nvim-treesitter.configs",
   dependencies = { { "nvim-treesitter/nvim-treesitter-textobjects", lazy = true } },
-  event = "VeryLazy",
+  event = "BufReadPre",
   lazy = vim.fn.argc(-1) == 0, -- load treesitter immediately when opening a file from the cmdline
   cmd = {
     "TSBufDisable",
