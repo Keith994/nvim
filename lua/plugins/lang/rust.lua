@@ -4,7 +4,7 @@ return {
     optional = true,
     opts = function(_, opts)
       local ret = {
-        ensure_installed = { "taplo", "toml", "codelldb" },
+        ensure_installed = { "taplo", "codelldb" },
       }
       return utils.extend_tbl(opts, ret)
     end,

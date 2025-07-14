@@ -91,13 +91,13 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- buffers
-map("n", "<S-j>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
-map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-map("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+map("n", "<S-j>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
+map("n", "<S-k>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" })
+map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
+map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" })
 map("n", "<leader>bb", function()
   require("snacks").picker.buffers()
-end, { desc = "Switch to Other Buffer" })
+end, { desc = "Select Buffer From Picker" })
 map("n", "<leader>bo", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>bd", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 --stylua: ignore

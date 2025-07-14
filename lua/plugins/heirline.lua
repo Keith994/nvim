@@ -36,78 +36,78 @@ return {
     },
     opts = function()
       local lib = require("heirline-components.all")
-      local function bufnr(opts)
-        opts = utils.extend_tbl({}, opts)
-        return function(self)
-          return lib.utils.stylize(
-            tostring(self and self.bufnr or vim.api.nvim_get_current_buf()) .. (opts.suffix or " "),
-            opts
-          )
-        end
-      end
-      local tabline_buffers = function(opts)
-        local hl = lib.hl
-        local condition = lib.condition
-        local buf_utils = require("heirline-components.buffer")
-        local extend_tbl = utils.extend_tbl
-
-        local file_info_table = lib.component.file_info(extend_tbl({
-          file_icon = {
-            condition = function(self)
-              return not self._show_picker
-            end,
-            hl = hl.file_icon("tabline"),
-          },
-          filename = {},
-          filetype = false,
-          file_modified = {
-            padding = { left = 1, right = 1 },
-            condition = condition.is_file,
-          },
-          unique_path = {
-            hl = function(self)
-              return hl.get_attributes(self.tab_type .. "_path")
-            end,
-          },
-          close_button = {
-            hl = function(self)
-              return hl.get_attributes(self.tab_type .. "_close")
-            end,
-            padding = { left = 1, right = 1 },
-            on_click = {
-              callback = function(_, minwid)
-                buf_utils.close(minwid)
-              end,
-              minwid = function(self)
-                return self.bufnr
-              end,
-              name = "heirline_tabline_close_buffer_callback",
-            },
-          },
-          padding = { left = 1, right = 1 },
-          hl = function(self)
-            local tab_type = self.tab_type
-            if self._show_picker and self.tab_type ~= "buffer_active" then
-              tab_type = "buffer_visible"
-            end
-            return hl.get_attributes(tab_type)
-          end,
-          surround = false,
-        }, opts))
-
-        table.insert(file_info_table, 3, {
-          provider = bufnr({ suffix = ":" }),
-        })
-
-        return require("heirline-components.core.heirline").make_buflist(file_info_table)
-      end
+      -- local function bufnr(opts)
+      --   opts = utils.extend_tbl({}, opts)
+      --   return function(self)
+      --     return lib.utils.stylize(
+      --       tostring(self and self.bufnr or vim.api.nvim_get_current_buf()) .. (opts.suffix or " "),
+      --       opts
+      --     )
+      --   end
+      -- end
+      -- local tabline_buffers = function(opts)
+      --   local hl = lib.hl
+      --   local condition = lib.condition
+      --   local buf_utils = require("heirline-components.buffer")
+      --   local extend_tbl = utils.extend_tbl
+      --
+      --   local file_info_table = lib.component.file_info(extend_tbl({
+      --     file_icon = {
+      --       condition = function(self)
+      --         return not self._show_picker
+      --       end,
+      --       hl = hl.file_icon("tabline"),
+      --     },
+      --     filename = {},
+      --     filetype = false,
+      --     file_modified = {
+      --       padding = { left = 1, right = 1 },
+      --       condition = condition.is_file,
+      --     },
+      --     unique_path = {
+      --       hl = function(self)
+      --         return hl.get_attributes(self.tab_type .. "_path")
+      --       end,
+      --     },
+      --     close_button = {
+      --       hl = function(self)
+      --         return hl.get_attributes(self.tab_type .. "_close")
+      --       end,
+      --       padding = { left = 1, right = 1 },
+      --       on_click = {
+      --         callback = function(_, minwid)
+      --           buf_utils.close(minwid)
+      --         end,
+      --         minwid = function(self)
+      --           return self.bufnr
+      --         end,
+      --         name = "heirline_tabline_close_buffer_callback",
+      --       },
+      --     },
+      --     padding = { left = 1, right = 1 },
+      --     hl = function(self)
+      --       local tab_type = self.tab_type
+      --       if self._show_picker and self.tab_type ~= "buffer_active" then
+      --         tab_type = "buffer_visible"
+      --       end
+      --       return hl.get_attributes(tab_type)
+      --     end,
+      --     surround = false,
+      --   }, opts))
+      --
+      --   table.insert(file_info_table, 3, {
+      --     provider = bufnr({ suffix = ":" }),
+      --   })
+      --
+      --   return require("heirline-components.core.heirline").make_buflist(file_info_table)
+      -- end
 
       -- local path_func = lib.provider.filename({ modify = ":.:h", fallback = "" })
       return {
         statusline = {
           hl = { fg = "fg", bg = "bg" },
           lib.component.mode({
-            mode_text = { icon = { kind = "VimIcon", padding = { right = 1, left = 1 } } },
+            mode_text = { icon = { kind = "VimIcon", padding = { right = 0, left = 1 } } },
             surround = {
               separator = "left",
               color = lib.hl.mode_bg,
@@ -203,12 +203,12 @@ return {
         --     },
         --   },
         -- },
-        tabline = {
-          lib.component.tabline_conditional_padding(),
-          tabline_buffers(),
-          lib.component.fill({ hl = { bg = "tabline_bg" } }), -- fill the rest of the tabline with background color
-          lib.component.tabline_tabpages(),
-        },
+        -- tabline = {
+        --   lib.component.tabline_conditional_padding(),
+        --   tabline_buffers(),
+        --   lib.component.fill({ hl = { bg = "tabline_bg" } }), -- fill the rest of the tabline with background color
+        --   lib.component.tabline_tabpages(),
+        -- },
         statuscolumn = {
           init = function(self)
             self.bufnr = vim.api.nvim_get_current_buf()
@@ -248,5 +248,66 @@ return {
         opts = { integrations = { dropbar = { enabled = true } } },
       },
     },
+  },
+
+  {
+    "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>",            desc = "Toggle Pin" },
+      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
+      { "<leader>br", "<Cmd>BufferLineCloseRight<CR>",           desc = "Delete Buffers to the Right" },
+      { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>",            desc = "Delete Buffers to the Left" },
+      { "[b",         "<cmd>BufferLineCyclePrev<cr>",            desc = "Prev Buffer" },
+      { "]b",         "<cmd>BufferLineCycleNext<cr>",            desc = "Next Buffer" },
+      { "<b",         "<cmd>BufferLineMovePrev<cr>",             desc = "Move buffer prev" },
+      { ">B",         "<cmd>BufferLineMoveNext<cr>",             desc = "Move buffer next" },
+    },
+    opts = {
+      options = {
+        -- stylua: ignore
+        close_command = function(n) Snacks.bufdelete(n) end,
+        -- stylua: ignore
+        right_mouse_command = function(n) Snacks.bufdelete(n) end,
+        diagnostics = "nvim_lsp",
+        always_show_bufferline = false,
+        diagnostics_indicator = function(_, _, diag)
+          local icons = require("util.icons")
+          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+              .. (diag.warning and icons.Warn .. diag.warning or "")
+          return vim.trim(ret)
+        end,
+        offsets = {
+          {
+            filetype = "neo-tree",
+            text = "Neo-tree",
+            highlight = "Directory",
+            text_align = "left",
+          },
+          {
+            filetype = "snacks_layout_box",
+          },
+        },
+        ---@param opts bufferline.IconFetcherOpts
+        get_element_icon = function(opts)
+          local icons = require("util.icons")
+          return icons.ft[opts.filetype]
+        end,
+        numbers = function(opts)
+          return string.format("%s", opts.id)
+        end,
+      },
+    },
+    config = function(_, opts)
+      require("bufferline").setup(opts)
+      -- Fix bufferline when restoring a session
+      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+        callback = function()
+          vim.schedule(function()
+            pcall(nvim_bufferline)
+          end)
+        end,
+      })
+    end,
   },
 }
