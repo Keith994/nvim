@@ -25,7 +25,7 @@ return {
         enabled = true,
       },
       indent = {
-        enabled = true,
+        enabled = false,
       },
       picker = {
         ui_select = true,
@@ -182,7 +182,7 @@ return {
           {
             "<leader>t",
             group = "test",
-            icon = { icon = "󰙨" }
+            icon = { icon = "󰙨" },
           },
         },
       },
@@ -392,8 +392,8 @@ return {
       modes = {
         char = {
           enabled = false,
-        }
-      }
+        },
+      },
     },
     -- stylua: ignore
     keys = {
@@ -486,8 +486,8 @@ return {
   },
   {
     "brenoprata10/nvim-highlight-colors",
-    event = { "InsertEnter" },
-    cmd = "HighlightColors",
+    event = { "BufReadPost" },
+    -- cmd = "HighlightColors",
     keys = {
       {
         "<Leader>uz",
@@ -498,7 +498,7 @@ return {
       }, -- #001234
     },
     opts = {
-      enabled_named_colors = false,
+      enabled_named_colors = true,
       virtual_symbol = "󱓻",
     },
   },
@@ -561,9 +561,7 @@ return {
   {
     "lambdalisue/suda.vim",
     cmd = { "SudaRead", "SudaWrite" },
-    config = function ()
-      
-    end
+    config = function() end,
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",

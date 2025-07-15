@@ -53,7 +53,11 @@ end, { desc = "Terminal (Root Dir)" })
 map("n", "<c-/>", function()
   require("snacks").terminal(nil, { cwd = root() })
 end, { desc = "Terminal (Root Dir)" })
+map("n", "<c-_>", function()
+  require("snacks").terminal(nil, { cwd = root() })
+end, { desc = "Terminal (Root Dir)" })
 map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+map("t", "<C-_>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -202,9 +206,12 @@ map("n", "<leader>gg", function() require("snacks").lazygit({ cwd = root.git() }
 map("n", "<leader>gG", function() require("snacks").lazygit() end, { desc = "Lazygit (cwd)" })
 map("n", "<leader>gf", function() require("snacks").picker.git_log_file() end, { desc = "Git Current File History" })
 map("n", "<leader>gl", function() require("snacks").picker.git_log({ cwd = root.git() }) end, { desc = "Git Log" })
+map("n", "<leader>gb", "<cmd>Gitsigns blame_line<cr>", { desc = "Git Blame" })
+map("n", "gb", "<cmd>Gitsigns blame_line<cr>", { desc = "Git Blame" })
 map("n", "<leader>gL", function() require("snacks").picker.git_log() end, { desc = "Git Log (cwd)" })
-map("n", "<leader>gb", function() require("snacks").picker.git_log_line() end, { desc = "Git Blame Line" })
-map({ "n", "x" }, "<leader>gB", function() require("snacks").gitbrowse() end, { desc = "Git Browse (open)" })
+-- map("n", "<leader>gb", function() require("snacks").picker.git_log_line() end, { desc = "Git Blame Line" })
+map({ "n", "x" }, "<leader>gB", "<cmd>BlameToggle<cr>", { desc = "Git Blame File" })
+map("n", "gB", "<cmd>BlameToggle<cr>", { desc = "Git blame File" })
 map({ "n", "x" }, "<leader>gY", function()
   require("snacks").gitbrowse({ open = function(url) vim.fn.setreg("+", url) end, notify = false })
 end, { desc = "Git Browse (copy)" })
@@ -306,3 +313,23 @@ map("n", "zk", "zckzOzz", {
 
 -- Select all text in buffer with Alt-a
 map("n", "<C-A-a>", "ggVG", { noremap = true, silent = true, desc = "Select all" })
+
+local create_command = vim.api.nvim_create_user_command
+create_command("Json", function()
+  vim.bo.filetype = "json"
+  vim.schedule(function()
+    vim.cmd.LspStart()
+  end)
+end, { desc = "json filetype" })
+create_command("Sql", function()
+  vim.bo.filetype = "sql"
+  vim.schedule(function()
+    vim.cmd.LspStart()
+  end)
+end, { desc = "sql filetype" })
+create_command("Xml", function()
+  vim.bo.filetype = "xml"
+  vim.schedule(function ()
+    vim.cmd.LspStart()
+  end)
+end, { desc = "xml filetype" })

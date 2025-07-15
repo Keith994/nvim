@@ -7,6 +7,7 @@ vim.g.autoformat = true
 -- Set to `false` to globally disable all snacks animations
 vim.g.snacks_animate = true
 vim.g.cmp = "auto"
+
 -- if the completion engine supports the AI source,
 -- use that instead of inline suggestions
 vim.g.virtual_cmp = true
@@ -56,7 +57,8 @@ opt.inccommand = "nosplit" -- preview incremental substitute
 opt.jumpoptions = "view"
 opt.laststatus = 3         -- global statusline
 opt.linebreak = true       -- Wrap lines at convenient points
-opt.list = false           -- Show some invisible characters (tabs...
+opt.list = true            -- Show some invisible characters (tabs...
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", space = "·" }
 opt.mouse = "a"            -- Enable mouse mode
 opt.number = true          -- Print line number
 opt.cmdheight = 0          -- cmd height

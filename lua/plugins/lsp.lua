@@ -34,7 +34,7 @@ local function keymaps(event)
   map("<F5>", function()
     require("dap").continue()
   end, "Debug: Start/Continue")
-  map("<S-F5>", function()
+  map("<F17>", function() -- S-F5
     require("dap").terminate()
   end, "Debug: Terminate")
   map("<F6>", function()
@@ -46,13 +46,13 @@ local function keymaps(event)
   map("<F11>", function()
     require("dap").step_out()
   end, "Debug: Step Out")
-  -- C-S-F9
-  map("<C-S-F9>", require("dap").clear_breakpoints, "Clear Breakpoints")
+  -- C-S-F9<F45>
+  map("<F45>", require("dap").clear_breakpoints, "Clear Breakpoints")
   -- C-f10
-  map("<C-F10>", require("dap").run_to_cursor, "Run To Cursor")
+  map("<F34>", require("dap").run_to_cursor, "Run To Cursor")
   map("<F9>", require("dap").toggle_breakpoint, "Toggle Breakpoint")
   -- S-F9
-  map("<S-F9>", function()
+  map("<F21>", function()
     require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
   end, "Toggle Breakpoint")
 end
