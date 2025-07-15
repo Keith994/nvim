@@ -279,3 +279,30 @@ map("n", watch_prefix .. "f", function() require("neotest").watch.toggle(get_fil
 map("n", watch_prefix .. "p", function() require("neotest").watch.toggle(get_project_path()) end,
   { desc = "Toggle watch all tests in project" })
 map("n", watch_prefix .. "S", function() require("neotest").watch.stop() end, { desc = "Stop all watches" })
+
+-- Better paste
+-- remap "p" in visual mode to delete the highlighted text without overwriting your yanked/copied text, and then paste the content from the unnamed register.
+map("v", "p", '"_dP', { silent = true })
+
+-- Fix Spell checking
+map("n", "z0", "1z=", {
+  desc = "Fix world under cursor",
+})
+
+-- Close all fold except the current one.
+map("n", "zv", "zMzvzz", {
+  desc = "Close all folds except the current one",
+})
+
+-- Close current fold when open. Always open next fold.
+map("n", "zj", "zcjzOzz", {
+  desc = "Close current fold when open. Always open next fold.",
+})
+
+-- Close current fold when open. Always open previous fold.
+map("n", "zk", "zckzOzz", {
+  desc = "Close current fold when open. Always open previous fold.",
+})
+
+-- Select all text in buffer with Alt-a
+map("n", "<C-A-a>", "ggVG", { noremap = true, silent = true, desc = "Select all" })

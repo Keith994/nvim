@@ -129,4 +129,33 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+-- Fix conceallevel for json files
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = augroup "json_conceal",
+  pattern = { "json", "jsonc", "json5" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
+
+-- Set filetype for .toml files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup "toml_filetype",
+  pattern = { "*.tomg-config*" },
+  callback = function()
+    vim.opt_local.filetype = "toml"
+  end,
+})
+
+-- Set filetype for .env and .env.* files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup "env_filetype",
+  pattern = { "*.env", ".env.*" },
+  callback = function()
+    vim.opt_local.filetype = "sh"
+  end,
+})
+
 return {}
+
