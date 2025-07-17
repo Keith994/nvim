@@ -5,7 +5,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
+      { out,                            "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -16,10 +16,10 @@ vim.opt.rtp:prepend(lazypath)
 
 require("config")
 
-
 require("lazy").setup({
   spec = {
     -- import/override with your plugins
+    { import = "vscode_setup" },
     { import = "plugins" },
     { import = "plugins/lang" },
   },
@@ -35,8 +35,8 @@ require("lazy").setup({
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = false, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+    notify = false,  -- notify on update
+  },                 -- automatically check for plugin updates
   performance = {
     rtp = {
       -- disable some rtp plugins
@@ -53,7 +53,10 @@ require("lazy").setup({
     },
   },
 })
+if vim.g.vscode then
+  return
+end
 -- init.lua (或者你主要的配置文件)
 vim.defer_fn(function()
-  vim.cmd.colorscheme"rose-pine-moon"
+  vim.cmd.colorscheme("carbonfox")
 end, 0)

@@ -1,8 +1,8 @@
 local prefix = "<Leader>a"
 return {
   "yetone/avante.nvim",
-  build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-    or "make",
+  -- build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+  --   or "make",
   event = "BufReadPost", -- load on file open because Avante manages it's own bindings
   cmd = {
     "AvanteAsk",
