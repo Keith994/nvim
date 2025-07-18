@@ -77,8 +77,8 @@ return {
   -- Set up nvim-jdtls to attach to java files.
   {
     "mfussenegger/nvim-jdtls",
-    ft = { "java" },
-    dependencies = { "folke/which-key.nvim" },
+    event = { "BufReadPost *.java" },
+    dependencies = { "folke/which-key.nvim", "nvim-lspconfig" },
     opts = function(_, opts)
       local root_dir =
           vim.fs.dirname(vim.fs.find({ ".git", "pom.xml", ".project", "gradlew", "mvnw" }, { upward = true })[1])

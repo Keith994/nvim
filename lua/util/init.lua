@@ -1,5 +1,19 @@
 local M = {}
 
+M.mapkey = function(keys, func, desc, mode)
+  M._mapkey(keys, func, desc, mode, "")
+end
+
+
+M._mapkey = function(keys, func, desc, mode, prefix)
+  mode = mode or "n"
+  vim.keymap.set(mode, keys, func, { desc = prefix .. desc })
+end
+
+M.mapkey_lsp = function(keys, func, desc, mode, prefix)
+  M._mapkey(keys, func, desc, mode, "LSP: ")
+end
+
 function M.list_insert_unique(dst, src)
   if not dst then dst = {} end
   assert(vim.islist(dst), "Provided table is not a list like table")

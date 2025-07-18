@@ -7,6 +7,15 @@ return {
   ft = {
     octo = "",
   },
+  HurlNvim = "",
+  toggle = {
+    enabled = " ",
+    disabled = " ",
+    color = {
+      enabled = "green",
+      disabled = "yellow",
+    },
+  },
   separators = {
     breadcrumbs = "",
     path = "",

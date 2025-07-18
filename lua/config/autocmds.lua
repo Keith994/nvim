@@ -5,6 +5,7 @@ end
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
   callback = function(ev)
+    vim.cmd.TSDisable("highlight")
     vim.bo[ev.buf].shiftwidth = 4
   end,
 })
@@ -30,6 +31,8 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {
+    "nofile",
+    "AvanteInput",
     "PlenaryTestPopup",
     "checkhealth",
     "dbout",
@@ -139,7 +142,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 -- Fix conceallevel for json files
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = augroup "json_conceal",
+  group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0
@@ -148,7 +151,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 -- Set filetype for .toml files
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup "toml_filetype",
+  group = augroup("toml_filetype"),
   pattern = { "*.tomg-config*" },
   callback = function()
     vim.opt_local.filetype = "toml"
@@ -157,7 +160,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 
 -- Set filetype for .env and .env.* files
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup "env_filetype",
+  group = augroup("env_filetype"),
   pattern = { "*.env", ".env.*" },
   callback = function()
     vim.opt_local.filetype = "sh"
@@ -165,4 +168,3 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 return {}
-

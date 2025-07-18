@@ -233,7 +233,13 @@ return {
   {
     "Bekaboo/dropbar.nvim",
     event = "UIEnter",
-    opts = {},
+    opts = {
+      sources = {
+        path = {
+          max_depth = 1,
+        },
+      },
+    },
     specs = {
       {
         "rebelot/heirline.nvim",

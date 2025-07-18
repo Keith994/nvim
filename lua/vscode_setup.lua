@@ -131,10 +131,7 @@ map("n", "<leader>gg", function()
   require("vscode").action("lazygit.openLazygit")
 end, { desc = "LazyGit" })
 
-local maplsp = function(keys, func, desc, mode)
-  mode = mode or "n"
-  vim.keymap.set(mode, keys, func, { desc = "LSP: " .. desc })
-end
+local maplsp = utils.mapkey_lsp
 
 maplsp("gy", function()
   require("vscode").action("editor.action.showHover")

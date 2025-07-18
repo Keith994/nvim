@@ -21,6 +21,7 @@ return {
         margin = { top = 0, right = 1, bottom = 1 },
         width = { min = 40, max = 0.8 },
       },
+      words = { enabled = false },
       input = {
         enabled = true,
       },
@@ -133,6 +134,20 @@ return {
     end,
   },
   {
+    "nvim-telescope/telescope.nvim",
+    enabled = false,
+    tag = "0.1.8",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      defaults = {
+        layout_strategy = "bottom_pane",
+        layout_config = { height = 25 },
+        sorting_strategy = "ascending",
+      },
+    },
+  },
+  {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts_extend = { "spec" },
@@ -153,6 +168,7 @@ return {
           { "<leader>q", group = "quit/session" },
           { "<leader>s", group = "search" },
           { "<leader>u", group = "ui", icon = { icon = "󰙵 ", color = "cyan" } },
+          { "<leader>H", group = "hurl", icon = { icon = require("util.icons").HurlNvim, color = "cyan" } },
           { "<leader>/", group = "search" },
           { "<leader>e", group = "explorer", icon = { icon = " " } },
           { "<leader>l", group = "lazy", icon = { icon = "󰒲 ", color = "green" } },
@@ -346,7 +362,7 @@ return {
   -- in your project and loads them into a browsable list.
   {
     "folke/todo-comments.nvim",
-    cmd = { "TodoTrouble", "TodoTelescope" },
+    cmd = { "TodoTrouble" },
     opts = {},
     -- stylua: ignore
     keys = {
@@ -354,8 +370,21 @@ return {
       { "[t",         function() require("todo-comments").jump_prev() end,              desc = "Previous Todo Comment" },
       { "<leader>xt", "<cmd>Trouble todo toggle<cr>",                                   desc = "Todo (Trouble)" },
       { "<leader>xT", "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
-      { "<leader>st", "<cmd>TodoTelescope<cr>",                                         desc = "Todo" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",                 desc = "Todo/Fix/Fixme" },
+      {
+        "<leader>st",
+        function()
+          require "snacks".picker.todo_comments()
+        end,
+        desc = "Todo"
+      },
+      {
+        "<leader>sT",
+        function()
+          require "snacks".picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } })
+        end
+        ,
+        desc = "Todo/Fix/Fixme"
+      },
     },
   },
   -- search/replace in multiple files
@@ -386,7 +415,7 @@ return {
   -- location.
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
+    event = "BufReadPost",
     vscode = true,
     opts = {
       modes = {
@@ -486,26 +515,41 @@ return {
   },
   {
     "brenoprata10/nvim-highlight-colors",
-    event = { "BufReadPost" },
+    -- event = { "BufReadPost" },
     -- cmd = "HighlightColors",
     keys = {
       {
         "<Leader>uz",
-        function()
-          vim.cmd.HighlightColors("Toggle")
-        end,
-        desc = "Toggle color highlight",
+        --stylua: ignore
+        function() vim.cmd.HighlightColors("Toggle") end,
+        desc = "Toggle Color highlight",
       }, -- #001234
     },
-    opts = {
-      enabled_named_colors = true,
-      virtual_symbol = "󱓻",
-    },
-  },
-  -- disable snacks words
-  {
-    "snacks.nvim",
-    opts = { words = { enabled = false } },
+    opts = function()
+      require("which-key").add({
+        {
+          "<Leader>uz",
+          mode = "n",
+          real = true,
+          icon = function()
+            local key = require("nvim-highlight-colors").is_active() and "enabled" or "disabled"
+            local icons = require("util.icons")
+            return {
+              icon = icons.toggle[key],
+              color = icons.toggle.color[key],
+            }
+          end,
+          desc = function()
+            local key = require("nvim-highlight-colors").is_active() and "Enabled" or "Disabled"
+            return key .. " Color highlight"
+          end,
+        },
+      })
+      return {
+        virtual_symbol = "󱓻",
+        enabled_named_colors = true,
+      }
+    end,
   },
   {
     "RRethy/vim-illuminate",

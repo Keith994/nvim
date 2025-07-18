@@ -11,6 +11,10 @@ map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true
 
 map("n", "<S-h>", "0", { desc = "Line Head" })
 map("n", "<S-l>", "$", { desc = "Line Tail" })
+local switch_to_float = require("util.switch_to_float")
+map("n", "<C-W>w", function()
+  switch_to_float()
+end, { desc = "Switch To Float", silent = true })
 
 -- insert
 map("i", "<c-a>", "<ESC>^i")
@@ -329,7 +333,7 @@ create_command("Sql", function()
 end, { desc = "sql filetype" })
 create_command("Xml", function()
   vim.bo.filetype = "xml"
-  vim.schedule(function ()
+  vim.schedule(function()
     vim.cmd.LspStart()
   end)
 end, { desc = "xml filetype" })

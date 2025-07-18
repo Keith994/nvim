@@ -37,11 +37,24 @@ return {
         api_key_name = "OPENROUTER_API_KEY",
         -- proxy = 'socks5://127.0.0.1:1080',
         -- model = "deepseek/deepseek-chat-v3-0324",
-        model = 'google/gemini-2.0-flash-001',
+        model = "google/gemini-2.5-flash",
         -- model = 'openai/gpt-4o-mini',
         -- model = 'google/gemini-2.5-pro-preview-03-25',
         -- model = 'x-ai/grok-3-beta',
       },
+    },
+    behaviour = {
+      auto_suggestions = false, -- Experimental stage
+      -- auto_set_highlight_group = true,
+      -- auto_set_keymaps = true,
+      -- auto_apply_diff_after_generation = false,
+      -- support_paste_from_clipboard = false,
+      -- minimize_diff = true,                  -- Whether to remove unchanged lines when applying a code block
+      -- enable_token_counting = true,          -- Whether to enable token counting. Default to true.
+      -- auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
+      -- Examples:
+      -- auto_approve_tool_permissions = true,                -- Auto-approve all tools (no prompts)
+      -- auto_approve_tool_permissions = {"bash", "replace_in_file"}, -- Auto-approve specific tools only
     },
     mappings = {
       ask = prefix .. "<CR>",
@@ -90,16 +103,13 @@ return {
       "folke/which-key.nvim",
       optional = true,
       opts = function(_, opts)
-        return utils.extend_tbl(
-          opts,
-          {
-            spec = {
-              {
-                { "<leader>a", group = "avante", icon = { icon = " " } },
-              },
+        return utils.extend_tbl(opts, {
+          spec = {
+            {
+              { "<leader>a", group = "avante", icon = { icon = " " } },
             },
-          }
-        )
+          },
+        })
       end,
     },
     { -- if copilot.lua is available, default to copilot provider
@@ -109,7 +119,7 @@ return {
         {
           "yetone/avante.nvim",
           opts = {
-            provider = "copilot",
+            -- provider = "copilot",
             auto_suggestions_provider = "copilot",
           },
         },
