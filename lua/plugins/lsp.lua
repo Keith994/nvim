@@ -28,6 +28,9 @@ local function keymaps(event)
   map("<Leader>cd", "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", "Document Diagnostics")
   map("<Leader>cD", "<Cmd>Trouble diagnostics toggle<CR>", "Workspace Diagnostics")
 
+  map("<C-F5>", function() -- C+F5
+    require("dap").continue()
+  end, "Debug: Start/Continue")
   map("<F29>", function() -- C+F5
     require("dap").continue()
   end, "Debug: Start/Continue")
@@ -35,6 +38,9 @@ local function keymaps(event)
     require("dap").continue()
   end, "Debug: Start/Continue")
   map("<F17>", function() -- S-F5
+    require("dap").terminate()
+  end, "Debug: Terminate")
+  map("<S-F5>", function() -- S-F5
     require("dap").terminate()
   end, "Debug: Terminate")
   map("<F6>", function()
@@ -47,11 +53,16 @@ local function keymaps(event)
     require("dap").step_out()
   end, "Debug: Step Out")
   -- C-S-F9<F45>
+  map("<C-S-F9>", require("dap").clear_breakpoints, "Clear Breakpoints")
   map("<F45>", require("dap").clear_breakpoints, "Clear Breakpoints")
   -- C-f10
+  map("<C-F10>", require("dap").run_to_cursor, "Run To Cursor")
   map("<F34>", require("dap").run_to_cursor, "Run To Cursor")
   map("<F9>", require("dap").toggle_breakpoint, "Toggle Breakpoint")
   -- S-F9
+  map("<S-F9>", function()
+    require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+  end, "Toggle Breakpoint")
   map("<F21>", function()
     require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
   end, "Toggle Breakpoint")

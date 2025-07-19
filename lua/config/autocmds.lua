@@ -31,6 +31,8 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {
+    "dapui_*",
+    "dap-repl",
     "nofile",
     "AvanteInput",
     "PlenaryTestPopup",

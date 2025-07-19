@@ -79,10 +79,13 @@ return {
       end
       map("<Leader>du", function()
         toggleUI(3)
-      end, "Toggle Debugger UI")
+      end, "Toggle DAP Repl And Watch UI")
       map("<Leader>dv", function()
         toggleUI(4)
-      end, "Toggle Debugger UI")
+      end, "Toggle DAP Right Console UI")
+      map("<Leader>dh", function()
+        toggleUI(5)
+      end, "Toggle DAP Bottom Console UI")
 
       local utils = utils
       return utils.extend_tbl({
@@ -146,6 +149,16 @@ return {
             },
             position = "right",
             size = 50,
+          },
+          {
+            elements = {
+              {
+                id = "console",
+                size = 1,
+              },
+            },
+            position = "bottom",
+            size = 10,
           },
         },
       })
