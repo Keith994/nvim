@@ -1,6 +1,7 @@
 ---@type function?, function?
 local icon_provider, hl_provider
 
+-- 函数来获取图标和高亮
 local function get_kind_icon(CTX)
   -- Evaluate icon provider
   if not icon_provider then
@@ -88,7 +89,7 @@ return {
     -- version = "1.*",
     branch = "main", -- NOTE: use main branch for latest features and fixes, use version tag for stable releases
     -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-    build = 'cargo build --release',
+    build = "cargo build --release",
     -- If you use nix, you can build from source using latest nightly rust with:
     -- build = 'nix run .#build-plugin',
     dependencies = {
@@ -171,6 +172,9 @@ return {
         },
       },
       appearance = {
+        kind_icons = {
+          Copilot = "",
+        },
         -- Sets the fallback highlight groups to nvim-cmp's highlight groups
         -- Useful for when your theme doesn't support blink.cmp
         -- Will be removed in a future release
@@ -196,7 +200,6 @@ return {
             },
           },
         },
-        
       },
       fuzzy = { implementation = "prefer_rust" },
       signature = {

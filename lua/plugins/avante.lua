@@ -24,8 +24,8 @@ return {
     "MunifTanjim/nui.nvim",
   },
   opts = {
-    provider = "openrouter",
-    auto_suggestions_provider = "openrouter",
+    provider = "copilot",
+    -- auto_suggestions_provider = "openrouter",
     suggestion = {
       debounce = 800,
       throttle = 800,
@@ -35,8 +35,6 @@ return {
         __inherited_from = "openai",
         endpoint = "https://openrouter.ai/api/v1",
         api_key_name = "OPENROUTER_API_KEY",
-        -- proxy = 'socks5://127.0.0.1:1080',
-        -- model = "deepseek/deepseek-chat-v3-0324",
         model = "google/gemini-2.5-flash",
         -- model = 'openai/gpt-4o-mini',
         -- model = 'google/gemini-2.5-pro-preview-03-25',
@@ -55,6 +53,14 @@ return {
       -- Examples:
       -- auto_approve_tool_permissions = true,                -- Auto-approve all tools (no prompts)
       -- auto_approve_tool_permissions = {"bash", "replace_in_file"}, -- Auto-approve specific tools only
+    },
+    input = {
+      provider = "snacks",
+      provider_opts = {
+        -- Additional snacks.input options
+        title = "Avante Input",
+        icon = " ",
+      },
     },
     mappings = {
       ask = prefix .. "<CR>",
