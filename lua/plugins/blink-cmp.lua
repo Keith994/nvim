@@ -24,6 +24,7 @@ local function get_kind_icon(CTX)
         end
       end
     end
+    -- If mini.icons is not available, use lspkind or fallback to empty function
     if not icon_provider then
       local lspkind_avail, lspkind = pcall(require, "lspkind")
       if lspkind_avail then
