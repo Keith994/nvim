@@ -50,6 +50,12 @@ local function keymaps(event)
     require("dap").step_over()
   end, "Debug: Step Over")
   map("<F11>", function()
+    require("dap").step_into()
+  end, "Debug: Step Into")
+  map("<S-F11>", function()
+    require("dap").step_out()
+  end, "Debug: Step Out")
+  map("<F23>", function()
     require("dap").step_out()
   end, "Debug: Step Out")
   -- C-S-F9<F45>
@@ -78,7 +84,17 @@ return {
       "mfussenegger/nvim-dap",
       {
         "mason-org/mason.nvim",
-        opts = {},
+        cmd = {
+          "Mason",
+          "MasonInstall",
+          "MasonUninstall",
+          "MasonUninstallAll",
+          "MasonLog",
+        },
+        build = ":MasonUpdate",
+        opts = function()
+          vim.api.nvim_create_user_command("Mason", function() require("mason.ui").open() end, { desc = "Open Mason UI" })
+        end,
       },
       { "mason-org/mason-lspconfig.nvim", config = function() end },
       "WhoIsSethDaniel/mason-tool-installer.nvim",

@@ -229,7 +229,6 @@ return {
       heirline.setup(opts)
     end,
   },
-
   {
     "Bekaboo/dropbar.nvim",
     event = "UIEnter",
@@ -237,6 +236,12 @@ return {
       sources = {
         path = {
           max_depth = 1,
+        },
+        lsp = {
+          max_depth = 3,
+        },
+        treesitter = {
+          max_depth = 3,
         },
       },
     },

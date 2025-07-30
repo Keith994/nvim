@@ -17,7 +17,7 @@ return {
         },
       },
       cmdline = {
-        view = "cmdline",
+        view = "cmdline_popup",
       },
       presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
@@ -26,6 +26,20 @@ return {
         inc_rename = util.is_available("inc-rename.nvim"), -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
       },
+      views = {
+        -- 输入框进行居中
+        cmdline_popup = {
+          position = {
+            row = "50%",
+            col = "50%",
+          },
+          size = {
+            width = 60,
+            height = "auto",
+          },
+        },
+
+      }
     })
   end,
   specs = {

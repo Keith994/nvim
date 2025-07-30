@@ -22,6 +22,7 @@ return {
         width = { min = 40, max = 0.8 },
       },
       words = { enabled = false },
+      image = { enabled = true },
       input = {
         enabled = true,
       },

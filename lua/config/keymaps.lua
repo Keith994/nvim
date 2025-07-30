@@ -1,6 +1,8 @@
 local map = vim.keymap.set
 local del = vim.keymap.del
 
+map("n", "q", "<nop>")
+map('n', 'Q', 'q', {noremap = true, silent = true})
 -- localleader
 map("n", "<localleader>p", function()
   local str = vim.fn.expand("%:p:f")
