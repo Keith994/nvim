@@ -85,18 +85,17 @@ return {
       {
         "mason-org/mason.nvim",
         cmd = {
-          "Mason",
           "MasonInstall",
           "MasonUninstall",
           "MasonUninstallAll",
           "MasonLog",
         },
         build = ":MasonUpdate",
-        opts = function()
-          vim.api.nvim_create_user_command("Mason", function() require("mason.ui").open() end, { desc = "Open Mason UI" })
-        end,
+        opts = {},
+        dependencies = {
+          { "mason-org/mason-lspconfig.nvim", config = function() end },
+        },
       },
-      { "mason-org/mason-lspconfig.nvim", config = function() end },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     opts = function()
