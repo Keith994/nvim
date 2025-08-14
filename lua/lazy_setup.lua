@@ -42,8 +42,8 @@ require("lazy").setup({
       -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
         -- "matchparen",
+        -- "matchit",
         -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
@@ -58,5 +58,5 @@ if vim.g.vscode then
 end
 -- init.lua (或者你主要的配置文件)
 vim.defer_fn(function()
-  vim.cmd.colorscheme("carbonfox")
+  vim.cmd.colorscheme("nightfox")
 end, 0)

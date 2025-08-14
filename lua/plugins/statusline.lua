@@ -117,14 +117,16 @@ return {
               },
             },
           }),
-          lib.component.file_info({
-            filetype = false,
-            filename = {},
-            surround = {
-              separator = "left",
-            },
+          -- lib.component.file_info({
+          --   filetype = false,
+          --   filename = {},
+          --   surround = {
+          --     separator = "left",
+          --   },
+          -- }),
+          lib.component.git_branch({
+            git_branch = { icon = { padding = { left = 1 } } },
           }),
-          lib.component.git_branch(),
           lib.component.git_diff(),
           lib.component.diagnostics(),
           lib.component.fill(),
@@ -280,8 +282,8 @@ return {
         close_command = function(n) Snacks.bufdelete(n) end,
         -- stylua: ignore
         right_mouse_command = function(n) Snacks.bufdelete(n) end,
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
+        diagnostics = false,
+        always_show_bufferline = true,
         diagnostics_indicator = function(_, _, diag)
           local icons = require("util.icons")
           local ret = (diag.error and icons.diagnostics.Error .. diag.error .. " " or "")
@@ -299,6 +301,7 @@ return {
             filetype = "snacks_layout_box",
           },
         },
+        separator_style = "thin",
         ---@param opts bufferline.IconFetcherOpts
         get_element_icon = function(opts)
           local icons = require("util.icons")
@@ -311,6 +314,10 @@ return {
     },
     config = function(_, opts)
       require("bufferline").setup(opts)
+
+      require("bufferline.groups").builtin.pinned:with({ icon = "" })
+      vim.cmd("hi BufferLineBufferVisible guifg=#25BE6A")
+      vim.cmd("hi BufferLineBackground guifg=#25BE6A")
       -- Fix bufferline when restoring a session
       vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
         callback = function()

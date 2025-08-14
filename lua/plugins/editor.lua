@@ -363,7 +363,7 @@ return {
   -- in your project and loads them into a browsable list.
   {
     "folke/todo-comments.nvim",
-    cmd = { "TodoTrouble" },
+    event = "VeryLazy",
     opts = {},
     -- stylua: ignore
     keys = {
