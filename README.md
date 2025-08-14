@@ -1,28 +1,10 @@
-# AstroNvim config
+# Introduction
+Personal neovim configuration，inspired by [kicstart](https://github.com/nvim-lua/kickstart.nvim)
 
-**NOTE:** This is for AstroNvim v4+
-
-A template for getting started with [AstroNvim](https://github.com/AstroNvim/AstroNvim)
-
-## 🛠️ Installation
-
-#### Make a backup of your current nvim and shared folder
-
-```shell
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
-```
-
-#### Clone the repository
-
-```shell
-git clone https://github.com/Keith994/astronvim-user ~/.config/nvim
-```
-
-#### Start Neovim
-
-```shell
-nvim
-```
+- [x] folding实现
+- [x] linting实现
+- [x] formatting实现
+- [x] lsp实现
+- [x] gopls实现
+- [x] java实现
+- [ ] heirline

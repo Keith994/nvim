@@ -1,9 +1,9 @@
 local prefix = "<Leader>a"
 return {
   "yetone/avante.nvim",
-  build = vim.fn.has "win32" == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-      or "make",
-  event = "User AstroFile", -- load on file open because Avante manages it's own bindings
+  -- build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+  --   or "make",
+  event = "BufReadPost", -- load on file open because Avante manages it's own bindings
   cmd = {
     "AvanteAsk",
     "AvanteBuild",
@@ -22,56 +22,46 @@ return {
     { "stevearc/dressing.nvim", optional = true },
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
+    -- provider = "copilot",
     provider = "openrouter",
-    auto_suggestions_provider = "openrouter",
+    -- auto_suggestions_provider = "openrouter",
     suggestion = {
       debounce = 800,
       throttle = 800,
     },
     providers = {
       openrouter = {
-        __inherited_from = 'openai',
-        endpoint = 'https://openrouter.ai/api/v1',
-        api_key_name = 'OPENROUTER_API_KEY',
-        -- proxy = 'socks5://127.0.0.1:1080',
-        model = 'deepseek/deepseek-chat-v3-0324',
-        -- model = 'google/gemini-2.0-flash-001',
+        __inherited_from = "openai",
+        endpoint = "https://openrouter.ai/api/v1",
+        api_key_name = "OPENROUTER_API_KEY",
+        model = "google/gemini-2.5-flash",
         -- model = 'openai/gpt-4o-mini',
         -- model = 'google/gemini-2.5-pro-preview-03-25',
         -- model = 'x-ai/grok-3-beta',
       },
-      deepseek = {
-        __inherited_from = "openai",
-        api_key_name = "DEEPSEEK_API_KEY",
-        endpoint = "https://api.deepseek.com/chat/completions",
-        model = "deepseek-chat",
-        timeout = 8000,
-        extra_request_body = {
-          temperature = 0.5,
-          max_tokens = 4096,
-        },
+    },
+    behaviour = {
+      auto_suggestions = false, -- Experimental stage
+      -- auto_set_highlight_group = true,
+      -- auto_set_keymaps = true,
+      -- auto_apply_diff_after_generation = false,
+      -- support_paste_from_clipboard = false,
+      -- minimize_diff = true,                  -- Whether to remove unchanged lines when applying a code block
+      -- enable_token_counting = true,          -- Whether to enable token counting. Default to true.
+      -- auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
+      -- Examples:
+      -- auto_approve_tool_permissions = true,                -- Auto-approve all tools (no prompts)
+      -- auto_approve_tool_permissions = {"bash", "replace_in_file"}, -- Auto-approve specific tools only
+    },
+    input = {
+      provider = "snacks",
+      provider_opts = {
+        -- Additional snacks.input options
+        title = "Avante Input",
+        icon = " ",
       },
-      qwen = {
-        __inherited_from = "openai",
-        api_key_name = "DASHSCOPE_API_KEY",
-        endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        model = "qwen2.5-coder-32b-instruct",
-      },
-      GLMTranslation = {
-        __inherited_from = "openai",
-        endpoint = "https://open.bigmodel.cn/api/paas/v4",
-        model = "glm-4-flash",
-        max_tokens = 4096,
-        api_key_name = "GLM_KEY",
-        extra_request_body = {
-          temperature = 0.3,
-          top_p = 0.7,
-        },
-      },
-
     },
     mappings = {
       ask = prefix .. "<CR>",
@@ -116,16 +106,28 @@ return {
     },
   },
   specs = { -- configure optional plugins
-    { "AstroNvim/astroui", opts = { icons = { Avante = " " } } },
-    {       -- if copilot.lua is available, default to copilot provider
+    {
+      "folke/which-key.nvim",
+      optional = true,
+      opts = function(_, opts)
+        return utils.extend_tbl(opts, {
+          spec = {
+            {
+              { "<leader>a", group = "avante", icon = { icon = " " } },
+            },
+          },
+        })
+      end,
+    },
+    { -- if copilot.lua is available, default to copilot provider
       "zbirenbaum/copilot.lua",
       optional = true,
       specs = {
         {
           "yetone/avante.nvim",
           opts = {
-            provider = "copilot",
-            auto_suggestions_provider = "copilot",
+            -- provider = "copilot",
+            -- auto_suggestions_provider = "copilot",
           },
         },
       },
@@ -135,8 +137,10 @@ return {
       "MeanderingProgrammer/render-markdown.nvim",
       optional = true,
       opts = function(_, opts)
-        if not opts.file_types then opts.file_types = { "markdown" } end
-        opts.file_types = require("astrocore").list_insert_unique(opts.file_types, { "Avante" })
+        if not opts.file_types then
+          opts.file_types = { "markdown" }
+        end
+        opts.file_types = utils.list_insert_unique(opts.file_types, { "Avante" })
       end,
     },
     {
@@ -144,8 +148,10 @@ return {
       "OXY2DEV/markview.nvim",
       optional = true,
       opts = function(_, opts)
-        if not opts.filetypes then opts.filetypes = { "markdown", "quarto", "rmd" } end
-        opts.filetypes = require("astrocore").list_insert_unique(opts.filetypes, { "Avante" })
+        if not opts.filetypes then
+          opts.filetypes = { "markdown", "quarto", "rmd" }
+        end
+        opts.filetypes = utils.list_insert_unique(opts.filetypes, { "Avante" })
       end,
     },
     {
