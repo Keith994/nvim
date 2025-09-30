@@ -2,13 +2,13 @@ local map = vim.keymap.set
 local del = vim.keymap.del
 
 map("n", "q", "<nop>")
-map('n', 'Q', 'q', {noremap = true, silent = true})
+map("n", "Q", "q", { noremap = true, silent = true })
 -- localleader
 map("n", "<localleader>p", function()
   local str = vim.fn.expand("%:p:f")
   utils.info("当前文件路径：" .. str)
 end, { desc = "Current Path" })
-map("n", "<localleader>c", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window", silent = true })
+map("n", "<localleader>c", function() Snacks.bufdelete.delete() end, { desc = "Delete Buffer and Window", silent = true })
 map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true })
 
 map("n", "<S-h>", "0", { desc = "Line Head" })
@@ -145,7 +145,8 @@ map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Commen
 map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
 
 -- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+map("n", "<leader>ll", "<cmd>Lazy<cr>", { desc = "Lazy" })
+map("n", "<leader>lm", "<cmd>Mason<cr>", { desc = "Mason" })
 
 -- new file
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
@@ -275,7 +276,6 @@ local get_file_path = function() return vim.fn.expand "%" end
 local get_project_path = function() return vim.fn.getcwd() end
 local prefix = "<leader>t"
 map("n", prefix .. "r", function() require("neotest").run.run() end, { desc = "Run test" })
-map("n", prefix .. "t", function() require("neotest").run.run() end, { desc = "Run test" })
 map("n", prefix .. "d", function() require("neotest").run.run { strategy = "dap" } end, { desc = "Debug test" })
 map("n", prefix .. "f", function() require("neotest").run.run(get_project_path()) end, { desc = "Run all tests in file" })
 map("n", prefix .. "p", function() require("neotest").run.run(get_project_path()) end,
@@ -285,6 +285,10 @@ map("n", prefix .. "o", function() require("neotest").output.open() end, { desc 
 map("n", prefix .. "O", function() require("neotest").output_panel.toggle() end, { desc = "Output window" })
 map("n", "]T", function() require("neotest").jump.next() end, { desc = "Next test" })
 map("n", "[T", function() require("neotest").jump.prev() end, { desc = "Previous test" })
+
+map("n", "<leader>Tt", "<cmd>ExecutorRun<cr>", { desc = "Task Run" })
+map("n", "<leader>Tr", "<cmd>ExecutorRun<cr>", { desc = "Task Run" })
+map("n", "<leader>Tl", "<cmd>ExecutorShowDetail<cr>", { desc = "Task Detail" })
 local watch_prefix = prefix .. "W"
 map("n", watch_prefix .. "t", function() require("neotest").watch.toggle() end, { desc = "Toggle watch test" })
 map("n", watch_prefix .. "f", function() require("neotest").watch.toggle(get_file_path()) end,

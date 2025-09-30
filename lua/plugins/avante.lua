@@ -24,8 +24,8 @@ return {
     "MunifTanjim/nui.nvim",
   },
   opts = {
-    -- provider = "copilot",
-    provider = "openrouter",
+    provider = "copilot",
+    -- provider = "openrouter",
     -- auto_suggestions_provider = "openrouter",
     suggestion = {
       debounce = 800,

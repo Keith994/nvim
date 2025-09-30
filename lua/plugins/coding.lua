@@ -29,6 +29,14 @@ return {
           :map("<leader>up")
       local pairs = require("mini.pairs")
       pairs.setup(opts)
+      local map_rust = function()
+        MiniPairs.map_buf(0, "i", "|", { action = "closeopen", pair = "||" })
+      end
+      vim.api.nvim_create_autocmd(
+        'FileType',
+        { pattern = 'rust', callback = map_rust }
+      )
+
       local open = pairs.open
       pairs.open = function(pair, neigh_pattern)
         if vim.fn.getcmdline() ~= "" then

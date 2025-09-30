@@ -89,6 +89,9 @@ return {
               "--no-deps",
             },
           },
+          procMacro = {
+            enable = true,
+          },
         },
       }
 
@@ -101,7 +104,20 @@ return {
             default_settings = merge_table,
           })
         end,
+        on_attach = function(client, buf)
+          local map = function(keys, func, desc, mode)
+            mode = mode or "n"
+            vim.keymap.set(mode, keys, func, { buffer = buf, desc = "LSP: " .. desc })
+          end
+          map("<Leader>ce", function()
+            vim.cmd.RustLsp("expandMacro")
+          end, "Rust Expand Macro")
+          map("<F5>", function()
+            vim.cmd("RustLsp debuggables")
+          end, "Debug: Start")
+        end,
       }
+
       return {
         server = server,
         dap = { adapter = adapter, load_rust_types = true },

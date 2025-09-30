@@ -126,16 +126,24 @@ return {
           -- }),
           lib.component.git_branch({
             git_branch = { icon = { padding = { left = 1 } } },
+            surround = { separator = "left", color = "#111111" },
           }),
-          lib.component.git_diff(),
-          lib.component.diagnostics(),
+          lib.component.git_diff({
+            surround = { separator = "left", color = "#111111" },
+          }),
+          lib.component.diagnostics{
+            surround = { separator = "right", color = "#111111" },
+          },
           lib.component.fill(),
           lib.component.cmd_info(),
-          lib.component.lsp({ lsp_progress = false }),
+          lib.component.lsp({
+            lsp_progress = false,
+            surround = { separator = "right", color = "#111111" },
+          }),
           lib.component.builder(lib.utils.setup_providers({
             ruler = {},
             percentage = { padding = { left = 1, right = 1 } },
-            surround = { separator = "right", color = "nav_bg" },
+            surround = { separator = "right", color = "#111111" },
             hl = lib.hl.get_attributes("nav"),
             update = { "CursorMoved", "CursorMovedI", "BufEnter" },
           }, { "ruler", "percentage" })),

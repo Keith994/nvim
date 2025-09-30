@@ -11,6 +11,7 @@ return {
         markdown = true,
         help = true,
       },
+      copilot_model = "claude-3.7-sonnet",
     },
   },
   {

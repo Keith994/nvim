@@ -23,9 +23,28 @@ return {
       groups = { all = { NormalFloat = { link = "Normal" } } },
     },
   },
-  { "rose-pine/neovim", name = "rose-pine", opts = {} },
+  { "rose-pine/neovim", enabled = false, name = "rose-pine", opts = {} },
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = true,
+    opts = {
+      transparent = true,
+      italic_comments = true,
+      hide_fillchars = true,
+      borderless_pickers = false,
+      terminal_colors = true,
+      saturation = 0.80,
+      colors = {
+        dark = {
+          -- fg = "#1efeee",
+          fg = "#eeeeee",
+        },
+      },
+    },
+  },
   {
     "catppuccin/nvim",
+    enabled = false,
     name = "catppuccin",
     ---@type CatppuccinOptions
     opts = {
@@ -63,11 +82,12 @@ return {
       {
         "akinsho/bufferline.nvim",
         optional = true,
-        opts = function(_, opts)
-          return utils.extend_tbl(opts, {
-            highlights = require("catppuccin.groups.integrations.bufferline").get(),
-          })
-        end,
+        opts = {},
+        -- opts = function(_, opts)
+        --   return utils.extend_tbl(opts, {
+        --     highlights = require("catppuccin.groups.integrations.bufferline").get(),
+        --   })
+        -- end,
       },
       {
         "nvim-telescope/telescope.nvim",

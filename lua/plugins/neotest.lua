@@ -18,15 +18,8 @@ return {
       end,
     },
   },
-  specs = {
-    {
-      "catppuccin",
-      optional = true,
-      ---@type CatppuccinOptions
-      opts = { integrations = { neotest = true } },
-    },
-  },
   opts = function(_, opts)
+    opts.floating = { border = "rounded"}
     if vim.g.icons_enabled == false then
       opts.icons = {
         failed = "X",

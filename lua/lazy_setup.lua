@@ -58,5 +58,5 @@ if vim.g.vscode then
 end
 -- init.lua (或者你主要的配置文件)
 vim.defer_fn(function()
-  vim.cmd.colorscheme("nightfox")
+  vim.cmd.colorscheme("cyberdream")
 end, 0)

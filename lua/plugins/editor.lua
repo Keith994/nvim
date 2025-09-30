@@ -197,8 +197,13 @@ return {
           -- better descriptions
           { "gx", desc = "Open with system app" },
           {
+            "<leader>T",
+            group = "Task",
+            icon = { icon = "" },
+          },
+          {
             "<leader>t",
-            group = "test",
+            group = "Test",
             icon = { icon = "󰙨" },
           },
         },
@@ -311,10 +316,18 @@ return {
     "folke/trouble.nvim",
     cmd = { "Trouble" },
     keys = {
-      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",              desc = "Diagnostics (Trouble)" },
-      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>",                  desc = "Location List (Trouble)" },
-      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                   desc = "Quickfix List (Trouble)" },
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      { "<leaderue loclist toggle<cr>", desc = "Location List (Trouble)" },
+      { "<leadece qflist toggle<cr>",   desc = "Quickfix List (Trouble)" },
       {
         "[q",
         function()
@@ -630,6 +643,15 @@ return {
     opts = {},
   },
   {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function()
+      vim.fn["mkdp#util#install"]()
+    end,
+    opts = {}
+  },
+  {
     "saghen/blink.cmp",
     opts = {
       sources = {
@@ -653,6 +675,22 @@ return {
       mappings = {
         i = { j = { k = "<Esc>", j = "<Esc>" } },
       },
+    },
+  },
+  {
+    "google/executor.nvim",
+    dependencies = "MunifTanjim/nui.nvim",
+    opts = {},
+    cmd = {
+      "ExecutorRun",
+      "ExecutorSetCommand",
+      "ExecutorShowDetail",
+      "ExecutorHideDetail",
+      "ExecutorToggleDetail",
+      "ExecutorSwapToSplit",
+      "ExecutorSwapToPopup",
+      "ExecutorToggleDetail",
+      "ExecutorReset",
     },
   },
 }
