@@ -152,12 +152,20 @@ return {
   {
     "nvim-neotest/neotest",
     optional = true,
-    dependencies = { "fredrikaverpil/neotest-golang" },
+    dependencies = { {
+      "fredrikaverpil/neotest-golang",
+      version = "*",                                                            -- Optional, but recommended; track releases
+      build = function()
+        vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait() -- Optional, but recommended
+      end,
+    } },
     opts = function(_, opts)
       if not opts.adapters then
         opts.adapters = {}
       end
-      table.insert(opts.adapters, require("neotest-golang")(utils.plugin_opts("neotest-golang")))
+      table.insert(opts.adapters, require("neotest-golang")({
+        runner = "gotestsum", -- Optional, but recommended
+      }))
     end,
   },
   {

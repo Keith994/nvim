@@ -14,6 +14,14 @@ M.mapkey_lsp = function(keys, func, desc, mode, prefix)
   M._mapkey(keys, func, desc, mode, "LSP: ")
 end
 
+--- Check if a buffer is valid
+---@param bufnr? integer The buffer to check, default to current buffer
+---@return boolean # Whether the buffer is valid or not
+function M.is_buf_valid(bufnr)
+  if not bufnr then bufnr = 0 end
+  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
+end
+
 function M.list_insert_unique(dst, src)
   if not dst then dst = {} end
   assert(vim.islist(dst), "Provided table is not a list like table")

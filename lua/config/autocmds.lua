@@ -5,7 +5,7 @@ end
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
   callback = function(ev)
-    vim.cmd.TSDisable("highlight")
+    -- vim.cmd.TSDisable("highlight")
     vim.bo[ev.buf].shiftwidth = 4
   end,
 })

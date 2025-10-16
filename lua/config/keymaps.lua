@@ -257,6 +257,8 @@ map("n", "<leader>sq", function() require("snacks").picker.qflist() end, { desc 
 map("n", "<leader>su", function() require("snacks").picker.undo() end, { desc = "Undotree" })
 -- ui
 map("n", "<leader>uC", function() require("snacks").picker.colorschemes() end, { desc = "Colorschemes" })
+map("n", "]]", function() require("snacks").words.jump(vim.v.count1) end, { desc = "Next reference" })
+map("n", "[[", function() require("snacks").words.jump(-vim.v.count1) end, { desc = "Previous reference" })
 
 --tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })

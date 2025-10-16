@@ -1,5 +1,5 @@
 local prefix = "<Leader>a"
-return {
+return { {
   "yetone/avante.nvim",
   -- build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
   --   or "make",
@@ -169,4 +169,64 @@ return {
       },
     },
   },
+},
+
+  {
+    "NickvanDyke/opencode.nvim",
+    dependencies = {
+      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+    },
+    specs = {
+      {
+        "folke/which-key.nvim",
+        optional = true,
+        opts = function(_, opts)
+          return utils.extend_tbl(opts, {
+            spec = {
+              {
+                { "<leader>a", group = "avante", icon = { icon = " " } },
+              },
+            },
+          })
+        end,
+      },
+    },
+    config = function()
+      local prefix = "<Leader>O"
+      local map = function(keys, func, desc, mode)
+        mode = mode or "n"
+        vim.keymap.set(mode, keys, func, { buffer = buf, desc = "LSP: " .. desc })
+      end
+      map(prefix .. "t", function()
+        require("opencode").toggle()
+      end, "Toggle embedded")
+      map(prefix .. "a", function()
+        require("opencode").ask "@cursor: "
+      end, "Ask about this")
+      map(prefix .. "+", function()
+        require("opencode").prompt("@buffer", { append = true })
+      end, "Add buffer to prompt")
+
+      map(prefix .. "e", function()
+        require("opencode").prompt "Explain @cursor and its context"
+      end, "Explain this code")
+      map(prefix .. "n", function()
+        require("opencode").command "session_new"
+      end, "New session")
+      map(prefix .. "s", function()
+        require("opencode").select()
+      end, "Select prompt")
+
+      map(prefix .. "s", function()
+        require("opencode").ask "@selection: "
+      end, "Ask about selection", "v")
+
+      map(prefix .. "+", function()
+        require("opencode").prompt("@selection", { append = true })
+      end, "Add selection to prompt", "v")
+      map(prefix .. "s", function()
+        require("opencode").select()
+      end, "Select prompt", "v")
+    end,
+  }
 }

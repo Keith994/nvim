@@ -5,7 +5,6 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-neotest/nvim-nio",
     "antoinemadec/FixCursorHold.nvim",
-    "nvim-treesitter/nvim-treesitter",
     {
       "folke/neodev.nvim",
       optional = true,
@@ -19,7 +18,7 @@ return {
     },
   },
   opts = function(_, opts)
-    opts.floating = { border = "rounded"}
+    opts.floating = { border = "rounded" }
     if vim.g.icons_enabled == false then
       opts.icons = {
         failed = "X",
