@@ -60,7 +60,7 @@ return {
     optional = true,
     opts = {
       formatters_by_ft = {
-        lua = { "lsp" },
+        lua = { "stylua", lsp_format = "last" },
       },
     },
   },
