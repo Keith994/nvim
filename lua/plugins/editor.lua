@@ -271,23 +271,28 @@ return {
           vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
         end
 
-        -- stylua: ignore start
-        map("n", "]h", function()
+        local nextHunk = function()
           if vim.wo.diff then
             vim.cmd.normal({ "]c", bang = true })
           else
             gs.nav_hunk("next")
           end
-        end, "Next Hunk")
-        map("n", "[h", function()
+        end
+
+        local prevHunk = function()
           if vim.wo.diff then
             vim.cmd.normal({ "[c", bang = true })
           else
             gs.nav_hunk("prev")
           end
-        end, "Prev Hunk")
-        map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk")
-        map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
+        end
+        -- stylua: ignore start
+        -- map("n", "]h", nextHunk, "Next Hunk")
+        -- map("n", "[h", prevHunk, "Prev Hunk")
+        map("n", "]g", nextHunk, "Next Hunk")
+        map("n", "[g", prevHunk, "Prev Hunk")
+        map("n", "]G", function() gs.nav_hunk("last") end, "Last Hunk")
+        map("n", "[G", function() gs.nav_hunk("first") end, "First Hunk")
         map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
         map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
         map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
@@ -649,4 +654,24 @@ return {
       "ExecutorReset",
     },
   },
+
+  {
+    "A7Lavinraj/fyler.nvim",
+    dependencies = {
+      "echasnovski/mini.icons",
+    },
+
+    opts = {
+      default_explorer = true,
+
+      win = {
+        border = "rounded",
+        kind = "replace",
+      },
+      indentscope = {
+        marker = "┊",
+      },
+    },
+  },
+  { "willothy/flatten.nvim", opts = { window = { open = "alternate" } }, lazy = false, priority = 99999 }
 }
