@@ -160,14 +160,6 @@ return {
       end
     end,
   },
-
-  {
-    "ibhagwan/fzf-lua",
-    keys = {
-      { "<leader>fp", pick, desc = "Projects" },
-    },
-  },
-
   {
     "folke/snacks.nvim",
     optional = true,

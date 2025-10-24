@@ -1,13 +1,17 @@
 local M = {}
 
-M.mapkey = function(keys, func, desc, mode)
-  M._mapkey(keys, func, desc, mode, "")
+M.mapkey = function(keys, func, desc, mode, bufnr)
+  M._mapkey(keys, func, desc, mode, "", bufnr)
 end
 
 
-M._mapkey = function(keys, func, desc, mode, prefix)
+M._mapkey = function(keys, func, desc, mode, prefix, bufnr)
   mode = mode or "n"
-  vim.keymap.set(mode, keys, func, { desc = prefix .. desc })
+  if bufnr then
+    vim.keymap.set(mode, keys, func, { desc = prefix .. desc, buffer = bufnr })
+  else
+    vim.keymap.set(mode, keys, func, { desc = prefix .. desc })
+  end
 end
 
 M.mapkey_lsp = function(keys, func, desc, mode, prefix)
@@ -37,6 +41,7 @@ function M.list_insert_unique(dst, src)
   end
   return dst
 end
+
 --- Get a plugin spec from lazy
 ---@param plugin string The plugin to search for
 ---@return LazyPlugin? spec The found plugin spec from Lazy

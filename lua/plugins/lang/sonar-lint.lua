@@ -22,6 +22,7 @@ local sonarlint_ft = {
 return {
   "https://gitlab.com/schrieveslaach/sonarlint.nvim",
   ft = sonarlint_ft,
+  enabled = false,
   specs = {
     {
       "neovim/nvim-lspconfig",
