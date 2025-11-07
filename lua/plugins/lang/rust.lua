@@ -40,8 +40,8 @@ return {
       if not opts.adapters then
         opts.adapters = {}
       end
-      local rustaceanvim_avail, rustaceanvim = pcall(require, "rustaceanvim.neotest")
-      if rustaceanvim_avail then
+      local avail, rustaceanvim = pcall(require, "rustaceanvim.neotest")
+      if avail then
         table.insert(opts.adapters, rustaceanvim)
       end
     end,
