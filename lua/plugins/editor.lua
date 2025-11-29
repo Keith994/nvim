@@ -655,23 +655,23 @@ return {
     },
   },
 
-  {
-    "A7Lavinraj/fyler.nvim",
-    dependencies = {
-      "echasnovski/mini.icons",
-    },
-
-    opts = {
-      default_explorer = true,
-
-      win = {
-        border = "rounded",
-        kind = "replace",
-      },
-      indentscope = {
-        marker = "┊",
-      },
-    },
-  },
+  -- {
+  --   "A7Lavinraj/fyler.nvim",
+  --   dependencies = {
+  --     "echasnovski/mini.icons",
+  --   },
+  --
+  --   opts = {
+  --     default_explorer = true,
+  --
+  --     win = {
+  --       border = "rounded",
+  --       kind = "replace",
+  --     },
+  --     indentscope = {
+  --       marker = "┊",
+  --     },
+  --   },
+  -- },
   { "willothy/flatten.nvim", opts = { window = { open = "alternate" } }, lazy = false, priority = 99999 }
 }

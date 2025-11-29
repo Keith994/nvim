@@ -18,6 +18,9 @@ return {
   cmd = "ConformInfo",
   event = { "BufWritePre" },
   opts = {
+    formatters_by_ft = {
+      kdl = { "kdlfmt" }
+    },
     formatters = {
       injected = { options = { ignore_errors = true } },
     },

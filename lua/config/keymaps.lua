@@ -345,3 +345,12 @@ create_command("Xml", function()
     vim.cmd.LspStart()
   end)
 end, { desc = "xml filetype" })
+create_command("Md", function()
+  vim.bo.filetype = "markdown"
+end, { desc = "markdown filetype" })
+-----
+create_command("Run", function()
+  vim.schedule(function()
+    vim.cmd("RustLsp run")
+  end)
+end, { desc = "Run Rust" })

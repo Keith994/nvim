@@ -66,12 +66,18 @@ local function keymaps(event)
   map("<F34>", require("dap").run_to_cursor, "Run To Cursor")
   map("<F9>", require("dap").toggle_breakpoint, "Toggle Breakpoint")
   -- S-F9
-  map("<S-F9>", function()
-    require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-  end, "Toggle Breakpoint")
-  map("<F21>", function()
-    require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-  end, "Toggle Breakpoint")
+  -- map("<S-F9>",
+  --   function()
+  --     vim.ui.input({ prompt = "Condition: " }, function(condition)
+  --       if condition then require("dap").set_breakpoint(condition) end
+  --     end)
+  --   end, "Toggle Breakpoint")
+  map("<F21>",
+    function()
+      vim.ui.input({ prompt = "Condition: " }, function(condition)
+        if condition then require("dap").set_breakpoint(condition) end
+      end)
+    end, "Toggle Breakpoint")
 end
 
 return {

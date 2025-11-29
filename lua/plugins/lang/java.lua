@@ -120,6 +120,30 @@ return {
         "-data",
         workspace_dir,
       }
+
+      local bundles = vim.fn.glob(vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"), false, true)
+      -- java-test also depends on java-debug-adapter.
+      -- vim.list_extend(bundles, vim.fn.glob("$MASON/share/java-test/*.jar", false, true))
+      -- table.insert(bundles,vim.fn.expand("$MASON/share/java-test/com.microsoft.java.test.plugin-0.43.1.jar"))
+      local java_test_bundles = vim.split(
+      vim.fn.glob("$MASON/share/java-test/*.jar", true, false), "\n")
+
+      local excluded = {
+        "com.microsoft.java.test.runner-jar-with-dependencies.jar",
+        "jacocoagent.jar",
+        "com.microsoft.java.test.plugin-0.43.1.jar",
+        "junit-platform-commons_1.11.0.jar",
+        "junit-platform-engine_1.11.0.jar",
+        "junit-platform-launcher_1.11.0.jar",
+        "org.apiguardian.api_1.1.2.jar",
+        "org.opentest4j_1.3.0.jar",
+      }
+      for _, java_test_jar in ipairs(java_test_bundles) do
+        local fname = vim.fn.fnamemodify(java_test_jar, ":t")
+        if not vim.tbl_contains(excluded, fname) then
+          table.insert(bundles, java_test_jar)
+        end
+      end
       return utils.extend_tbl(opts, {
         root_dir = root_dir,
         cmd = cmd,
@@ -207,14 +231,7 @@ return {
           },
         },
         init_options = {
-          bundles = {
-            vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"),
-            -- unpack remaining bundles
-            (table.unpack or unpack)(
-                  vim.split(vim.fn.glob("$HOME/.vscode/extensions/vscjava.vscode-java-test-0.43.1/server/*.jar"), "\n",
-                    {})
-                ),
-          },
+          bundles = bundles,
           extendedClientCapabilities = {
             classFileContentsSupport = true,
             resolveAdditionalTextEditsSupport = true,
@@ -239,7 +256,7 @@ return {
         },
         filetypes = { "java" },
         on_attach = function(...)
-          require("jdtls").setup_dap({ hotcodereplace = "auto" })
+          require("jdtls").setup_dap({ hotcodereplace = "auto", config_overrides = {} })
         end,
       })
     end,
@@ -305,7 +322,7 @@ return {
 
       -- setup autocmd on filetype detect java
       vim.api.nvim_create_autocmd("Filetype", {
-        pattern = "java", -- autocmd to start jdtls
+        pattern = "*.java", -- autocmd to start jdtls
         callback = function()
           if opts.root_dir and opts.root_dir ~= "" then
             require("jdtls").start_or_attach(opts)
@@ -363,7 +380,6 @@ return {
   },
   {
     "nvim-neotest/neotest",
-    optional = true,
     opts = function(_, opts)
       if not opts.adapters then
         opts.adapters = {}
