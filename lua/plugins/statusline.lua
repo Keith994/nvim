@@ -103,6 +103,7 @@ return {
       -- end
 
       -- local path_func = lib.provider.filename({ modify = ":.:h", fallback = "" })
+      local bg = "#111111"
       return {
         statusline = {
           hl = { fg = "fg", bg = "bg" },
@@ -117,33 +118,26 @@ return {
               },
             },
           }),
-          -- lib.component.file_info({
-          --   filetype = false,
-          --   filename = {},
-          --   surround = {
-          --     separator = "left",
-          --   },
-          -- }),
           lib.component.git_branch({
             git_branch = { icon = { padding = { left = 1 } } },
-            surround = { separator = "left", color = "#111111" },
+            surround = { separator = "left", color = bg },
           }),
           lib.component.git_diff({
-            surround = { separator = "left", color = "#111111" },
+            surround = { separator = "left", color = bg },
           }),
           lib.component.diagnostics{
-            surround = { separator = "right", color = "#111111" },
+            surround = { separator = "right", color = bg },
           },
           lib.component.fill(),
           lib.component.cmd_info(),
           lib.component.lsp({
             lsp_progress = false,
-            surround = { separator = "right", color = "#111111" },
+            surround = { separator = "right", color = bg },
           }),
           lib.component.builder(lib.utils.setup_providers({
             ruler = {},
             percentage = { padding = { left = 1, right = 1 } },
-            surround = { separator = "right", color = "#111111" },
+            surround = { separator = "right", color = bg },
             hl = lib.hl.get_attributes("nav"),
             update = { "CursorMoved", "CursorMovedI", "BufEnter" },
           }, { "ruler", "percentage" })),

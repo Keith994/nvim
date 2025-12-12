@@ -129,14 +129,14 @@ return {
       vim.fn.glob("$MASON/share/java-test/*.jar", true, false), "\n")
 
       local excluded = {
-        "com.microsoft.java.test.runner-jar-with-dependencies.jar",
-        "jacocoagent.jar",
-        "com.microsoft.java.test.plugin-0.43.1.jar",
-        "junit-platform-commons_1.11.0.jar",
-        "junit-platform-engine_1.11.0.jar",
-        "junit-platform-launcher_1.11.0.jar",
-        "org.apiguardian.api_1.1.2.jar",
-        "org.opentest4j_1.3.0.jar",
+        -- "com.microsoft.java.test.runner-jar-with-dependencies.jar",
+        -- "jacocoagent.jar",
+        -- "com.microsoft.java.test.plugin-0.43.1.jar",
+        -- "junit-platform-commons_1.11.0.jar",
+        -- "junit-platform-engine_1.11.0.jar",
+        -- "junit-platform-launcher_1.11.0.jar",
+        -- "org.apiguardian.api_1.1.2.jar",
+        -- "org.opentest4j_1.3.0.jar",
       }
       for _, java_test_jar in ipairs(java_test_bundles) do
         local fname = vim.fn.fnamemodify(java_test_jar, ":t")

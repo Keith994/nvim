@@ -1,5 +1,11 @@
 return {
   {
+    -- 【关键修改】换成了官方社区版，更稳定，不会报错
+    "RRethy/base16-nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
     "EdenEast/nightfox.nvim",
     opts = {
       options = {
