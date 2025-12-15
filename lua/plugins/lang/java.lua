@@ -114,7 +114,7 @@ return {
         "--add-opens",
         "java.base/java.lang=ALL-UNNAMED",
         "-jar",
-        vim.fn.expand("$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher_1.7.100.v20251014-1222.jar"),
+        vim.fn.expand("$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher.jar"),
         "-configuration",
         vim.fn.expand("$MASON/share/jdtls/config"),
         "-data",

@@ -237,10 +237,11 @@ return {
         vim.keymap.set(mode, keys, func, { buffer = buf, desc = "LSP: " .. desc })
       end
       map(prefix .. "<cr>", function() require("opencode").toggle() end, "Toggle embedded")
-      map(prefix .. "a", function() require("opencode").prompt "@this" end, "Add to opencode", { "n", "x" })
+      map(prefix .. "a", function() require("opencode").prompt "@buffer" end, "Add buffer to opencode", { "n" })
+      map(prefix .. "a", function() require("opencode").prompt "@selection" end, "Ask about selection", { "v" })
       map(prefix .. "e", function() require("opencode").ask("@this: ", { submit = true }) end, "Ask about this",
         { "n", "x" })
-      map(prefix .. "s", function() require("opencode").select() end, "Execute opencode action…", { "n", "x" })
+      map(prefix .. "s", function() require("opencode").select() end, "Select prompt", { "n", "x" })
       vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,
         { desc = "opencode half page up" })
       vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end,
