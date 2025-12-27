@@ -6,6 +6,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
+    commit = 'd3218d988f72ed34414959c9ccd802d393432d6e',
     version = false, -- last release is way too old and doesn't work on Windows
     build = function()
       local TS = require("nvim-treesitter")
@@ -132,6 +133,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
+    commit = "0d7c800fadcfe2d33089f5726cb8907fc846eece",
     event = "VeryLazy",
     opts = {
       move = {
