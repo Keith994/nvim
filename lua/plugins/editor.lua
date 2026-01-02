@@ -24,9 +24,7 @@ return {
       words = {
         enabled = true,
         filter = function(bufnr)
-          return utils.is_buf_valid(bufnr)
-              and vim.g.snacks_words ~= false
-              and vim.b[bufnr].snacks_words ~= false
+          return utils.is_buf_valid(bufnr) and vim.g.snacks_words ~= false and vim.b[bufnr].snacks_words ~= false
         end,
       },
       image = { enabled = true },
@@ -56,7 +54,7 @@ return {
               { win = "input", height = 1, border = "bottom" },
               {
                 box = "horizontal",
-                { win = "list",    border = "none" },
+                { win = "list", border = "none" },
                 { win = "preview", title = "{preview}", width = 0.5, border = "left" },
               },
             },
@@ -72,9 +70,9 @@ return {
               border = "rounded",
               title = "{title} {live} {flags}",
               title_pos = "center",
-              { win = "input",   height = 1,          border = "bottom" },
-              { win = "list",    border = "none" },
-              { win = "preview", title = "{preview}", height = 0.4,     border = "top" },
+              { win = "input", height = 1, border = "bottom" },
+              { win = "list", border = "none" },
+              { win = "preview", title = "{preview}", height = 0.4, border = "top" },
             },
           },
         },
@@ -312,16 +310,16 @@ return {
     "gitsigns.nvim",
     opts = function()
       require("snacks")
-          .toggle({
-            name = "Git Signs",
-            get = function()
-              return require("gitsigns.config").config.signcolumn
-            end,
-            set = function(state)
-              require("gitsigns").toggle_signs(state)
-            end,
-          })
-          :map("<leader>uG")
+        .toggle({
+          name = "Git Signs",
+          get = function()
+            return require("gitsigns.config").config.signcolumn
+          end,
+          set = function(state)
+            require("gitsigns").toggle_signs(state)
+          end,
+        })
+        :map("<leader>uG")
     end,
   },
   {
@@ -339,7 +337,7 @@ return {
         desc = "Buffer Diagnostics (Trouble)",
       },
       { "<leaderue loclist toggle<cr>", desc = "Location List (Trouble)" },
-      { "<leadece qflist toggle<cr>",   desc = "Quickfix List (Trouble)" },
+      { "<leadece qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
       {
         "[q",
         function()
@@ -452,11 +450,11 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
-      { "S",     mode = { "n", "o", "x" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
-      { "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
-      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+      -- { "r", mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+      { "R", mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      -- { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
     },
   },
 
@@ -596,7 +594,7 @@ return {
         opts = function(_, opts)
           if opts.ensure_installed ~= "all" then
             opts.ensure_installed =
-                utils.list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
+              utils.list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
           end
         end,
       },
@@ -673,5 +671,5 @@ return {
   --     },
   --   },
   -- },
-  { "willothy/flatten.nvim", opts = { window = { open = "alternate" } }, lazy = false, priority = 99999 }
+  { "willothy/flatten.nvim", opts = { window = { open = "alternate" } }, lazy = false, priority = 99999 },
 }

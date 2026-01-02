@@ -8,7 +8,9 @@ map("n", "<localleader>p", function()
   local str = vim.fn.expand("%:p:f")
   utils.info("当前文件路径：" .. str)
 end, { desc = "Current Path" })
-map("n", "<localleader>c", function() Snacks.bufdelete.delete() end, { desc = "Delete Buffer and Window", silent = true })
+map("n", "<localleader>c", function()
+  Snacks.bufdelete.delete()
+end, { desc = "Delete Buffer and Window", silent = true })
 map("n", "<localleader>w", "<cmd>:w<cr>", { desc = "Write Buffer", silent = true })
 
 map("n", "<S-h>", "0", { desc = "Line Head" })
@@ -17,13 +19,6 @@ local switch_to_float = require("util.switch_to_float")
 map("n", "<C-W>w", function()
   switch_to_float()
 end, { desc = "Switch To Float", silent = true })
-
--- insert
-map("i", "<c-a>", "<ESC>^i")
-map("i", "<c-e>", "<End>")
-map("i", "<c-l>", "<right>")
-map("i", "<c-h>", "<left>")
-map("i", "<S-Tab>", "<c-d>")
 
 -- command line
 map("c", "<c-a>", "<HOME>")
@@ -36,8 +31,6 @@ map("c", "<c-t>", [[<C-R>=expand("%:p:h") . "/" <CR>]])
 
 -- Open ComandLine
 map("n", ";", ":", { desc = "Open ComandLine", remap = true })
--- save file
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 -- quit
 map("n", "<leader>qq", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit All" })
@@ -91,14 +84,6 @@ map("n", "<C-Down>", function() require("smart-splits").resize_down() end, { des
 map("n", "<C-Right>", function() require("smart-splits").resize_right() end, { desc = "Decrease Window Width" })
 --stylua: ignore
 map("n", "<C-Left>", function() require("smart-splits").resize_left() end, { desc = "Increase Window Width" })
-
--- Move Lines
-map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
-map("n", "<A-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
-map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
-map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- buffers
 map("n", "<S-j>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
