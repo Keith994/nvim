@@ -4,32 +4,39 @@ return {
 		priority = 1000,
 		config = function()
 			require('base16-colorscheme').setup({
-				base00 = '#091518',
-				base01 = '#162125',
-				base02 = '#2b373a',
-				base03 = '#3d494c',
-				base04 = '#bcc9cd',
-				base05 = '#d8e5e9',
-				base06 = '#d8e5e9',
-				base07 = '#273236',
-				base08 = '#ffb4ab',
-				base09 = '#a5caf5',
-				base0A = '#bcc9cd',
-				base0B = '#00d9fd',
-				base0C = '#a8cbe2',
-				base0D = '#00d9fd',
-				base0E = '#a8cbe2',
-				base0F = '#ffb4ab',
+				base00 = '#1a1018',
+				base01 = '#5c6370',
+				base02 = '#aa6096',
+				base03 = '#bf8cb8',
+				base04 = '#abb2bf',
+				base05 = '#ffbefa',
+				base06 = '#ffaaf4',
+				base07 = '#ffffff',
+
+				base08 = '#c856b8',
+				base09 = '#d3db7b',
+				base0A = '#e1e897',
+				base0B = '#6ed67f',
+				base0C = '#86e094',
+				base0D = '#e0775f',
+				base0E = '#d8593c',
+				base0F = '#b056b3',
 			})
 
-			local function set_hl_mutliple(groups, value)
-				for _, v in pairs(groups) do vim.api.nvim_set_hl(0, v, value) end
-			end
+			vim.api.nvim_set_hl(0, 'Visual', {
+				bg = '#aa6096',
+				fg = '#ffffff',
+				bold = true
+			})
 
-			vim.api.nvim_set_hl(0, 'Visual',
-				{ bg = '#004e5c', fg = '#acedff', bold = true })
-			vim.api.nvim_set_hl(0, 'LineNr', { fg = '#3d494c' })
-			vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#00d9fd', bold = true })
+			vim.api.nvim_set_hl(0, 'LineNr', {
+				fg = '#5c6370'
+			})
+
+			vim.api.nvim_set_hl(0, 'CursorLineNr', {
+				fg = '#ffaaf4',
+				bold = true
+			})
 
 			local current_file_path = vim.fn.stdpath("config") .. "/lua/plugins/dankcolors.lua"
 
@@ -42,7 +49,7 @@ return {
 
 					if new_spec and new_spec[1] and new_spec[1].config then
 						new_spec[1].config()
-						print("󰂖 Matugen: Colors reloaded!")
+						print("Theme reload")
 					end
 				end))
 			end
