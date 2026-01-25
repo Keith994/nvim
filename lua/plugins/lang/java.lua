@@ -94,16 +94,16 @@ return {
         "-Dlombok.disableConfig=true",
         "-javaagent:" .. vim.fn.expand("$MASON/share/jdtls/lombok.jar"),
         "-Dsun.zip.disableMemoryMapping=true",
-        "-Xms1g",             -- 初始堆内存提升
-        "-Xmx8g",             -- 最大堆内存提升
-        "-XX:+UseParallelGC", -- 启用 G1 GC
-        "-XX:GCTimeRatio=4",  -- 启用 G1 GC
+        "-Xms100m",          -- 初始堆内存提升
+        "-Xmx3g",            -- 最大堆内存提升
+        "-XX:+UseG1GC",
+        "-XX:GCTimeRatio=4", -- 启用 G1 GC
         "-XX:+ParallelRefProcEnabled",
         "-XX:AdaptiveSizePolicyWeight=90",
         "-XX:+UseStringDeduplication",
         "-XX:MaxGCPauseMillis=200", -- 优化 GC 停顿
-        "-XX:MetaspaceSize=1G",     -- Metaspace 初始大小
-        "-XX:MaxMetaspaceSize=2G",  -- 限制 Metaspace 上限
+        "-XX:MetaspaceSize=512M",   -- Metaspace 初始大小
+        "-XX:MaxMetaspaceSize=1G",  -- 限制 Metaspace 上限
 
         "-XX:+UnlockExperimentalVMOptions",
         "-XX:G1NewSizePercent=20",
@@ -121,12 +121,13 @@ return {
         workspace_dir,
       }
 
-      local bundles = vim.fn.glob(vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"), false, true)
+      local bundles = vim.fn.glob(vim.fn.expand("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"),
+        false, true)
       -- java-test also depends on java-debug-adapter.
       -- vim.list_extend(bundles, vim.fn.glob("$MASON/share/java-test/*.jar", false, true))
       -- table.insert(bundles,vim.fn.expand("$MASON/share/java-test/com.microsoft.java.test.plugin-0.43.1.jar"))
       local java_test_bundles = vim.split(
-      vim.fn.glob("$MASON/share/java-test/*.jar", true, false), "\n")
+        vim.fn.glob("$MASON/share/java-test/*.jar", true, false), "\n")
 
       local excluded = {
         -- "com.microsoft.java.test.runner-jar-with-dependencies.jar",
@@ -144,6 +145,15 @@ return {
           table.insert(bundles, java_test_jar)
         end
       end
+      -- 如果文件是Test.java的，调用super_implementation， 否则调用goto_subjects
+      vim.api.nvim_create_user_command("JavaAlt", function ()
+        local current_file = vim.api.nvim_buf_get_name(0)
+        if current_file:match("Test\\.java$") then
+          require("jdtls").super_implementation()
+        else
+          require("jdtls.tests").goto_subjects()
+        end
+      end, { desc = "Java Alternative Goto" })
       return utils.extend_tbl(opts, {
         root_dir = root_dir,
         cmd = cmd,
@@ -257,6 +267,18 @@ return {
         filetypes = { "java" },
         on_attach = function(...)
           require("jdtls").setup_dap({ hotcodereplace = "auto", config_overrides = {} })
+          vim.keymap.set("n", "<leader>cc", function()
+            utils.info("Compiling Java Project (incremental)...")
+            require("jdtls").compile("incremental")
+          end, { desc = "Compile Java Project" })
+          vim.keymap.set("n", "<leader>cC", function()
+            utils.info("Compiling Java Project (full)...")
+            require("jdtls").compile("full")
+          end, { desc = "Compile Java Project (full)" })
+          vim.keymap.set("n", "<leader>cu", function()
+            utils.info("Updaing Java Project Configuration...")
+            require("jdtls").update_project_config()
+          end, {desc = "Update Java Project Configuration" })
         end,
       })
     end,

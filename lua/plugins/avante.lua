@@ -88,18 +88,23 @@ return {
         new_ask = prefix .. "n",        -- Start a new ask session
         edit = prefix .. "e",           -- Edit the current prompt
         refresh = prefix .. "r",        -- Refresh/regenerate the response
-        focus = prefix .. "f",          -- Focus on the Avante window
+        -- focus = prefix .. "f",          -- Focus on the Avante window
+        focus = nil,
         select_model = prefix .. "?",   -- Select AI model to use
         stop = prefix .. "S",           -- Stop current generation
         select_history = prefix .. "h", -- Select from conversation history
 
         -- Toggle various UI elements and modes
         toggle = {
-          default = prefix .. "t",    -- Toggle Avante sidebar
-          debug = prefix .. "d",      -- Toggle debug mode
+          -- default = prefix .. "t",    -- Toggle Avante sidebar
+          -- debug = prefix .. "d",      -- Toggle debug mode
           hint = prefix .. "h",       -- Toggle hints display
-          suggestion = prefix .. "s", -- Toggle suggestions
+          -- suggestion = prefix .. "s", -- Toggle suggestions
           repomap = prefix .. "R",    -- Toggle repository map
+
+          default = nil,
+          debug = nil,
+          suggestion = nil,
         },
 
         -- Navigation in diff view

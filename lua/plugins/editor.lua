@@ -54,7 +54,7 @@ return {
               { win = "input", height = 1, border = "bottom" },
               {
                 box = "horizontal",
-                { win = "list", border = "none" },
+                { win = "list",    border = "none" },
                 { win = "preview", title = "{preview}", width = 0.5, border = "left" },
               },
             },
@@ -70,9 +70,9 @@ return {
               border = "rounded",
               title = "{title} {live} {flags}",
               title_pos = "center",
-              { win = "input", height = 1, border = "bottom" },
-              { win = "list", border = "none" },
-              { win = "preview", title = "{preview}", height = 0.4, border = "top" },
+              { win = "input",   height = 1,          border = "bottom" },
+              { win = "list",    border = "none" },
+              { win = "preview", title = "{preview}", height = 0.4,     border = "top" },
             },
           },
         },
@@ -310,16 +310,16 @@ return {
     "gitsigns.nvim",
     opts = function()
       require("snacks")
-        .toggle({
-          name = "Git Signs",
-          get = function()
-            return require("gitsigns.config").config.signcolumn
-          end,
-          set = function(state)
-            require("gitsigns").toggle_signs(state)
-          end,
-        })
-        :map("<leader>uG")
+          .toggle({
+            name = "Git Signs",
+            get = function()
+              return require("gitsigns.config").config.signcolumn
+            end,
+            set = function(state)
+              require("gitsigns").toggle_signs(state)
+            end,
+          })
+          :map("<leader>uG")
     end,
   },
   {
@@ -337,7 +337,7 @@ return {
         desc = "Buffer Diagnostics (Trouble)",
       },
       { "<leaderue loclist toggle<cr>", desc = "Location List (Trouble)" },
-      { "<leadece qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+      { "<leadece qflist toggle<cr>",   desc = "Quickfix List (Trouble)" },
       {
         "[q",
         function()
@@ -594,7 +594,7 @@ return {
         opts = function(_, opts)
           if opts.ensure_installed ~= "all" then
             opts.ensure_installed =
-              utils.list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
+                utils.list_insert_unique(opts.ensure_installed, { "html", "markdown", "markdown_inline" })
           end
         end,
       },
@@ -653,23 +653,56 @@ return {
     },
   },
 
-  -- {
-  --   "A7Lavinraj/fyler.nvim",
-  --   dependencies = {
-  --     "echasnovski/mini.icons",
-  --   },
-  --
-  --   opts = {
-  --     default_explorer = true,
-  --
-  --     win = {
-  --       border = "rounded",
-  --       kind = "replace",
-  --     },
-  --     indentscope = {
-  --       marker = "┊",
-  --     },
-  --   },
-  -- },
+  {
+    "X3eRo0/dired.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    opts = {
+      path_separator = "/",   -- Use '/' as the path separator
+      show_hidden = true,     -- Show hidden files
+      show_icons = true,      -- Show icons (patched font required)
+      show_banner = false,    -- Do not show the banner
+      hide_details = false,   -- Show file details by default
+      sort_order = "name",    -- Sort files by name by default
+      override_cwd = true,    -- Override cwd by default
+
+      -- Define keybindings for various 'dired' actions
+      keybinds = nil,
+      -- {
+      --         dired_enter = "l",
+      --         dired_back = "<BackSpace>",
+      --         dired_up = "h",
+      --         dired_rename = "r",
+      --         dired_create = "+",
+      --         dired_delete = "x",
+      --         dired_delete_range = "x",
+      --         dired_copy = "c",
+      --         dired_copy_range = "c",
+      --         dired_copy_marked = "C",
+      --         dired_move = "X",
+      --         dired_move_range = "X",
+      --         dired_move_marked = nil,
+      --         dired_paste = "p",
+      --         dired_mark = "<Tab>",
+      --         dired_mark_range = nil,
+      --         dired_delete_marked = nil,
+      --         dired_shell_cmd = "!",
+      --         dired_shell_cmd_marked = nil,
+      --         dired_toggle_hidden = ".",
+      --         dired_toggle_sort_order = ",",
+      --         dired_toggle_icons = nil,
+      --         dired_toggle_colors = nil,
+      --         dired_toggle_hide_details = nil,
+      --         dired_quit = "q",
+      --       }
+
+      -- Define colors for different file types and attributes
+      colors = {
+        DiredDimText = { link = {}, bg = "NONE", fg = "505050", gui = "NONE" },
+        DiredDirectoryName = { link = {}, bg = "NONE", fg = "9370DB", gui = "NONE" },
+        -- ... (define more colors as needed)
+        DiredMoveFile = { link = {}, bg = "NONE", fg = "ff3399", gui = "bold" },
+      },
+    },
+  },
   { "willothy/flatten.nvim", opts = { window = { open = "alternate" } }, lazy = false, priority = 99999 },
 }
